@@ -63,7 +63,7 @@ const resendpassword = async (name, email, token) => {
         subject: "Reset your password",
         html: `<p>Hi ${name},</p>
                <p>Please click on the following link to reset your password:</p>
-               <a href="http://localhost:1010/resetpassword?token=${token}">Reset Password</a>`
+               <a href=http://localhost:${portnumber}/resetpassword?token=${token}">Reset Password</a>`
       };
   
       transporter.sendMail(mailOptions, function (error, info) {
@@ -380,7 +380,7 @@ const productdet = async (req, res) => {
 
         
         const categorydata = productdata.category ? productdata.category : {};
-        const productURL = `http://localhost:1010/product-details/${productid}`
+        const productURL = `http://localhost:${portnumber}/product-details/${productid}`
         
         res.render('product-details', { products: productdata, category: categorydata, cartCount, wishcount,relatedProducts,productURL });
     } catch (error) {

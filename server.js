@@ -7,7 +7,17 @@ const path = require('path');
 const session = require('express-session');
 const passport = require('passport');
 require('./passport');
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, {
+  // useNewUrlParser: true, // Recommended options
+  // useUnifiedTopology: true,
+})
+.then(() => {
+  console.log("Atlas cloud is connected");
+})
+.catch((err) => {
+  console.error("Error connecting to MongoDB Atlas:", err.message);
+});
+
 console.log("loding");
 const express = require('express')
 const app = express()

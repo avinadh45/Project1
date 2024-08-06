@@ -9,7 +9,7 @@ const config = require("../config/config")
 const bcrypt = require('bcrypt')
 const randomString = require('randomstring')
 const jwt = require('jsonwebtoken')
-const Coupon = require("../model/couponmodel")
+const Coupon = require("../model/couponmodel") 
 const Wish = require('../model/wishlistmodel')
 const Wallet = require('../model/walletmodel')
 const securedpassword = async(password)=>{

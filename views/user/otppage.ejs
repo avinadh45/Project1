@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+}
+
+.container {
+    width: 300px;
+    margin: 100px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    width: calc(100% - 20px);
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.signupButton {
+    background-color: #007bff;
+}
+
+    </style>
+</head>
+<body>
+  <div class="container">
+      <h2>Enter OTP</h2>
+      <div id="timer"></div>
+      <form method="post" id="otpForm" action="/resend-otp">
+          <div id="countdownText">Resend OTP in <span id="countdown">60</span>s</div>
+          <button type="submit" id="resendBtn" style="display: none;">Resend OTP</button>
+      </form>
+      <div class="veriotp">
+          <form action="/OTPverify" method="post" class="otpclass">
+              <h4 id="lab">Enter the otp sent to the email !!!!</h4>
+              <div class="otp-input-container">
+                  <input type="text" id="otp" name="otp" placeholder="enter otp" pattern="\d*" inputmode="numeric" maxlength="6">
+                  <!-- <p id="otp-error" style="color: red; display: none;">Please enter a valid OTP.</p> -->
+                  <% if (locals.message) { %>
+                    <h5 id="error"><%= message %></h5>
+                <% } %>
+            </div>
+            <% if (locals.error) { %>
+                <h5 id="error-message" style="color: red;"><%= error %></h5>
+            <% } %>
+              </div>
+              <button type="submit">Verify</button>
+          </form>
+      </div>
+  </div>
+  <script>
+      // document.getElementById('otpForm').addEventListener('submit', function(event) {
+      //     const otpInput = document.getElementById('otp').value;
+      //     if (!validateOTP(otpInput)) {
+      //         event.preventDefault(); // Prevent form submission if OTP is invalid
+      //         document.getElementById('otp-error').style.display = 'block'; // Show error message
+      //     }
+      // });
+
+      function validateOTP(otp) {
+          // Validate the OTP against your criteria
+          // For example, check if the OTP is exactly 6 digits
+          const otpPattern = /^\d{6}$/;
+          return otpPattern.test(otp);
+      }
+
+
+
+
+let countdown;
+
+function startCountdown() {
+  let seconds = 60;
+  countdown = setInterval(function () {
+    document.getElementById('countdownText').textContent = `Resend OTP in ${seconds}s`;
+    seconds--;
+
+    if (seconds < 0) {
+      clearInterval(countdown);
+      document.getElementById('countdownText').style.display = 'none';
+      document.getElementById('resendBtn').style.display = 'block';
+    }
+  }, 1000);
+}
+
+function resendOTP() {
+  document.getElementById('countdownText').style.display = 'block';
+  document.getElementById('resendBtn').style.display = 'none';
+  startCountdown();
+}
+
+startCountdown();
+
+
+
+</script>
+    
+      
+          
+
+</body>
+</html>

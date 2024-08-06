@@ -1,0 +1,888 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
+<head>
+    <meta charset="utf-8">
+    <title>Evara Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/admin-assets/imgs/theme/favicon.svg">
+    <!-- Template CSS -->
+    <link href="/admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+     <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <!-- <a href="index.html" class="brand-wrap">
+                <img src="/admin-assets/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
+            </a>
+            <div> -->
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item">
+                    <a class="menu-link" href="adminhome"> <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item has-submenu active">
+                    <a class="menu-link" href="admin-category"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Products</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="productlist">Product List</a>
+                        <!-- <a href="page-products-grid.html">Product grid</a>
+                        <a href="page-products-grid-2.html">Product grid 2</a> -->
+                        <a href="admin-category" class="active">Categories</a>
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="order"> <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
+                    </a> 
+                    <div class="submenu">
+                        <a href="order">Order list 1</a>
+                        <!-- <a href="page-orders-2.html">Order list 2</a>
+                        <a href="page-orders-detail.html">Order detail</a> -->
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="/admin/return-product"> <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">product return request</span>
+                    </a>
+                 <div class="submenu">
+                    <a href="/admin/return-product">Order return</a>
+                    
+                </div>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="coupon"> <i class="icon material-icons md-store"></i>
+                        <span class="text">coupon</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="coupon">Add coupon</a>
+                        
+                    </div>
+                </li>
+                <!-- <li class="menu-item has-submenu">
+                    <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
+                        <span class="text">Sellers</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-sellers-cards.html">Sellers cards</a>
+                        <a href="page-sellers-list.html">Sellers list</a>
+                        <a href="page-seller-detail.html">Seller profile</a>
+                    </div>
+                </li> -->
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="products"> <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Add product</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="products">Add product 1</a>
+                        <!-- <a href="page-form-product-2.html">Add product 2</a>
+                        <a href="page-form-product-3.html">Add product 3</a>
+                        <a href="page-form-product-4.html">Add product 4</a> -->
+                    </div>
+                </li>
+                <!-- <li class="menu-item has-submenu">
+                    <a class="menu-link" href="page-transactions-1.html"> <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Transactions</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-transactions-1.html">Transaction 1</a>
+                        <a href="page-transactions-2.html">Transaction 2</a>
+                    </div>
+                </li> -->
+                <li class="menu-item has-submenu">
+                    <!-- <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
+                        <span class="text">Account</span>
+                    </a> -->
+                    <!-- <div class="submenu">
+                        <a href="page-account-login.html">User login</a>
+                        <a href="page-account-register.html">User registration</a>
+                        <a href="page-error-404.html">Error 404</a>
+                    </div> -->
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="user-details"> <i class="icon material-icons md-comment"></i>
+                        <span class="text">user</span>
+                    </a>
+                </li>
+                <!-- <li class="menu-item">
+                    <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i>
+                        <span class="text">Brands</span> </a>
+                </li> -->
+                <!-- <li class="menu-item">
+                    <a class="menu-link" disabled href="#"> <i class="icon material-icons md-pie_chart"></i>
+                        <span class="text">Statistics</span>
+                    </a>
+                </li> -->
+            </ul>
+            <hr>
+            <ul class="menu-aside">
+                <li class="menu-item has-submenu">
+                    <!-- <a class="menu-link" href="#"> <i class="icon material-icons md-settings"></i>
+                        <span class="text">Settings</span>
+                    </a> -->
+                    <!-- <div class="submenu">
+                        <a href="page-settings-1.html">Setting sample 1</a>
+                        <a href="page-settings-2.html">Setting sample 2</a>
+                    </div> -->
+                </li>
+                <!-- <li class="menu-item">
+                    <a class="menu-link" href="page-blank.html"> <i class="icon material-icons md-local_offer"></i>
+                        <span class="text"> Starter page </span>
+                    </a>
+                </li> -->
+            </ul>
+            <br>
+            <br>
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-search">
+                <!-- <form class="searchform">
+                    <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
+                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+                    </div>
+                    <datalist id="search_terms">
+                        <option value="Products">
+                        <option value="New orders">
+                        <option value="Apple iphone">
+                        <option value="Ahmed Hassan">
+                    </datalist>
+                </form> -->
+            </div>
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <ul class="nav">
+                    <!-- <li class="nav-item">
+                        <a class="nav-link btn-icon" href="#">
+                            <i class="material-icons md-notifications animation-shake"></i>
+                            <span class="badge rounded-pill">3</span>
+                        </a>
+                    </li> -->
+                    <!-- <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                    </li> -->
+                    <!-- <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                    </li> -->
+                    <!-- <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
+                            <a class="dropdown-item text-brand" href="#"><img src="/admin-assets/imgs/theme/flag-us.png" alt="English">English</a>
+                            <a class="dropdown-item" href="#"><img src="/admin-assets/imgs/theme/flag-fr.png" alt="Français">Français</a>
+                            <a class="dropdown-item" href="#"><img src="/admin-assets/imgs/theme/flag-jp.png" alt="Français">日本語</a>
+                            <a class="dropdown-item" href="#"><img src="/admin-assets/imgs/theme/flag-cn.png" alt="Français">中国人</a>
+                        </div>
+                    </li> -->
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/admin-assets/imgs/people/avatar2.jpg" alt="User"></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                            <!-- <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a> -->
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </header>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Categories </h2>
+                    <p>Add, edit or delete a category</p>
+                </div>
+                <div>
+                    <input type="text" placeholder="Search Categories" class="form-control bg-white">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <form id="categoryForm" >
+                                <div id="errorMessage"></div>
+                                <div class="mb-4"> 
+                                    <!-- <label for="category" name="category"  class="form-label">Name</label>
+                                    <input type="text" placeholder="category name" class="form-control" id="category" /> -->
+                                    <!-- - <div class="mb-4"> -->
+                                        <!-- <label for="category" class="form-label">Name</label>
+                                        <input type="text" placeholder="category name" class="form-control" id="category" name="category" > -->
+                                       
+                                        <label for="category" class="form-label">Name</label>
+<input type="text" name="category" placeholder="category name" class="form-control" id="category" />
+<div class="invalid-feedback"  id="categoryError">
+    Please provide a category name.
+</div>
+                                    </div>
+                                    
+                                </div>
+                               
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <!-- <input type="text" name="discription" placeholder="discription" class="form-control" id="discription" /> 
+                                    -->
+                                    <input type="text" name="description" placeholder="Description" class="form-control" id="description" />
+                                    <!-- <textarea placeholder="Type here" class="form-control"></textarea> -->
+                                    <div class="invalid-feedback" id="descriptionError">
+                                        Please provide a description.
+                                    </div>
+                                </div>
+                                <% if (locals.message) { %>
+                                    <h5 id="error"><%= message %></h5>
+                                <% } %>
+                            </div>
+                            <% if (locals.error) { %>
+                                <h5 id="error-message" style="color: red;"><%= error %></h5>
+                            <% } %>
+                            
+                                <div class="d-grid">
+                                    <button class="btn btn-primary">Submit category</button>
+                                </div>
+                                <!-- <button type="submit">Submit</button> -->
+                            </form>
+                            <div class="error-message" style="color: red;"></div>
+                        </div>
+                        <!-- <div id="categoryList"></div> -->
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" />
+                                                </div>
+                                            <!-- </th>
+                                            < <th>ID</th> -->
+                                             <th>Name</th>
+                                            <th>Description</th>
+                                            <!-- <!- <th>Slug</th> --> 
+                                            <!-- <th>Order</th> -->
+                                             <th class="text-end">Action</th>
+                                        </tr>
+                                    </thead> 
+                                    <tbody id="categoryList"></tbody> 
+                                   
+
+                                            </td>
+                                        </tr> -
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> <!-- .col// -->
+                    </div> <!-- .row // -->
+                </div> <!-- card body .// -->
+            </div> <!-- card .// -->
+        </section>
+         <!-- content-main end// -->
+         <div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="offerModalLabel">Apply Offer</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="offerCategoryId" />
+                        <div class="mb-3">
+                            <label for="offerPercentage" class="form-label">Offer Percentage</label>
+                            <input type="number" class="form-control" id="offerPercentage" min="1" max="90" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="submitOffer()">Apply Offer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+
+         <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editCategoryForm">
+                            <div id="Editmessage"></div>
+                            <div class="mb-3">
+                                <label for="editCategoryName" class="form-label" >Category Name</label>
+                                <input type="text" class="form-control" id='editCategoryName'  required>
+                                <input type="text" class="form-control" id='hidden' value="category._id" >
+
+                            </div>
+                            <div class="mb-3">
+                                <label for="editCategoryDescription" class="form-label">Category Description</label>
+                                <textarea class="form-control" id="editCategoryDescription" value rows="3"></textarea>
+                            </div>
+                            <!-- Add a single button for listing/unlisting -->
+                            <!-- <button type="button" class="btn btn-primary" id="toggleCategoryBtn">List</button> -->
+                            
+                            <button type="button" class="btn btn-primary toggle-category-btn" id="toggleCategoryBtn<%= category._id %>" >List</button>
+                            <% console.log(category._id,"id in button") %>
+
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        
+        
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                function openOfferModal(categoryId) {
+    document.getElementById('offerCategoryId').value = categoryId;
+    new bootstrap.Modal(document.getElementById('offerModal')).show();
+}
+
+async function submitOffer() {
+    const categoryId = document.getElementById('offerCategoryId').value;
+    const percentage = parseInt(document.getElementById('offerPercentage').value);
+
+    if (isNaN(percentage) || percentage < 1 || percentage > 90) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Input',
+            text: 'Please enter a valid offer percentage between 1 and 90.'
+        });
+        return;
+    }
+
+    await applyOffer(categoryId, percentage);
+}
+            
+            </script>
+           
+                 <script>
+                    async function removeOffer(categoryId) {
+            try {
+                const response = await fetch('/admin/removecategoryoffer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ categoryId })
+                });
+        
+                const result = await response.json();
+        
+                if (result.status) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Offer Removed!',
+                        text: 'The offer has been successfully removed.'
+                    });
+                    await renderCategories();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.message || 'An error occurred while removing the offer.'
+                    });
+                }
+        
+                await renderCategories();
+            } catch (error) {
+                console.error('Error removing offer:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while removing the offer.'
+                });
+            }
+        }
+        
+                </script>
+            <script>
+                 document.getElementById('categoryForm').addEventListener('submit', function(event) {
+        const categoryInput = document.getElementById('category');
+        const descriptionInput = document.getElementById('description');
+
+        if (!categoryInput.checkValidity() || !descriptionInput.checkValidity()) {
+            // If any input is invalid, prevent form submission
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        // Add Bootstrap's was-validated class to show validation messages
+        categoryInput.classList.add('was-validated');
+        descriptionInput.classList.add('was-validated');
+    });
+            </script>
+            
+  <script>
+  async function fetchCategories() {
+    try {
+        const response = await fetch('/admin/getcategory');
+        const data = await response.json();
+        console.log(data,"fetch cateegories response");
+        return data.data; 
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+
+async function renderCategories() {
+    try {
+        const Category = await fetchCategories();
+        const categoryList = document.getElementById('categoryList');
+         categoryList.innerHTML = ''; 
+
+        if (!Category || Category.length === 0) {
+            console.log('No categories found.');
+            return;
+        }
+
+        Category.forEach((category,index) => {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+           
+                <td class="text-center">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" />
+                    </div>
+                </td>
+                <td>${category.category}</td>
+                
+                <td>${category.description}</td>
+                <td class="text-end">
+                    <div class="dropdown">
+                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                        <div class="dropdown-menu">
+                           
+
+                            <a class="dropdown-item edit-category" data-category-id="${category._id}" data-bs-toggle="modal" data-bs-target="#editCategoryModal" >Edit info</a>
+                        
+                            <a class="dropdown-item delete-category" data-category-id="${category._id}" href="#">Delete</a>
+
+                            ${
+                                category.offer === 0
+                                    ? `<button class="btn btn-info" onclick="openOfferModal('${category._id}')" style="width: 100px;"><a href="#" class="text-white">Add Offer</a></button>`
+                                    : `<button class="btn btn-info" onclick="removeOffer('${category._id}')" style="width: 100px;"><a href="#" class="text-white">Remove Offer</a></button>`
+                            }
+                        </div>
+                    </div> <!-- dropdown //end -->
+                    
+
+
+
+                </td>
+            `;
+            categoryList.appendChild(newRow);
+            const deleteButton = newRow.querySelector('.delete-category');
+    deleteButton.addEventListener('click', () => {
+       
+        const categoryId = deleteButton.dataset.categoryId;
+        deleteCategory(categoryId);
+    });
+            const editButton = newRow.querySelector('.edit-category');
+            editButton.addEventListener('click', () => {
+               
+                const categoryId = editButton.dataset.categoryId;
+                populateEditModal(categoryId);
+            });
+    //         const applyOfferButton = newRow.querySelector('.apply-offer');
+    // applyOfferButton.addEventListener('click', () => {
+    //     const categoryId = applyOfferButton.dataset.categoryId;
+    //     openOfferModal(categoryId);
+    // });
+
+         });
+//    
+    } catch (error) {
+        console.error('Error rendering categories:', error);
+    }
+}
+
+ 
+ </script>
+<script>
+     function validate() {
+        var categoryName = document.getElementById("category").value;
+        var description = document.getElementById("description").value;
+        
+
+        if (categoryName === "" || description === "") {
+        
+            event.preventDefault();
+            document.getElementById("errorMessage").innerHTML = "Please fill out all required fields.";
+            return false;
+        }
+    }
+
+    
+    document.getElementById("categoryForm").addEventListener("submit", validate); 
+</script>
+            
+            <script>
+           renderCategories();
+            document.getElementById('categoryForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const categoryInput = document.querySelector('input[name="category"]');
+                const descriptionInput = document.querySelector('input[name="description"]');
+                const category = categoryInput.value.trim();
+                const description = descriptionInput.value.trim(); 
+                validate()
+                try {
+                    const response = await fetch('/admin/addcategory', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ category,description }) 
+                    });
+                    const data = await response.json();
+                    console.log(data,"hgfhgf");
+                     // Handle response from server
+        //              if (data.success) {
+        //     renderCategories();
+        // }
+    //     if (!response.ok) {
+    //     
+    //     throw new Error(data.error || 'Failed to add category'); 
+    // }
+    // console.log('Category added successfully');
+    //     renderCategories();
+    if (!response.ok) {
+            if (data.error=='Category already exists') {
+                document.getElementById('errorMessage').textContent = data.error;
+            } else {
+                document.getElementById('descriptionError').textContent = data.error;
+            }
+            //throw new Error(data.error || 'Failed to add category');
+        }
+
+        console.log('Category added successfully');
+        renderCategories();
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+//         </script>
+         <script>
+            
+
+            function getCategoryToEditId() {
+    return document.querySelector('.edit-category').dataset.categoryId;
+}
+
+        
+            document.getElementById('editCategoryForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                // const categoryId = getCategoryToEditId();
+                // console.log("catId",categoryId) 
+                console.log(document.getElementById('hidden').value)
+                const updatedData = {
+                    id: document.getElementById('hidden').value, 
+                    category: document.getElementById('editCategoryName').value,
+                    description: document.getElementById('editCategoryDescription').value
+                };
+        
+                // Call the function to update category data (implement this function)
+                await editCategory(updatedData);
+            });
+        
+            async function editCategory( updatedData) {
+                try {
+                    // console.log(categoryId)
+                    const response = await fetch(`/admin/editcategory`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updatedData)
+                    });
+                    const data = await response.json();
+                    console.log(data); // Handle response from server
+                    if (!response.ok) {
+            if (data.error=='Category already exists') {
+                document.getElementById('Editmessage').textContent = data.error;
+            } else {
+                document.getElementById('descriptionError').textContent = data.error;
+            }
+            //throw new Error(data.error || 'Failed to add category');
+        }
+                     if (data.success) {
+                    //     // Update the category list or display a success message
+                        renderCategories(); // Assuming this function exists
+                         $('#editCategoryModal').modal('hide');
+        // //                 setTimeout(() => {kkk
+        //     location.reload();
+        // }, 1000);
+                     }else{
+                        renderCategories(); 
+        //                 setTimeout(() => {
+        //    location.reload();
+        //  }, 1000);
+                     }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+
+//             async function populateEditModal(categoryId) {
+//                 console.log("hi its populate ",categoryId);
+//     try {
+//         const response = await fetch(`/admin/editcategory/${categoryId}`);
+//         const data = await response.json();
+
+//         if (data.success) {
+//             log
+//             const category = data.data;
+//             document.getElementById('editCategoryName').value = category.category;
+//             console.log(category.category);
+//             document.getElementById('editCategoryDescription').value = category.description;
+//             $('#editCategoryModal').modal('show');
+//         } else {
+//             console.error('Failed to fetch category data');
+//         }
+//     } catch (error) {
+//         console.error('Error:', error);
+//     }
+// }
+async function populateEditModal(categoryId) {
+    console.log("hi its populate ", categoryId);
+    try {
+        // Fetch all categories
+        const response = await fetch(`/admin/getcategory`);
+        const data = await response.json();
+
+        if (data.success) {
+            
+            const category = data.data.find(cat => cat._id === categoryId);
+            if (category) {
+                
+                 document.getElementById('editCategoryName').value = category.category;
+                document.getElementById('hidden').value = category._id
+                console.log('category',category.category);
+                document.getElementById('toggleCategoryBtn').value =  category._id
+                document.getElementById('editCategoryDescription').value = category.description;
+                $('#editCategoryModal').modal('show');
+            } else {
+                console.error('Category not found');
+            }
+        } else {
+            console.error('Failed to fetch categories')
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+
+async function deleteCategory(categoryId) {
+    try {
+        const response = await fetch(`/admin/deletecategory/${categoryId}`, {
+            method: 'DELETE'
+        });
+        const data = await response.json();
+        console.log(data); 
+        if (data.success) {
+            
+            renderCategories(); 
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+// Add event listener to the toggle button
+// document.getElementById('toggleCategoryBtn').addEventListener('click', async function () {
+//     const categoryId = getCategoryToEditId();
+//     const currentAction = this.textContent.trim().toLowerCase();
+
+//     // Toggle between list and unlist actions
+//     if (currentAction === 'list') {
+//         await listCategory(categoryId);
+//     } else {
+//         await unlistCategory(categoryId);
+//     }
+// });
+document.querySelectorAll('.toggle-category-btn').forEach(button => {
+    button.addEventListener('click', async function () {
+        const categoryId = this.value; // Retrieve category ID from the button's value attribute
+        const currentAction = this.textContent.trim().toLowerCase();
+
+        // Toggle between list and unlist actions
+        if (currentAction === 'list') {
+            await listCategory(categoryId);
+        } else {
+            await unlistCategory(categoryId);
+        }
+    });
+});
+
+
+
+
+
+
+async function updateToggleBtnText(isListed) {
+    const toggleCategoryBtn = document.getElementById('toggleCategoryBtn');
+    toggleCategoryBtn.textContent = isListed ? 'Unlist' : 'List';
+}
+
+// Function to list a category
+async function listCategory(categoryId) {
+    try {
+        // Send request to list the category
+        const response = await fetch(`/admin/list?id=${categoryId}`, {
+            method: 'PATCH'
+        });
+        const data = await response.json();
+        if (data.success) {
+            // Update button text and handle success
+            await updateToggleBtnText(true);
+            console.log('Category listed successfully');
+        } else {
+            console.error('Failed to list category');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Function to unlist a category
+async function unlistCategory(categoryId) {
+    try {
+        // Send request to unlist the category
+        const response = await fetch(`/admin/unlist?id=${categoryId}`, {
+            method: 'PATCH'
+        });
+        const data = await response.json();
+        if (data.success) {
+            // Update button text and handle success
+            await updateToggleBtnText(false);
+            console.log('Category unlisted successfully');
+        } else {
+            console.error('Failed to unlist category');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+
+    </script>
+
+
+        </script>
+        <script>
+            function openOfferModal(categoryId) {
+    document.getElementById('offerCategoryId').value = categoryId;
+    new bootstrap.Modal(document.getElementById('offerModal')).show();
+}
+async function applyOffer(categoryId, percentage) {
+    try {
+        const response = await fetch('/admin/addcategoryoffer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ categoryId, percentage })
+        });
+
+        const result = await response.json();
+
+        if (result.status) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Offer Applied!',
+                text: 'The offer has been successfully applied.'
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: result.message || 'An error occurred while applying the offer.'
+            });
+        }
+
+        await renderCategories();
+    } catch (error) {
+        console.error('Error applying offer:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while applying the offer.'
+        });
+    }
+}
+        </script>
+       
+        </footer>
+    </main>
+    <script src="/admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/admin-assets/js/vendors/select2.min.js"></script>
+    <script src="/admin-assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="/admin-assets/js/main.js" type="text/javascript"></script>
+    <!-- <script>
+        document.getElementById('categoryForm').addEventListener('submit', async function(event) {
+            event.preventDefault()
+            const category = document.querySelector('input[name="category"]')
+             console.log(category);
+            try {
+                const response = await fetch('/admin/addcategory', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({category})
+                });
+                const data = await response.json();
+             console.log(data); // Handle response from server
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script> -->
+    
+</body>
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
+</html>

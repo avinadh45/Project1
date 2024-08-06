@@ -1,0 +1,467 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
+<head>
+    <meta charset="utf-8">
+    <title>Evara Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/imgs/theme/favicon.svg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Template CSS -->
+    <link href="/admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+    <style>
+        .error {
+            color: red;
+            font-size: 0.875em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="index.html" class="brand-wrap">
+                <img src="assets/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item">
+                    <a class="menu-link" href="adminhome"> <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item has-submenu active">
+                    <a class="menu-link" href="productlist"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Products</span>
+                    </a>
+                    <!-- <div class="submenu">
+                        <a href="page-products-list.html">Product List</a>
+                        <a href="page-products-grid.html">Product grid</a>
+                        <a href="page-products-grid-2.html">Product grid 2</a>
+                        <a href="page-categories.html" class="active">Categories</a>
+                    </div> -->
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="order"> <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
+                    </a>
+                    <!-- <div class="submenu">
+                        <a href="page-orders-1.html">Order list 1</a>
+                        <a href="page-orders-2.html">Order list 2</a>
+                        <a href="page-orders-detail.html">Order detail</a>
+                    </div> -->
+                </li>
+                <!-- <li class="menu-item has-submenu">
+                    <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
+                        <span class="text">Sellers</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-sellers-cards.html">Sellers cards</a>
+                        <a href="page-sellers-list.html">Sellers list</a>
+                        <a href="page-seller-detail.html">Seller profile</a>
+                    </div>
+                </li> -->
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="products"> <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Add product</span>
+                    </a>
+                    <!-- <div class="submenu">
+                        <a href="page-form-product-1.html">Add product 1</a>
+                        <a href="page-form-product-2.html">Add product 2</a>
+                        <a href="page-form-product-3.html">Add product 3</a>
+                        <a href="page-form-product-4.html">Add product 4</a>
+                    </div> -->
+                </li>
+                <!-- <li class="menu-item has-submenu">
+                    <a class="menu-link" href="page-transactions-1.html"> <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Transactions</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-transactions-1.html">Transaction 1</a>
+                        <a href="page-transactions-2.html">Transaction 2</a>
+                    </div>
+                </li> -->
+                <!-- <li class="menu-item has-submenu">
+                    <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
+                        <span class="text">Account</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-account-login.html">User login</a>
+                        <a href="page-account-register.html">User registration</a>
+                        <a href="page-error-404.html">Error 404</a>
+                    </div>
+                </li> -->
+                <li class="menu-item">
+                    <a class="menu-link" href="user-details"> <i class="icon material-icons md-account_circle"></i>
+                        <span class="text">user</span>
+                    </a>
+                </li>
+                <!-- <li class="menu-item">
+                    <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i>
+                        <span class="text">Brands</span> </a>
+                </li> -->
+                <!-- <li class="menu-item">
+                    <a class="menu-link" disabled href="#"> <i class="icon material-icons md-pie_chart"></i>
+                        <span class="text">Statistics</span>
+                    </a>
+                </li> -->
+            </ul>
+            <hr>
+            <ul class="menu-aside">
+                <!-- <li class="menu-item has-submenu">
+                    <a class="menu-link" href="#"> <i class="icon material-icons md-settings"></i>
+                        <span class="text">Settings</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-settings-1.html">Setting sample 1</a>
+                        <a href="page-settings-2.html">Setting sample 2</a>
+                    </div>
+                </li> -->
+                <!-- <li class="menu-item">
+                    <a class="menu-link" href="page-blank.html"> <i class="icon material-icons md-local_offer"></i>
+                        <span class="text"> Starter page </span>
+                    </a>
+                </li> -->
+            </ul>
+            <br>
+            <br>
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-search">
+                <form class="searchform">
+                    <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
+                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+                    </div>
+                    <datalist id="search_terms">
+                        <option value="Products">
+                        <option value="New orders">
+                        <option value="Apple iphone">
+                        <option value="Ahmed Hassan">
+                    </datalist>
+                </form>
+            </div>
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon" href="#">
+                            <i class="material-icons md-notifications animation-shake"></i>
+                            <span class="badge rounded-pill">3</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                    </li>
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
+                            <a class="dropdown-item text-brand" href="#"><img src="assets/imgs/theme/flag-us.png" alt="English">English</a>
+                            <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-fr.png" alt="Français">Français</a>
+                            <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-jp.png" alt="Français">日本語</a>
+                            <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-cn.png" alt="Français">中国人</a>
+                        </div>
+                    </li>
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="assets/imgs/people/avatar2.jpg" alt="User"></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </header>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Coupon </h2>
+                    <p>Add, edit or delete a coupon</p>
+                </div>
+                <div>
+                    <input type="text" placeholder="Search Categories" class="form-control bg-white">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+                                <div class="alert alert-danger" role="alert">
+                                    <%= errorMessage %>
+                                </div>
+                            <% } %>
+                            <form id="couponForm" method="POST" action="/admin/addcoupon" onsubmit="return validateForm()" novalidate>
+                                <div class="mb-4">
+                                    <label for="couponName" class="form-label">Coupon Name</label>
+                                    <input type="text" placeholder="Enter coupon name" class="form-control" id="couponName" name="couponName" required />
+                                    <div id="couponNameError" class="error"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="couponCode" class="form-label">Coupon Code</label>
+                                    <input type="text" placeholder="Enter coupon code" class="form-control" id="couponCode" name="couponCode" required />
+                                    <div id="couponCodeError" class="error"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="usagecount" class="form-label">Usage Count</label>
+                                    <input type="number" placeholder="Enter usage limit" class="form-control" id="usagecount" name="usagecount" required />
+                                    <div id="usagecountError" class="error"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="Description" class="form-label">Description</label>
+                                    <textarea placeholder="Enter description" class="form-control" id="Description" name="Description" required></textarea>
+                                    <div id="descriptionError" class="error"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="expirationTime" class="form-label">Expiration Time</label>
+                                    <input type="date" class="form-control" id="expirationTime" name="expirationTime" required />
+                                    <div id="expirationTimeError" class="error"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="offer" class="form-label">Offer</label>
+                                    <input type="number" step="0.01" placeholder="Enter offer" class="form-control" id="offer" name="offer" required />
+                                    <div id="offerError" class="error"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="MinimumAmount" class="form-label">Minimum Amount</label>
+                                    <input type="number" step="0.01" placeholder="Enter minimum amount" class="form-control" id="MinimumAmount" name="MinimumAmount" required />
+                                    <div id="minimumAmountError" class="error"></div>
+                                </div>
+                                <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+                                    <div class="alert alert-danger" role="alert">
+                                        <%= errorMessage %>
+                                    </div>
+                                <% } %>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Create Coupon</button>
+                                </div>
+                            </form>
+                            
+                        </div>
+                        <div class="col-md-9">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                         
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Coupon Code</th>
+                                            <th>Expiration Date</th>
+                                            <th class="text-end">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (coupons && coupons.length > 0) { %>
+                                            <% coupons.forEach(function(coupon) { %>
+                                                <tr>
+                                                    <td><%= coupon.couponName %></td>
+                                                    <td><%= coupon.Description %></td>
+                                                    <td><%= coupon.couponCode %></td>
+                                                    <td><%= new Date(coupon.expirationTime).toLocaleDateString() %></td>
+    
+                                                            <td class="text-end">
+                                                                <a href="/admin/editcoupon?id=<%= coupon._id %>" class="btn btn-primary btn-sm">Edit</a>
+                                                                <button class="btn btn-danger btn-sm" onclick="deleteCoupon('<%= coupon._id %>')">Delete</button>
+                                                            </td>
+                                                        <!-- </div> -->
+                                                    </td>
+                                                </tr>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="4" class="text-center">No coupons found</td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> <!-- .col// -->
+                    </div> <!-- .row // -->
+                </div> <!-- card body .// -->
+            </div> <!-- card .// -->
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+       function validateForm() {
+            const couponName = document.getElementById('couponName').value.trim();
+            const couponCode = document.getElementById('couponCode').value.trim();
+            const usagecount = document.getElementById('usagecount').value.trim();
+            const description = document.getElementById('Description').value.trim();
+            const expirationTime = document.getElementById('expirationTime').value.trim();
+            const offer = document.getElementById('offer').value.trim();
+            const minimumAmount = document.getElementById('MinimumAmount').value.trim();
+
+            const couponNameError = document.getElementById('couponNameError');
+            const couponCodeError = document.getElementById('couponCodeError');
+            const usagecountError = document.getElementById('usagecountError');
+            const descriptionError = document.getElementById('descriptionError');
+            const expirationTimeError = document.getElementById('expirationTimeError');
+            const offerError = document.getElementById('offerError');
+            const minimumAmountError = document.getElementById('minimumAmountError');
+
+            couponNameError.textContent = '';
+            couponCodeError.textContent = '';
+            usagecountError.textContent = '';
+            descriptionError.textContent = '';
+            expirationTimeError.textContent = '';
+            offerError.textContent = '';
+            minimumAmountError.textContent = '';
+
+            let isValid = true;
+
+            if (couponName === '') {
+                couponNameError.textContent = 'Coupon name is required';
+                isValid = false;
+            }
+
+            if (couponCode === '') {
+                couponCodeError.textContent = 'Coupon code is required';
+                isValid = false;
+            }
+
+            if (usagecount === '') {
+                usagecountError.textContent = 'Usage count is required';
+                isValid = false;
+            } else if (isNaN(usagecount) || usagecount <= 0) {
+                usagecountError.textContent = 'Usage count must be a positive number';
+                isValid = false;
+            }
+
+            if (description === '') {
+                descriptionError.textContent = 'Description is required';
+                isValid = false;
+            }
+
+            if (expirationTime === '') {
+                expirationTimeError.textContent = 'Expiration time is required';
+                isValid = false;
+            } else if (new Date(expirationTime) < new Date()) {
+                expirationTimeError.textContent = 'Expiration time must be a future date';
+                isValid = false;
+            }
+
+            if (offer === '') {
+                offerError.textContent = 'Offer is required';
+                isValid = false;
+            } else if (isNaN(offer) || offer <= 0) {
+                offerError.textContent = 'Offer must be a positive number';
+                isValid = false;
+            }
+
+            if (minimumAmount === '') {
+                minimumAmountError.textContent = 'Minimum amount is required';
+                isValid = false;
+            } else if (isNaN(minimumAmount) || minimumAmount <= 0) {
+                minimumAmountError.textContent = 'Minimum amount must be a positive number';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        document.getElementById('couponForm').addEventListener('submit', function(event) {
+            if (!validateForm()) {
+                event.preventDefault(); 
+            }
+        });
+    </script>
+    <script>
+        function deleteCoupon(couponId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/admin/deletecoupon?id=${couponId}`, {
+                        method: 'GET',
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire(
+                                'Deleted!',
+                                'Your coupon has been deleted.',
+                                'success'
+                            ).then(() => {
+                                window.location.href = '/admin/coupon';
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'There was an error deleting the coupon.',
+                                'error'
+                            );
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire(
+                            'Error!',
+                            'There was an error deleting the coupon.',
+                            'error'
+                        );
+                    });
+                }
+            });
+        }
+    </script>
+
+
+    <script src="/admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/admin-assets/js/vendors/select2.min.js"></script>
+    <script src="/admin-assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="/admin-assets/js/main.js" type="text/javascript"></script>
+</body>
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
+</html>

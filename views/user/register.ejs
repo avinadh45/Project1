@@ -1,0 +1,131 @@
+<%-include('header')-%>
+
+<body class="container">  
+  <div class="login-container">
+    <div class="login-content">
+      <% if(locals.message) { %>
+      
+      <%= message %> 
+      
+      </button>
+            <% } %>
+            <div class="container">
+              <div class="registration-box">
+                  <h1 class="welcome-text">Signup</h1>
+                  <div id="errorContainer"></div>
+                     <!-- <form id="register" action="/register" method="post" onsubmit="return validateForm()" novalidate>  -->
+                     <form id="register" action="/register" method="post" onsubmit="return validateForm(event)" novalidate>   
+
+                      <input type="text" placeholder="Name" class="input-field" name="name" required>
+                      <div id="nameError" class="name"></div>
+          
+                      <input type="text" placeholder="Phone Number" class="input-field" name="phone" required>
+                      <div id="phoneError" class="name"></div>
+          
+                      <input type="email" placeholder="Email" class="input-field" name="email" required>
+                      <div id="emailError" class="error"></div>
+          
+                      <input type="password" placeholder="Password" class="input-field" name="password" required>
+                      <div id="passwordError" class="error"></div>
+     
+
+                      <button type="submit" class="login-button">Signup</button>
+                      
+                   
+                  </form>
+              </div>
+          </div>
+          
+          <script>
+             function validateForm() {
+      const name = document.querySelector('input[name="name"]').value.trim();
+      const phone = document.querySelector('input[name="phone"]').value.trim();
+      const email = document.querySelector('input[name="email"]').value.trim();
+      const password = document.querySelector('input[name="password"]').value.trim();
+
+      const nameError = document.getElementById('nameError');
+      const phoneError = document.getElementById('phoneError');
+      const emailError = document.getElementById('emailError');
+      const passwordError = document.getElementById('passwordError');
+
+      let isValid = true;
+      if (!name) {
+                      nameError.textContent = 'Name field is required';
+                      isValid = false;
+                  } else {
+                      const nameRegex = /^[A-Za-z\s]+$/;
+                      if (!nameRegex.test(name)) {
+                          nameError.textContent = 'Invalid name format';
+                          isValid = false;
+                      } else {
+                          nameError.textContent = '';
+                      }
+                  }
+                     // Validate phone
+if (!phone) {
+    phoneError.textContent = 'Phone number is required';
+    isValid = false;
+} else {
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(phone)) {
+        phoneError.textContent = 'Phone number must be 10 digits';
+        isValid = false;
+    } else if (/^(\d)\1{9}$/.test(phone)) {
+        phoneError.textContent = 'Phone number cannot have all same digits';
+        isValid = false;
+    } else {
+        phoneError.textContent = ''; // Clear any previous error message
+    }
+}
+
+                  // Validate phone
+                //   if (!phone) {
+                //       phoneError.textContent = 'Phone number is required';
+                //       isValid = false;
+                //   } else {
+                //       // Add phone validation logic if needed
+                //       phoneError.textContent = '';
+                //   }
+          
+                  // Validate email
+                  if (!email) {
+                      emailError.textContent = 'Email field is required';
+                      isValid = false;
+                  } else {
+                      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                      if (!emailRegex.test(email)) {
+                          emailError.textContent = 'Invalid email format';
+                          isValid = false;
+                      } else {
+                          emailError.textContent = '';
+                      }
+                  }
+          
+                 
+                  
+                  if (!password) {
+                      passwordError.textContent = 'Password field is required';
+                      isValid = false;
+                  } else {
+                      if (password.length < 6) {
+                          passwordError.textContent = 'Password must be at least 6 characters long';
+                          isValid = false;
+                      } else {
+                          passwordError.textContent = '';
+                      }
+                  }
+      // Validate name, phone, email, password (same as your existing validation)
+
+      if (isValid) {
+        // No need to send OTP here, just submit the form
+        return true;
+      } else {
+        return false; // Prevent default form submission if validation fails
+      }
+    }
+
+    
+          </script>
+          
+        
+</body>

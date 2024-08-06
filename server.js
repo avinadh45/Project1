@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 require('dotenv').config();
 const  nocache = require('nocache')
-const sharp = require('sharp')
+// const sharp = require('sharp')
 const fs = require('fs')
 const path = require('path');
 const session = require('express-session');

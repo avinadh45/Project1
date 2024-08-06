@@ -1,7 +1,7 @@
 const product = require('../model/productmodel')
 const category=require('../model/categorymodel')
 const fs = require('fs')
-const sharp = require('sharp')
+// const sharp = require('sharp')
 const productpage  = async(req,res)=>{
     try { 
         console.log("products");

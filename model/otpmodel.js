@@ -60,13 +60,7 @@ OTP.verifyOTP = async function(userId, otp) {
 
 OTP.resendOTP = async function(userId) {
  
-    //  const existingOTP = await OTP.findOne({ userId: userId });
-    // console.log(otp);
-    // If an OTP already exists, just resend it
-    //  if (existingOTP) {
-    //     return existingOTP.otp;
-    // }
-    //  console.log(otp);
+   
   
     return await OTP.generateAndSaveOTP(userId);
 };

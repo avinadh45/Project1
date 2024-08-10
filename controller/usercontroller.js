@@ -315,15 +315,12 @@ const verifilogin = async(req,res)=>{
       }
       const passwordvalid = await bcrypt.compare(password,user.password)
       if(!passwordvalid){
-        return res.render('login',{message:"invalid email or password"})
+        return res.render('login',{error:"invalid email or password"})
       }
       if (user.Block) {
         return res.render('login', {message: "Your account is blocked.." });
     }
     // if(passwordvalid&&user.Block===false){
-
-    
-     
       req.session.user=user;
       res.redirect('/home')
     // }
@@ -331,6 +328,7 @@ const verifilogin = async(req,res)=>{
         console.log(error.message);
     }
 }
+
 const logout =async (req,res)=>{
     try {
          req.session.destroy()

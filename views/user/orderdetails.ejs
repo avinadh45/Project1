@@ -263,77 +263,70 @@
 <body>
     <div class="container">
         <h2>Order Details</h2>
-        <div class="order-details">
-            <div class="order-info">
-                <p><strong>Customer Name:</strong> <%= user.name %></p>
-                <p><strong>Order Status:</strong> <%= order.status %></p>
-                <p><strong>Order Date:</strong> <%= new Date(order.placed).toLocaleDateString() %></p>
-                <p><strong>Shipping Address:</strong></p>
-                <ul>
-                    <li><strong>Address:</strong> <%= address.Address[0].address %></li>
-                    <li><strong>Phone Number:</strong> <%= address.Address[0].phone %></li>
-                    <li><strong>Pincode:</strong> <%= address.Address[0].pincode %></li>
-                </ul>
-                <p><strong>Products:</strong></p>
-                <ul>
-                    <p><strong>Products:</strong></p>
-                    <ul id="product-list">
-                        <% products.forEach(product => { %>
-                            <li data-product-id="<%= product._id %>">
-                                <div class="product-info">
-                                    <img src="<%= './productimage/' + product.image[0] %>" alt="<%= product.name %>" width="100" height="100">
-                                    <div class="product-details">
-                                        <p>
-                                            <%= product.name %> <%= product.quantity %> x ₹<%= (product.price || 0).toFixed(2) %>
-                                            <% if (product.discountPercentage > 0) { %>
-                                                <span class="discount-info">(Discount: <%= (product.discountPercentage || 0).toFixed(2) %>%, -₹<%= (product.discountAmount || 0).toFixed(2) %>)</span>
-                                            <% } %>
-                                        </p>
-                                        <button class="remove-product">Remove</button>
-                                    </div>
-                                </div>
-                            </li>
-                        <% }) %>
-                    </ul>
-                    <p><strong>Subtotal:</strong> ₹<span id="subtotal"><%= order.totalprice.toFixed(2) %></span></p>
-                    <% if (couponDiscount > 0) { %>
-                        <p><strong>Coupon Discount (<%= couponPercentage %>%) :</strong> -₹<%= couponDiscount.toFixed(2) %></p>
-                        
-                        <!-- <p><strong>Total After Discount:</strong> ₹<span id="total-after-discount"><%= discountedTotalPrice.toFixed(2) %></span></p> -->
-                    <% } else { %>
-                        <p><strong>Total:</strong> ₹<span id="total"><%= order.totalprice.toFixed(2) %></span></p>
-                    <% } %>
-                    <div class="order-actions">
-                        <% if (order.paymentstatus === 'Pending') { %>
-                            <button id="payNowBtn" class="btn btn-pay-now" data-order-id="<%= order._id %>" data-address-id="<%= address.Address[0]._id %>" data-total-price="<%= order.totalprice %>">
-                                Pay Now
-                            </button>
-                        <% } %>
-                        <% if (order.status !== 'Cancelled') { %>
-                            <% if (order.status === 'Delivered') { %>
-                                <button id="returnOrderBtn" class="btn btn-return-order" data-order-id="<%= order._id %>">
-                                    Return Product
-                                </button>
-                                <br>
-                                <button id="downloadInvoiceBtn" class="btn btn-download-invoice" data-order-id="<%= order._id %>">
-                                    Download Invoice
-                                </button>
-                            <% } else if (order.status === 'Return') { %>
-                                <p><strong>Status:</strong> This order has been returned.</p>
-                            <% } else { %>
-                                <button id="cancelOrderBtn" class="btn btn-cancel-order" data-order-id="<%= order._id %>">
-                                    Cancel Order
-                                </button>
-                            <% } %>
-                        <% } else { %>
-                            <p><strong>Status:</strong> This order has been cancelled.</p>
-                        <% } %>
-                    </div>
-                    
+        <div class="order-info">
+            <p><strong>Customer Name:</strong> <%= user.name %></p>
+            <p><strong>Order Status:</strong> <%= order.status %></p>
+            <p><strong>Order Date:</strong> <%= new Date(order.placed).toLocaleDateString() %></p>
+            <p><strong>Shipping Address:</strong></p>
+            <ul>
+                <li><strong>Address:</strong> <%= address.Address[0].address %></li>
+                <li><strong>Phone Number:</strong> <%= address.Address[0].phone %></li>
+                <li><strong>Pincode:</strong> <%= address.Address[0].pincode %></li>
+            </ul>
+            <p><strong>Products:</strong></p>
+            <ul>
+                <% products.forEach(product => { %>
+                    <li data-product-id="<%= product._id %>">
+                        <div class="product-info">
+                            <img src="<%= './productimage/' + product.image[0] %>" alt="<%= product.name %>" width="100" height="100">
+                            <div class="product-details">
+                                <p>
+                                    <%= product.name %> <%= product.quantity %> x ₹<%= (product.price || 0).toFixed(2) %>
+                                    <% if (product.discountPercentage > 0) { %>
+                                        <span class="discount-info">(Discount: <%= (product.discountPercentage || 0).toFixed(2) %>%, -₹<%= (product.discountAmount || 0).toFixed(2) %>)</span>
+                                    <% } %>
+                                </p>
+                                <button class="remove-product">Remove</button>
+                            </div>
+                        </div>
+                    </li>
+                <% }) %>
+            </ul>
+            <p><strong>Subtotal:</strong> ₹<span id="subtotal"><%= order.totalprice.toFixed(2) %></span></p>
+            <% if (couponDiscount > 0) { %>
+                <p><strong>Coupon Discount (<%= couponPercentage %>%) :</strong> -₹<%= couponDiscount.toFixed(2) %></p>
+            <% } %>
+            <p><strong>Total:</strong> ₹<span id="total"><%= order.totalprice.toFixed(2) %></span></p>
+        
+            <div class="order-actions">
+                <% if (order.paymentstatus === 'Pending') { %>
+                    <button id="payNowBtn" class="btn btn-pay-now" data-order-id="<%= order._id %>" data-address-id="<%= address.Address[0]._id %>" data-total-price="<%= order.totalprice %>">
+                        Pay Now
+                    </button>
+                <% } %>
                 
-
-            
+                <% if (order.status !== 'Cancelled' && order.status !== 'Return Requested' && order.status !== 'Returned') { %>
+                    <% if (order.status === 'Delivered') { %>
+                        <button id="returnOrderBtn" class="btn btn-return-order" data-order-id="<%= order._id %>">
+                            Return Product
+                        </button>
+                        <br>
+                        <button id="downloadInvoiceBtn" class="btn btn-download-invoice" data-order-id="<%= order._id %>">
+                            Download Invoice
+                        </button>
+                    <% } else { %>
+                        <button id="cancelOrderBtn" class="btn btn-cancel-order" data-order-id="<%= order._id %>">
+                            Cancel Order
+                        </button>
+                    <% } %>
+                <% } else if (order.status === 'Return') { %>
+                    <p><strong>Status:</strong> This order has been returned.</p>
+                <% } else { %>
+                    <p><strong>Status:</strong> This order has been cancelled.</p>
+                <% } %>
+            </div>    
         </div>
+        
     </div>
     <div id="returnReasonModal" class="modal">
         <div class="modal-content">
@@ -468,14 +461,14 @@ document.getElementById('returnOrderBtn')?.addEventListener('click', function() 
                             );
                         }
                     })
-                    .catch(error => {
+                    // .catch(error => {
                         
-                        Swal.fire(
-                            'Error!',
-                            'There was a problem returning your product.',
-                            'error'
-                        );
-                    });
+                    //     Swal.fire(
+                    //         'Error!',
+                    //         'There was a problem returning your product.',
+                    //         'error'
+                    //     );
+                    // });
                 }
             });
         }

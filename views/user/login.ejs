@@ -2,12 +2,11 @@
 <body class="container">  
   <div class="login-container">
     <div class="login-content">
-      <% if(locals.message) { %>
-      <%= message %> 
+      <% if(locals.error) { %>
+        <div id="errorContainer" class="error"><%= error %></div> 
       <% } %>
       
       <h1 class="welcome-text">Login</h1>
-      <div id="errorContainer"></div>
       <form id="login" action='/login' method="post" onsubmit="return validateForm()" novalidate>
         <div class="input-group">
           <input type="email" placeholder="Email" class="input-field" name="email" required>
@@ -31,7 +30,7 @@
 
       <div class="social-login">
         <a href="/login/google" class="google-login">
-          <img src="images/logo/google.png" alt="Google Icon" class="google-icon"> <!-- Use a valid path for the icon -->
+          <img src="images/logo/google.png" alt="Google Icon" class="google-icon"> 
           Login with Google
         </a>
       </div>
@@ -88,6 +87,15 @@
         eyeIcon.classList.add('fa-eye');
       }
     }
+
+    window.onload = function() {
+      const errorContainer = document.getElementById('errorContainer');
+      if (errorContainer) {
+        setTimeout(() => {
+          errorContainer.style.display = 'none';
+        }, 5000); 
+      }
+    }
   </script>
 
   <style>
@@ -101,6 +109,12 @@
       right: 10px;
       cursor: pointer;
       user-select: none;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
     }
   </style>
 </body>

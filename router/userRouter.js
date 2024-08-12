@@ -87,10 +87,4 @@ router.get('/download-invoice/:orderid', auth.isLogin, auth.userblocked, userpro
 router.post('/applyReferral', auth.isLogin, auth.userblocked, usercontroller.referal);
 router.delete('/remove-product',auth.isLogin,ordercontroller.deletesingleproduct)
 
-// router.get('*', (req, res) => {
-//     res.status(404).render('404');  
-// })
-// router.get('*',usercontroller.unknown)
-
-
 module.exports = router;

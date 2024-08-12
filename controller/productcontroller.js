@@ -12,6 +12,7 @@ const productpage  = async(req,res)=>{
         
     }
 }
+
  const addProduct = async (req, res) => {
         console.log('log is there');
         try {

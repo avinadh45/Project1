@@ -365,21 +365,16 @@ const productdet = async (req, res) => {
     try {
         const user = req.session.user;
         const productid = req.params.id;
-
-     
         const productdata = await product.findOne({ _id: productid }).populate('category') .populate('reviews.user', 'name');
-        const relatedProducts = await product.find({ category: productdata.category._id, _id: { $ne: productid } }).limit(4);
-          console.log(productdata.reviews,"this is the productdata");
-        
+        console.log(productdata.category, typeof productdata.category, "Category Data for the Product");
+        const relatedProducts = await product.find({ category: productdata.category._id,_id: { $ne: productid }}).limit(4);
+        console.log(relatedProducts,"related products is here");
         const cart = await Cart.findOne({ user_id: user });
         const cartCount = cart ? cart.items.length : 0;
         const wishlist = await Wish.findOne({ userId: user });
         const wishcount = wishlist ? wishlist.product.length : 0;
-
-        
         const categorydata = productdata.category ? productdata.category : {};
         const productURL = `http://localhost:${process.env.portnumber}/product-details/${productid}`
-        
         res.render('product-details', { products: productdata, category: categorydata, cartCount, wishcount,relatedProducts,productURL });
     } catch (error) {
         console.error(error.message);
@@ -734,15 +729,6 @@ const addProductReview = async (req, res) => {
     }
 };
 
-// const unknown = async (req,res)=>{
-//    try {
-//      res.render('404')
-//    } catch (error) {
-//     console.log(error);
-//    }
-// }
-
-
 module.exports = {
     loadregister,
     insertUser,
@@ -769,6 +755,5 @@ module.exports = {
     deletewishlist,
     referal,
     addProductReview,
-    // unknown
-    // updateprofile
+    
 };

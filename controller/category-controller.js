@@ -46,29 +46,31 @@ const getcategory = async(req,res)=>{
     res.status(500).json({ success: false, error: 'Server Error' });
   }
 } 
+
 const editcategory = async (req, res) => {
   try {
-      // const { id } = req.params;
-      // console.log(id)
-      const { category, description, id } = req.body;
-      console.log('catId',id);
-      const name = req.body.category
-      const existingCategory = await Category.findOne({id: {$ne:req.body.id},category:{$regex:new RegExp('^' + category + '$', 'i')}});
-      if(existingCategory){
-        return res.status(400).json({ success: false, error: 'Category already exists' });
-      }
-      const updatedCategory = await Category.findByIdAndUpdate(id, {$set: {category, description} }, { new: true });
+    const { category, description, id } = req.body;
 
-      if (!updatedCategory) {
-          return res.status(404).json({ success: false, error: 'Category not found' });
-      }
+    const trimmedCategory = category.trim();
 
-      res.status(200).json({ success: true, data: updatedCategory });
+    const existingCategory = await Category.findOne({ _id: { $ne: id },category: { $regex: new RegExp('^' + trimmedCategory + '$', 'i') } });
+
+    if (existingCategory) {
+      return res.status(400).json({ success: false, error: 'Category already exists' });
+    }
+    const updatedCategory = await Category.findByIdAndUpdate(id, { $set: { category: trimmedCategory, description } }, { new: true });
+
+    if (!updatedCategory) {
+      return res.status(404).json({ success: false, error: 'Category not found' });
+    }
+
+    res.status(200).json({ success: true, data: updatedCategory });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, error: 'Server Error' });
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Server Error' });
   }
-}
+};
+
 const deletecategory = async (req,res)=>{
   try {
     const categoryId = req.params.id;

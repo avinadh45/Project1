@@ -62,5 +62,5 @@ app.use((req, res, next) => {
       res.status(404).render('404');
   }
 });
-
+console.log("hi git");
 app.listen(process.env.portnumber, ()=>{console.log("server is running");})

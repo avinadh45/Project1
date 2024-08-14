@@ -425,7 +425,7 @@
             <!-- Start Mobile contact Info -->
             <div class="mobile-contact-info">
                 <div class="logo">
-                    <a href="homw"><img src="images/logo/logo_1.png" alt=""></a>
+                    <a href="home"><img src="images/logo/logo_1.png" alt=""></a>
                 </div>
 
                 <!-- <address class="address">
@@ -841,10 +841,10 @@
                         <div class="tab-pane" id="address">
                             <p>The following addresses will be used on the checkout page by default.</p>
                             <h5 class="billing-address">Billing address</h5>
-                            <% if (address && address.Address.length > 0) { %> <!-- Check if address data exists and is not empty -->
+                            <% if (address && address.Address.length > 0) { %> 
                                 <% address.Address.forEach(addr => { %> <!-- Loop through each address -->
                                     <a href="/updateAddress?id=<%= addr._id %>" class="view">Edit</a>
-                                    <a href="#" class="delete" data-id="<%= addr._id %>">Delete</a> <!-- Use data-id to store address ID -->
+                                    <a href="#" class="delete" data-id="<%= addr._id %>">Delete</a> 
                                     <p><strong><%= addr.name %></strong></p>
                                     <address>
                                         Address: <%= addr.address %><br>
@@ -852,7 +852,7 @@
                                         State: <%= addr.state %><br>
                                         Phone: <%= addr.phone %><br>
                                         Pincode: <%= addr.pincode %><br>
-                                        <!-- Add more address details here -->
+                                    
                                     </address>
                                 <% }); %>
                             <% } else { %>

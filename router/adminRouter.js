@@ -17,10 +17,7 @@ adminRoute.use(express.json());
 adminRoute.use(bodyparser.urlencoded({extended:true}))
 const multer = require("multer")
 const { error } = require('console')
-// const adminController = require('../controller/admincontroller')
-// adminRoute.set('view engine','ejs');
-// adminRoute.set('views','./views/admin')
-//  userRoute.use(express.static( 'public'))
+
  adminRoute.use(express.static('public'))
  
  const storage = multer.diskStorage({
@@ -97,11 +94,5 @@ adminRoute.get('/return-product',auth.isLogin,admincontroller.getCancelledOrders
 adminRoute.get('/accept-request',auth.isLogin,admincontroller.accept)
 adminRoute.post('/processing-return',auth.isLogin,admincontroller.acceptReturnRequest)
 adminRoute.get('/reject-order',auth.isLogin,admincontroller.reject)
-
-// adminRoute.get('*',auth.isLogin,admincontroller.admin404)
-// adminRoute.get('/combinedchart',auth.isLogin,admincontroller.combinedChart)
-// adminRoute.get('*',(req,res)=>{
-//    res.render('404admin')
-// })
 
  module.exports=adminRoute

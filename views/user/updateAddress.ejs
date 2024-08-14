@@ -364,52 +364,51 @@ button:hover {
         </div>
     </header>
     <div class="container">
-        <form id="EditAddress" method="post" action="/updateAddress?id=<%= addresstoedit.Address[0]._id %>" onsubmit="return validateForm()" novalidate>
-           <% console.log(addresstoedit.Address[0]._id ,"hello iid  "); %>
+        <form id="EditAddress" method="post" action="/updateAddress?id=<%= addresstoedit._id %>" onsubmit="return validateForm()" novalidate>
             <div class="Address">
                 <h3>Address Information</h3>
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="default-form-box">
                             <label for="name">Name <span>*</span></label>
-                            <input type="text" id="name" name="name" value="<%= addresstoedit.Address[0].name %>" required>
+                            <input type="text" id="name" name="name" value="<%= addresstoedit.name %>" required>
                             <span id="nameError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
                             <label for="pincode">Pincode</label>
-                            <input type="text" id="pincode" name="pincode" value="<%= addresstoedit.Address[0].pincode %>">
+                            <input type="text" id="pincode" name="pincode" value="<%= addresstoedit.pincode %>">
                             <span id="pincodeError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
                             <label for="phone">Phone <span>*</span></label>
-                            <input type="text" id="phone" name="phone" value="<%= addresstoedit.Address[0].phone %>" required>
+                            <input type="text" id="phone" name="phone" value="<%= addresstoedit.phone %>" required>
                             <span id="phoneError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
                             <label for="altphone">Alt Phone <span>*</span></label>
-                            <input type="tel" id="altphone" name="altphone"  value="<%= addresstoedit.Address[0].altphone %>">
+                            <input type="tel" id="altphone" name="altphone" value="<%= addresstoedit.altphone %>">
                             <span id="altphoneError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
                             <label for="addresstype">Address Type <span>*</span></label>
                             <select id="addresstype" name="addresstype" required>
-                                <option value="home">Home</option>
-                                <option value="work">Work</option>
+                                <option value="home" <%= addresstoedit.addresstype === 'home' ? 'selected' : '' %>>Home</option>
+                                <option value="work" <%= addresstoedit.addresstype === 'work' ? 'selected' : '' %>>Work</option>
                             </select>
                         </div> 
                         <div class="default-form-box">
                             <label for="address">Address <span>*</span></label>
-                            <input type="text" id="address" name="address" placeholder="" value="<%= addresstoedit.Address[0].address %>" required>
-                            <span id="addresseError" class="error-message"></span>
+                            <input type="text" id="address" name="address" value="<%= addresstoedit.address %>" required>
+                            <span id="addressError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
-                            <label for="city">Town / City <span>*</span></label>
-                            <input type="text" id="town" name="town" value="<%= addresstoedit.Address[0].town %>" required>
+                            <label for="town">Town / City <span>*</span></label>
+                            <input type="text" id="town" name="town" value="<%= addresstoedit.town %>" required>
                             <span id="townError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
                             <label for="state">State / County <span>*</span></label>
-                            <input type="text" id="state" name="state" value="<%= addresstoedit.Address[0].state %>">
+                            <input type="text" id="state" name="state" value="<%= addresstoedit.state %>">
                             <span id="stateError" class="error-message"></span>
                         </div>
                     </div>
@@ -417,6 +416,7 @@ button:hover {
                 <button type="submit">Update Address</button>
             </div>
         </form>
+        
     </div>
     
 

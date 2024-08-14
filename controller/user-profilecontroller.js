@@ -120,52 +120,67 @@ const addaddress = async (req, res) => {
     }
 };
 
-const editaddress = async(req,res)=>{
+const editaddress = async(req, res) => {
     try {
-        const addressId = req.query.id
-        console.log(addressId );
-        const userId = req.session.user
-        const addresstoedit = await Address.findOne({userId: userId, 'Address._id': addressId})
-        console.log(addresstoedit);
-        if(!addresstoedit){
-            return res.status(404).send("error no addressid")
-        }
-        console.log(addresstoedit,"beacues of error");
-        res.render('updateAddress',{ addresstoedit})
-    } catch (error) {
+        const addressId = req.query.id;
+        const userId = req.session.user;
         
+       
+        const user = await Address.findOne({ userId: userId, 'Address._id': addressId });
+        
+        if (!user) {
+            return res.status(404).send("Address not found");
+        }
+        
+        
+        const addressToEdit = user.Address.find(addr => addr._id.toString() === addressId);
+        
+        if (!addressToEdit) {
+            return res.status(404).send("Address not found");
+        }
+
+        res.render('updateAddress', { addresstoedit: addressToEdit });
+    } catch (error) {
+        console.error("Error fetching address:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+const updateAddress = async(req, res) => {
+    try {
+        const userId = req.session.user;
+        const addressId = req.query.id;
+        console.log(addressId,"this is the address");
+        
+
+        const userAddress = await Address.findOneAndUpdate(
+            { userId: userId, 'Address._id': addressId },
+            {
+                $set: {
+                    'Address.$.name': req.body.name,
+                    'Address.$.address': req.body.address,
+                    'Address.$.phone': req.body.phone,
+                    'Address.$.pincode': req.body.pincode,
+                    'Address.$.state': req.body.state,
+                    'Address.$.town': req.body.town,
+                    'Address.$.altphone': req.body.altphone,
+                    'Address.$.addresstype': req.body.addresstype
+                },
+            },
+            { new: true }
+        );
+
+        console.log(userAddress, "Updated address");
+
+       
+        res.redirect('/user-profile');
+    } catch (error) {
+        console.error("Error updating address:", error);
+        res.status(500).send("Internal Server Error");
     }
 }
 
-const updateAddress = async(req,res)=>{
-    try {
-        const userId = req.session.user
-        const addressId = req.query.id
-        console.log(addressId);
-        const userAddress = await Address.findOneAndUpdate(
-            
-         {userId:userId,'Address._id':addressId},
-         {   
-            $set:{
-                'Address.$.name':req.body.name,
-                'Address.$.address':req.body.address,
-                'Address.$.phone':req.body.phone,
-                'Address.$.pincode':req.body.pincode,
-                'Address.$.state':req.body.state,
-                'Address.$.town':req.body.town,
-                'Address.$.altphone':req.body.altphone,
-                'Address.$.addresstype':req.body.addresstype
-            },
-         },
-         {new:true}
-       
-        )
-        console.log(userAddress,"address marroyooo");
-        res.redirect('/user-profile')
-    } catch (error) {
-        console.error(error);
-    }
-}
+
 const deleteaddress = async(req,res)=>{
     try {
        const addressId =  req.query.id

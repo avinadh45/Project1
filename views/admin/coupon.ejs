@@ -290,87 +290,90 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
        function validateForm() {
-            const couponName = document.getElementById('couponName').value.trim();
-            const couponCode = document.getElementById('couponCode').value.trim();
-            const usagecount = document.getElementById('usagecount').value.trim();
-            const description = document.getElementById('Description').value.trim();
-            const expirationTime = document.getElementById('expirationTime').value.trim();
-            const offer = document.getElementById('offer').value.trim();
-            const minimumAmount = document.getElementById('MinimumAmount').value.trim();
+    const couponName = document.getElementById('couponName').value.trim();
+    const couponCode = document.getElementById('couponCode').value.trim();
+    const usagecount = document.getElementById('usagecount').value.trim();
+    const description = document.getElementById('Description').value.trim();
+    const expirationTime = document.getElementById('expirationTime').value.trim();
+    const offer = document.getElementById('offer').value.trim();
+    const minimumAmount = document.getElementById('MinimumAmount').value.trim();
 
-            const couponNameError = document.getElementById('couponNameError');
-            const couponCodeError = document.getElementById('couponCodeError');
-            const usagecountError = document.getElementById('usagecountError');
-            const descriptionError = document.getElementById('descriptionError');
-            const expirationTimeError = document.getElementById('expirationTimeError');
-            const offerError = document.getElementById('offerError');
-            const minimumAmountError = document.getElementById('minimumAmountError');
+    const couponNameError = document.getElementById('couponNameError');
+    const couponCodeError = document.getElementById('couponCodeError');
+    const usagecountError = document.getElementById('usagecountError');
+    const descriptionError = document.getElementById('descriptionError');
+    const expirationTimeError = document.getElementById('expirationTimeError');
+    const offerError = document.getElementById('offerError');
+    const minimumAmountError = document.getElementById('minimumAmountError');
 
-            couponNameError.textContent = '';
-            couponCodeError.textContent = '';
-            usagecountError.textContent = '';
-            descriptionError.textContent = '';
-            expirationTimeError.textContent = '';
-            offerError.textContent = '';
-            minimumAmountError.textContent = '';
+    couponNameError.textContent = '';
+    couponCodeError.textContent = '';
+    usagecountError.textContent = '';
+    descriptionError.textContent = '';
+    expirationTimeError.textContent = '';
+    offerError.textContent = '';
+    minimumAmountError.textContent = '';
 
-            let isValid = true;
+    let isValid = true;
 
-            if (couponName === '') {
-                couponNameError.textContent = 'Coupon name is required';
-                isValid = false;
-            }
+    if (couponName === '') {
+        couponNameError.textContent = 'Coupon name is required';
+        isValid = false;
+    }
 
-            if (couponCode === '') {
-                couponCodeError.textContent = 'Coupon code is required';
-                isValid = false;
-            }
+    if (couponCode === '') {
+        couponCodeError.textContent = 'Coupon code is required';
+        isValid = false;
+    }
 
-            if (usagecount === '') {
-                usagecountError.textContent = 'Usage count is required';
-                isValid = false;
-            } else if (isNaN(usagecount) || usagecount <= 0) {
-                usagecountError.textContent = 'Usage count must be a positive number';
-                isValid = false;
-            }
+    if (usagecount === '') {
+        usagecountError.textContent = 'Usage count is required';
+        isValid = false;
+    } else if (isNaN(usagecount) || usagecount <= 0) {
+        usagecountError.textContent = 'Usage count must be a positive number';
+        isValid = false;
+    }
 
-            if (description === '') {
-                descriptionError.textContent = 'Description is required';
-                isValid = false;
-            }
+    if (description === '') {
+        descriptionError.textContent = 'Description is required';
+        isValid = false;
+    }
 
-            if (expirationTime === '') {
-                expirationTimeError.textContent = 'Expiration time is required';
-                isValid = false;
-            } else if (new Date(expirationTime) < new Date()) {
-                expirationTimeError.textContent = 'Expiration time must be a future date';
-                isValid = false;
-            }
+    if (expirationTime === '') {
+        expirationTimeError.textContent = 'Expiration time is required';
+        isValid = false;
+    } else if (new Date(expirationTime) < new Date()) {
+        expirationTimeError.textContent = 'Expiration time must be a future date';
+        isValid = false;
+    }
 
-            if (offer === '') {
-                offerError.textContent = 'Offer is required';
-                isValid = false;
-            } else if (isNaN(offer) || offer <= 0) {
-                offerError.textContent = 'Offer must be a positive number';
-                isValid = false;
-            }
+    if (offer === '') {
+        offerError.textContent = 'Offer is required';
+        isValid = false;
+    } else if (isNaN(offer) || offer <= 0) {
+        offerError.textContent = 'Offer must be a positive number';
+        isValid = false;
+    } else if (offer > 90) {
+        offerError.textContent = 'Offer percentage cannot exceed 90%';
+        isValid = false;
+    }
 
-            if (minimumAmount === '') {
-                minimumAmountError.textContent = 'Minimum amount is required';
-                isValid = false;
-            } else if (isNaN(minimumAmount) || minimumAmount <= 0) {
-                minimumAmountError.textContent = 'Minimum amount must be a positive number';
-                isValid = false;
-            }
+    if (minimumAmount === '') {
+        minimumAmountError.textContent = 'Minimum amount is required';
+        isValid = false;
+    } else if (isNaN(minimumAmount) || minimumAmount <= 0) {
+        minimumAmountError.textContent = 'Minimum amount must be a positive number';
+        isValid = false;
+    }
 
-            return isValid;
-        }
+    return isValid;
+}
 
-        document.getElementById('couponForm').addEventListener('submit', function(event) {
-            if (!validateForm()) {
-                event.preventDefault(); 
-            }
-        });
+document.getElementById('couponForm').addEventListener('submit', function(event) {
+    if (!validateForm()) {
+        event.preventDefault(); 
+    }
+});
     </script>
     <script>
         function deleteCoupon(couponId) {

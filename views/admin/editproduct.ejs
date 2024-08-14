@@ -306,7 +306,7 @@
             </div>
             <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Function to validate form
+   
     function validate(event) {
         
         var productName = document.getElementById("name").value.trim();
@@ -319,29 +319,29 @@ document.addEventListener("DOMContentLoaded", function() {
 
         var errors = {};
 
-        // Validate Product Name
+   
         if (productName === "") {
             errors.productName = "Product name is required.";
         }
 
-        // Validate Brand
+       
         if (brand === "") {
             errors.brand = "Brand is required.";
         }
 
-        // Validate Description
+      
         if (description === "") {
             errors.description = "Description is required.";
         }
 
-        // Validate Count in Stock
+        
         if (countInstock === "") {
             errors.countInstock = "Count in stock is required.";
         } else if (isNaN(countInstock) || parseInt(countInstock) <= 0) {
             errors.countInstock = "Count in stock must be a non-negative number.";
         }
 
-        // Validate Price
+       
         if (price === "") {
             errors.price = "Price is required.";
         } else if (isNaN(price) || parseFloat(price) <= 0) {
@@ -427,14 +427,7 @@ console.log("deteting");
                  
                 }
             }
-    //         function validateFiles(files) {
-    // for (const file of files) {
-    //     if (!file.type.startsWith('image/')) {
-    //         return false; // At least one file is not an image
-    //     }
-    // }
-    // return true; // All files are valid images
-// }
+    //  
             
             function previewFiles() {
     const previewContainer = document.getElementById('imagePreviews');
@@ -447,8 +440,6 @@ console.log("deteting");
 
     for (const file of files) {
         const reader = new FileReader();
-
-     
 
       
         reader.onload = function(event) {

@@ -316,17 +316,22 @@ const addcoupon = async (req, res) => {
   }
 };
  
-const deletecoupon = async(req,res)=>{
+const deletecoupon = async(req, res) => {
   try {
-  
-    const couponid = req.query.id
-    console.log(couponid,"for the deleting");
-    const coupondelete = await Coupon.findOneAndDelete(couponid)
-    console.log(coupondelete,"this is deleted");
-    res.redirect('/admin/coupon');
+    const couponid = req.query.id;
+    console.log(couponid, "for the deleting");
+    const coupondelete = await Coupon.findOneAndDelete({ _id: couponid });
+
+    if (!coupondelete) {
+      console.log("Coupon not found");
+      return res.status(404).send("Coupon not found");
+    }
+
+    console.log(coupondelete, "this is deleted");
+    res.status(200).json({ message: 'Coupon deleted successfully' });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).send("error in the delete")
+    console.log("Error in deletion:", error.message);
+    res.status(500).send("Error in the delete");
   }
 }
 

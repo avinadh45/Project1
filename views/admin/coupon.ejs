@@ -388,7 +388,7 @@ document.getElementById('couponForm').addEventListener('submit', function(event)
             }).then((result) => {
                 if (result.isConfirmed) {
                     fetch(`/admin/deletecoupon?id=${couponId}`, {
-                        method: 'GET',
+                        method: 'delete',
                     })
                     .then(response => {
                         if (response.ok) {

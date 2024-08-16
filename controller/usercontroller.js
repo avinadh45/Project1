@@ -374,7 +374,7 @@ const productdet = async (req, res) => {
         const wishlist = await Wish.findOne({ userId: user });
         const wishcount = wishlist ? wishlist.product.length : 0;
         const categorydata = productdata.category ? productdata.category : {};
-        const productURL = `http://localhost:${process.env.portnumber}/product-details/${productid}`
+        const productURL = `https://tempusgems.online/product-details/${productid}`
         res.render('product-details', { products: productdata, category: categorydata, cartCount, wishcount,relatedProducts,productURL });
     } catch (error) {
         console.error(error.message);

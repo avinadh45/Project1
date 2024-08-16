@@ -12,7 +12,7 @@ const getcart = async (req, res) => {
   
     try {
         const userId = req.session.user;
-     
+     console.log("hi");
       
         const userCart = await cart.findOne({ user_id: userId }).populate('items.product_id');
        

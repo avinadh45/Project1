@@ -9,15 +9,15 @@ const mongoose=require('mongoose')
 
 
 const getcart = async (req, res) => {
-    // console.log(" Retrieving use cart...");
+  
     try {
         const userId = req.session.user;
      
-        // console.log(userId,"killer");
+      
         const userCart = await cart.findOne({ user_id: userId }).populate('items.product_id');
-        // console.log(userCart,"usercart  cart ");
+       
         if (userCart && userCart.items.length > 0) {
-            // console.log("Controller User cart found", userCart);
+       
             res.render('cart', { cart: userCart,discountedTotal: null });
         } else {
             console.log(" User's cart is empty or not found.");

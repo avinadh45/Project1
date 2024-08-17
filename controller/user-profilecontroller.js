@@ -181,32 +181,31 @@ const updateAddress = async(req, res) => {
 }
 
 
-const deleteaddress = async(req,res)=>{
+const deleteaddress = async (req, res) => {
     try {
-       const addressId =  req.query.id
-       console.log( addressId,"id for address");
-       const deltaddress = await Address.findOne({'Address._id' : addressId})
-        await Address.updateOne({'Address._id' : addressId},
+        const addressId = req.body.id; 
+        console.log(addressId, "id for address");
+        const deltaddress = await Address.findOne({'Address._id': addressId});
+        await Address.updateOne(
+            {'Address._id': addressId},
             {
-                $pull:{
-                    'Address':{
-                        _id:addressId
+                $pull: {
+                    'Address': {
+                        _id: addressId
                     }
                 }
             }
-        )
+        );
 
-       console.log(deltaddress);
-    //    if(!deltaddress){
-    //        return res.status(404).send("error")
-    //    }
-       res.redirect('/user-profile')
-    
+        console.log(deltaddress);
 
+        res.status(200).json({ message: 'Address deleted successfully' });
     } catch (error) {
         console.log(error.message);
+        res.status(500).json({ message: 'An error occurred' });
     }
-}
+};
+
 
 const orderhistory = async (req, res) => {
     try {

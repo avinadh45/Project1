@@ -12,8 +12,7 @@ const cartcontroller = require('../controller/cartcontroller');
 const ordercontroller = require('../controller/order-controller');
 const auth = require('../middleware/auth');
 
-// router.use(passport.initialize())
-// router.use(passport.session())
+
 
 router.use(session({
     secret: process.env.secret,
@@ -25,8 +24,7 @@ router.use(session({
 router.use(express.json());
 router.use(bodyparser.urlencoded({ extended: true }));
 
-// router.set('view engine', 'ejs');
-// router.set('views', './views/user');
+
 
 router.use(express.static('public'));
 router.use(express.static(path.join(__dirname, 'public/assets')));
@@ -55,7 +53,7 @@ router.put('/updateprofile', auth.isLogin, auth.userblocked, userprofilecontroll
 router.post('/user-address', auth.isLogin, auth.userblocked, userprofilecontroller.addaddress);
 router.get('/updateAddress', auth.isLogin, auth.userblocked, userprofilecontroller.editaddress);
 router.post('/updateAddress', auth.isLogin, auth.userblocked, userprofilecontroller.updateAddress);
-router.get('/deleteaddress', auth.isLogin, auth.userblocked, userprofilecontroller.deleteaddress);
+router.delete('/deleteaddress', auth.isLogin, auth.userblocked, userprofilecontroller.deleteaddress);
 router.post('/addtocart', auth.isLogin, auth.userblocked, cartcontroller.addtocart);
 router.get('/cart', auth.isLogin, auth.userblocked, cartcontroller.getcart);
 router.delete('/deletcart', auth.isLogin, auth.userblocked, cartcontroller.cartdelete);

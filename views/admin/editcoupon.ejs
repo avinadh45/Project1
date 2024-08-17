@@ -1,77 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Coupon</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
+    <head>
+        <meta charset="utf-8">
+        <title>Tempusgems</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta property="og:title" content="">
+        <meta property="og:type" content="">
+        <meta property="og:url" content="">
+        <meta property="og:image" content="">
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="admin-assets/imgs/theme/favicon.svg">
+        <!-- Template CSS -->
+        <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+
+        <style>
         .container {
-            max-width: 800px;
-            margin-top: 50px;
-        }
-        .btn-custom {
-            background-color: #088178;
-            color: white;
-        }
-      
-        .error {
-            color: red;
-            font-size: 0.875em;
-        }
-   
-    </style>
-</head>
+    margin-left: 260px; /* Increase this value to move the form further away from the sidebar */
+    padding-right: 15px; /* Optional: Adjust padding if needed */
+    padding-left: 15px;
+}
+
+.navbar-aside {
+    width: 240px; /* Width of your sidebar */
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin-left: 0; /* Remove margin for smaller screens */
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .navbar-aside {
+        display: none; /* Hide sidebar on smaller screens */
+    }
+}
+.btn-custom {
+    font-size: 14px; /* Font size */
+    padding: 8px 16px; /* Padding */
+    background-color: green; /* Background color */
+    border: none; /* Remove border */
+    color: white; /* Text color */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s ease; /* Smooth transition on hover */
+    display: inline-block; /* Ensure button does not stretch */
+    width: 100px; /* Auto width to fit content */
+    min-width: 80px; /* Set a minimum width if needed */
+}
+
+/* Change background color on hover */
+.btn-custom:hover {
+    background-color: darkgreen; /* Darker shade on hover */
+}
+        </style>
+    </head>
 <body>
+    <div class="screen-overlay"></div>
+      <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+           
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item active">
+                    <a class="menu-link" href="adminhome"> <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="admin-category"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Products</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="productlist">Product List</a>
+                       
+                       
+                        <a href="admin-category">Categories</a>
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="order"> <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="order">Order</a>
+                        
+                    </div>
+
+                    <li class="menu-item has-submenu">
+                        <a class="menu-link" href="/admin/return-product"> <i class="icon material-icons md-shopping_cart"></i>
+                            <span class="text">product return request</span>
+                        </a>
+                     <div class="submenu">
+                        <a href="/admin/return-product">Order return</a>
+                        
+                    </div>
+                </li> 
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="coupon"> <i class="icon material-icons md-store"></i>
+                        <span class="text">coupon</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="coupon">Add coupon</a>
+                       
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="products"> <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Add product</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="products">Add product 1</a>
+                       
+                    </div>
+                </li>
+                
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="user-details"> <i class="icon material-icons md-account_circle"></i>
+                        <span class="text">user</span>
+                    </a>
+                </li>
+                
+            <hr>
+            
+                </li>
+               
+            </ul>
+            <br>
+            <br>
+        </nav>
+    </aside>
     <div class="container">
         <h1>Edit Coupon</h1>
         <form id="updateCouponForm" action="/admin/updatecoupon?id=<%= coupon._id %>" method="POST" onsubmit="return validateForm()" novalidate>
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <label for="couponName" class="form-label">Coupon Name</label>
-                    <input type="text" name="couponName" placeholder="Type here" class="form-control" id="couponName" value="<%= coupon.couponName %>" required />
-                    <div id="couponNameError" class="error"></div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <label for="couponCode" class="form-label">Coupon Code</label>
-                    <input type="text" name="couponCode" placeholder="Type here" class="form-control" id="couponCode" value="<%= coupon.couponCode %>" required />
-                    <div id="couponCodeError" class="error"></div>
-                </div>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <label for="couponName" class="form-label">Coupon Name</label>
+                <input type="text" name="couponName" placeholder="Type here" class="form-control" id="couponName" value="<%= coupon.couponName %>" required />
+                <div id="couponNameError" class="error"></div>
             </div>
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <label for="usagecount" class="form-label">Usage Count</label>
-                    <input type="number" name="usagecount" placeholder="Type here" class="form-control" id="usagecount" value="<%= coupon.usagecount %>" required />
-                    <div id="usagecountError" class="error"></div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <label for="offer" class="form-label">Offer</label>
-                    <input type="number" name="offer" placeholder="Type here" class="form-control" id="offer" value="<%= coupon.offer %>" required />
-                    <div id="offerError" class="error"></div>
-                </div>
+            <div class="col-md-6 mb-4">
+                <label for="couponCode" class="form-label">Coupon Code</label>
+                <input type="text" name="couponCode" placeholder="Type here" class="form-control" id="couponCode" value="<%= coupon.couponCode %>" required />
+                <div id="couponCodeError" class="error"></div>
             </div>
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <label for="MinimumAmount" class="form-label">Minimum Amount</label>
-                    <input type="number" name="MinimumAmount" placeholder="Type here" class="form-control" id="MinimumAmount" value="<%= coupon.MinimumAmount %>" required />
-                    <div id="MinimumAmountError" class="error"></div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <label for="expirationTime" class="form-label">Expiration Time</label>
-                    <input type="date" name="expirationTime" placeholder="Type here" class="form-control" id="expirationTime" value="<%= new Date(coupon.expirationTime).toISOString().split('T')[0] %>" required />
-                    <div id="expirationTimeError" class="error"></div>
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <label for="usagecount" class="form-label">Usage Count</label>
+                <input type="number" name="usagecount" placeholder="Type here" class="form-control" id="usagecount" value="<%= coupon.usagecount %>" required />
+                <div id="usagecountError" class="error"></div>
             </div>
-            <div class="mb-4">
-                <label for="Description" class="form-label">Description</label>
-                <textarea name="Description" placeholder="Type here" class="form-control" id="Description" required><%= coupon.Description %></textarea>
-                <div id="DescriptionError" class="error"></div>
+            <div class="col-md-6 mb-4">
+                <label for="offer" class="form-label">Offer</label>
+                <input type="number" name="offer" placeholder="Type here" class="form-control" id="offer" value="<%= coupon.offer %>" required />
+                <div id="offerError" class="error"></div>
             </div>
-            <div class="d-grid gap-2">
-                <button class="btn btn-custom" type="submit">Update Coupon</button>
-                <a href="/admin/coupon" class="btn btn-secondary">Go Back</a>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <label for="MinimumAmount" class="form-label">Minimum Amount</label>
+                <input type="number" name="MinimumAmount" placeholder="Type here" class="form-control" id="MinimumAmount" value="<%= coupon.MinimumAmount %>" required />
+                <div id="MinimumAmountError" class="error"></div>
             </div>
-        </form>
+            <div class="col-md-6 mb-4">
+                <label for="expirationTime" class="form-label">Expiration Time</label>
+                <input type="date" name="expirationTime" placeholder="Type here" class="form-control" id="expirationTime" value="<%= new Date(coupon.expirationTime).toISOString().split('T')[0] %>" required />
+                <div id="expirationTimeError" class="error"></div>
+            </div>
+        </div>
+        <div class="mb-4">
+            <label for="Description" class="form-label">Description</label>
+            <textarea name="Description" placeholder="Type here" class="form-control" id="Description" required><%= coupon.Description %></textarea>
+            <div id="DescriptionError" class="error"></div>
+        </div>
+        <div class="d-grid gap-2">
+            <button class="btn btn-custom" type="submit">Update Coupon</button>
+            <!-- <a href="/admin/coupon" class="btn btn-secondary">Go Back</a> -->
+        </div>
+    </form>
     </div>
     <script>
        function validateForm() {

@@ -1359,30 +1359,49 @@ async function verifyPayment(paymentData, amount) {
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const deleteLinks = document.querySelectorAll('.delete');
-    
-        deleteLinks.forEach(link => {
-            link.addEventListener('click', function(event) {
-                event.preventDefault(); // Prevent default link behavior
-    
-                const addressId = this.getAttribute('data-id');
-    
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = `/deleteaddress?id=${addressId}`;
-                    }
-                });
+    const deleteLinks = document.querySelectorAll('.delete');
+
+    deleteLinks.forEach(link => {
+        link.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
+
+            const addressId = this.getAttribute('data-id');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                   
+                    fetch(`/deleteaddress`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id: addressId })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = '/user-profile'; 
+                        } else {
+                            Swal.fire('Error', 'There was an error deleting the address', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire('Error', 'There was an error deleting the address', 'error');
+                    });
+                }
             });
         });
-       });
+    });
+});
+
     </script>
    <script>
     function saveUserName() {
@@ -1401,15 +1420,15 @@ async function verifyPayment(paymentData, amount) {
             if (data.success) {
                 Toastify({
                     text: "Name updated successfully!",
-                    duration: 3000, // Duration in milliseconds
-                    gravity: "top", // Position of the toast notification
-                    position: "center", // Left, right, or center
-                    backgroundColor: "#4caf50", // Background color
-                    stopOnFocus: true // Stop when focused
+                    duration: 3000, 
+                    gravity: "top",
+                    position: "center", 
+                    backgroundColor: "#4caf50",
+                    stopOnFocus: true 
                 }).showToast();
                 setTimeout(() => {
-                    window.location.reload(); // Reload the page
-                }, 3000); // Wait for the toast notification to disappear before reloading
+                    window.location.reload(); 
+                }, 3000); 
             } else {
                 Toastify({
                     text: data.message || "Failed to update name!",

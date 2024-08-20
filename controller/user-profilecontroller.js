@@ -55,7 +55,7 @@ const getprofile = async(req,res)=>{
             wallet = { balance: 0, history: [] }; 
         }
 
-        //    console.log(wallet,"wallet for the ejs");
+       
 
         const cartCount = cart ? cart.items.length : 0;
     

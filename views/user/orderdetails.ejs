@@ -8,10 +8,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>watch.com</title>
+    <title>Tempusgems</title>
 
     <!-- ::::::::::::::Favicon icon::::::::::::::-->
-    <link rel="shortcut icon" href="images/favicon.ico" type="image/png">
+    <!-- <link rel="shortcut icon" href="images/favicon.ico" type="image/png"> -->
 
     <!-- ::::::::::::::All CSS Files here :::::::::::::: -->
     <!-- Vendor CSS -->
@@ -59,23 +59,22 @@
                                 <nav>
                                     <ul>
                                         <li class="has-dropdown">
-                                            <a class="active main-menu-link" href="/home">Home <i
-                                                    class="fa fa-angle-down"></i></a>
+                                            <a class="active main-menu-link" href="/home">Home</a>
                                             <!-- Sub Menu -->
                                           
                                         </li>
                                         <li class="has-dropdown has-megaitem">
-                                            <a href="/shop">Shop <i
-                                                    class="fa fa-angle-down"></i></a>
-                                            <!-- Mega Menu -->
+                                            <a href="/shop">Shop 
+                                                   </a>
+                                          
                                             
                                         </li> 
                                         <li>
-                                             <a href="about-us.html">About Us</a>
+                                             <a href="user-profile">Profile</a>
                                         </li>
-                                        <li>
+                                        <!-- <li>
                                             <a href="contact-us.html">Contact Us</a>
-                                        </li>
+                                        </li> -->
                                     </ul>
                                 </nav>
                             </div>
@@ -299,7 +298,7 @@
             <p><strong>Total:</strong> ₹<span id="total"><%= order.totalprice.toFixed(2) %></span></p>
         
             <div class="order-actions">
-                <% if (order.paymentstatus === 'Pending') { %>
+                <% if (order.payment !== 'COD' && order.paymentstatus === 'Pending') { %>
                     <button id="payNowBtn" class="btn btn-pay-now" data-order-id="<%= order._id %>" data-address-id="<%= address.Address[0]._id %>" data-total-price="<%= order.totalprice %>">
                         Pay Now
                     </button>
@@ -325,6 +324,7 @@
                     <p><strong>Status:</strong> This order has been cancelled.</p>
                 <% } %>
             </div>    
+              
         </div>
         
     </div>

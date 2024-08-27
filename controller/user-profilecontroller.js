@@ -485,7 +485,6 @@ const verifyPaymentAndAddToWallet = async (req, res) => {
         res.status(500).send("server error");
     }
 };
-
 const invoicedownload = async (req, res) => {
     try {
         const orderid = req.params.orderid;
@@ -503,12 +502,12 @@ const invoicedownload = async (req, res) => {
 
         for (let i = 0; i < order.product.length; i++) {
             const p = order.product[i];
-            const productDetails = await product.findById(p.product); // Fetch the product details
-            if (!productDetails) continue; // Skip if no product found
+            const productDetails = await product.findById(p.product);
+            if (!productDetails) continue;
 
-            const originalPrice = productDetails.price || 0;
-            const discountAmount = originalPrice * (productDetails.offer / 100 || 0);
-            const discountedPrice = originalPrice - discountAmount;
+            const originalPrice = productDetails.orginalprice || productDetails.price || 0;
+            const offerDiscount = originalPrice * (productDetails.offer / 100 || 0);
+            const discountedPrice = originalPrice - offerDiscount;
             const couponDiscount = order.coupon ? (discountedPrice * (order.coupon.offer / 100 || 0)) : 0;
             const finalPrice = discountedPrice - couponDiscount;
             const totalPrice = finalPrice * p.quantity;
@@ -516,13 +515,15 @@ const invoicedownload = async (req, res) => {
             products.push({
                 quantity: p.quantity,
                 description: productDetails.name,
-                price: originalPrice.toFixed(2),
-                discount: (discountAmount + couponDiscount).toFixed(2),
+                originalPrice: originalPrice.toFixed(2),
+                price: finalPrice.toFixed(2),
+                offerDiscount: offerDiscount.toFixed(2),
+                couponDiscount: couponDiscount.toFixed(2),
                 totalPrice: totalPrice.toFixed(2)
             });
 
             totalAmount += totalPrice;
-            totalDiscount += discountAmount + couponDiscount;
+            totalDiscount += offerDiscount + couponDiscount;
         }
         console.log(products, "this is the products");
 
@@ -552,8 +553,10 @@ const invoicedownload = async (req, res) => {
             products: products.map(p => ({
                 quantity: p.quantity,
                 description: p.description,
-                price: p.price,
-                discount: p.discount,
+                originalPrice: p.originalPrice,  
+                price: p.price,  
+                offerDiscount: p.offerDiscount,  
+                couponDiscount: p.couponDiscount,  
                 total: p.totalPrice
             })),
             bottomNotice: "Kindly pay your invoice",
@@ -561,7 +564,7 @@ const invoicedownload = async (req, res) => {
                 currency: "INR"
             },
             totals: {
-                totalPrice: order.totalprice.toFixed(2),
+                totalPrice: totalAmount.toFixed(2),
                 totalDiscount: totalDiscount.toFixed(2)
             },
             discounts: order.coupon ? [{

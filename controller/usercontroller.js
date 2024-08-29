@@ -63,7 +63,7 @@ const resendpassword = async (name, email, token) => {
         subject: "Reset your password",
         html: `<p>Hi ${name},</p>
                <p>Please click on the following link to reset your password:</p>
-               <a href=http://localhost:${process.env.portnumber}/resetpassword?token=${token}">Reset Password</a>`
+               <a href=https://tempusgems.online/resetpassword?token=${token}">Reset Password</a>`
       };
   
       transporter.sendMail(mailOptions, function (error, info) {

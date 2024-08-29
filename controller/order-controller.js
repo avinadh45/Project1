@@ -291,7 +291,7 @@ const applycoupon = async (req, res) => {
 
         const parsedTotalSubtotal = parseFloat(totalsubtotal);
         if (isNaN(parsedTotalSubtotal)) {
-            console.log("Invalid total subtotal");
+          ;
             req.session.coupon = null;
             req.session.discountTotal = null;
             return res.status(400).json({ success: false, message: "Invalid total subtotal" });
@@ -299,14 +299,14 @@ const applycoupon = async (req, res) => {
 
         const couponData = await Coupon.findOne({ couponCode: new RegExp(`^${coupon}$`, 'i') });
         if (!couponData) {
-            console.log("Coupon code not found");
+           
             req.session.coupon = null;
             req.session.discountTotal = null;
             return res.status(409).json({ success: false, message: 'Coupon code not found' });
         }
 
         if (parsedTotalSubtotal < couponData.MinimumAmount) {
-            console.log("Total subtotal is below the minimum amount required for this coupon");
+           
             req.session.coupon = null;
             req.session.discountTotal = null;
             return res.status(400).json({ success: false, message: 'Total subtotal is below the minimum amount required for this coupon' });
@@ -315,7 +315,7 @@ const applycoupon = async (req, res) => {
         const userData = await user.findOne({ _id: userId });
         const couponUsage = userData.Coupon.find(a => a.couponCode === couponData.couponCode);
         if (couponUsage) {
-            console.log("You have already used this coupon.");
+       
             req.session.coupon = null;
             req.session.discountTotal = null;
             return res.status(404).json({ success: false, message: 'You have already used this coupon.' });

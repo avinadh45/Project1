@@ -191,23 +191,21 @@ const orderdetails = async(req,res)=>{
   try {
     {
       const orderid=req.query.id
-      console.log("order id is here" ,orderid);
+     
      
       const orderData=await Order.findById(orderid)
-      console.log(orderData,"order data");
+      
       const userdata=await user.findById(orderData.userId)
-      console.log(userdata,"user data for order");
+     
       const address = await Address.find({userId:orderData.userId})
  
       const productIds = orderData.product.map(product => product.product);
 
-      console.log(productIds,"for checking");
+      
       const productdata = await product.find({ _id: { $in: productIds } });
-      console.log(productdata,"product daatttta");
+  
       res.render('order-details',{user:userdata,orders:orderData,product:productdata,address})
     
-      console.log("productdata",productdata);
-      //  res.render('order-details')
     }
     
   } catch (error) {

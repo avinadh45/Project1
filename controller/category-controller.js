@@ -162,7 +162,6 @@ const categoryoffer = async(req,res)=>{
       
     }
 
-
     res.json({ status: true });
   } catch (error) {
     console.log(error.message);
@@ -172,7 +171,9 @@ const categoryoffer = async(req,res)=>{
   const removeoffer = async(req,res)=>{
     try {
       const categoryId = req.body.categoryId;
+
         const category = await Category.findOne({ _id: categoryId });
+
         const percentage = category.offer;
 
         const productData = await Product.find({ category: categoryId});

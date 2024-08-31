@@ -29,51 +29,53 @@ const getcart = async (req, res) => {
     }
 }
 
-
 const addtocart = async (req, res) => {
-    // console.log("Controller is here in the add to cart");
     try {
         const { product_id, quantity } = req.body;
         const user = req.session.user;
 
         let Cart = await cart.findOne({ user_id: user });
-
         const Product = await product.findOne({ _id: product_id });
-        if(!Product || Product.countInstock === 0){
-            return res.status(404).json({ success: false, error: 'Product is out of stock' });
-        }
-        // console.log(Cart, "Cart is here");
-        // console.log(Product, "Product is here");
 
-        if (!Product) {
-            return res.status(404).send({ message: "Product not found" });
+        if (!Product || Product.countInstock === 0) {
+            return res.status(404).json({ success: false, error: 'Product is out of stock' });
         }
 
         const { name, price } = Product;
+        const requestedQuantity = parseInt(quantity);
 
         if (Cart) {
             const productIndex = Cart.items.findIndex(item => item.product_id.toString() === product_id);
             if (productIndex > -1) {
-              
-                Cart.items[productIndex].quantity += parseInt(quantity);
+                const currentQuantityInCart = Cart.items[productIndex].quantity;
+                const newQuantity = currentQuantityInCart + requestedQuantity;
+
+                if (newQuantity > Product.countInstock) {
+                    return res.status(400).json({ success: false, error: 'Requested quantity exceeds available stock' });
+                }
+
+                Cart.items[productIndex].quantity = newQuantity;
             } else {
-              
-                Cart.items.push({ product_id, name, price, quantity });
+                if (requestedQuantity > Product.countInstock) {
+                    return res.status(400).json({ success: false, error: 'Requested quantity exceeds available stock' });
+                }
+
+                Cart.items.push({ product_id, name, price, quantity: requestedQuantity });
             }
         } else {
-        
+            if (requestedQuantity > Product.countInstock) {
+                return res.status(400).json({ success: false, error: 'Requested quantity exceeds available stock' });
+            }
+
             Cart = await cart.create({
                 user_id: user,
-                items: [{ product_id, name, price, quantity }],
+                items: [{ product_id, name, price, quantity: requestedQuantity }],
                 billing: 0 
             });
         }
+
         Cart.billing = Cart.items.reduce((acc, cur) => acc + (cur.quantity * cur.price), 0); 
-
         await Cart.save();
-            
-
-              console.log("cart to remove ",req.session.user.cart);
 
         return res.status(200).send({ message: "Product added successfully" });
     } catch (error) {
@@ -81,22 +83,16 @@ const addtocart = async (req, res) => {
         return res.status(500).send({ message: "Internal Server Error" });
     }
 };
-
 const updatecart = async (req, res) => {
-    console.log("Hello from the updatecart");
-
     try {
         const { productId, quantity } = req.body;
-        console.log(quantity);
-        console.log(productId, "product id is here");
-
         const user = req.session.user;
+
         let Cart = await cart.findOne({ user_id: user });
 
         if (!Cart) {
-            Cart = new cart({ user_id: user, items: [] });
+            return res.status(404).json({ error: 'Cart not found' });
         }
-
 
         const Product = await product.findById(productId);
         if (!Product) {
@@ -110,19 +106,21 @@ const updatecart = async (req, res) => {
             currentQuantityInCart = Cart.items[productIndex].quantity;
         }
 
-        const newQuantity = currentQuantityInCart + quantity;
+        const requestedQuantity = parseInt(quantity);
+        const newQuantity = currentQuantityInCart + requestedQuantity;
+
         if (newQuantity > Product.countInstock) {
             return res.status(400).json({ error: 'Requested quantity exceeds available stock' });
         }
 
         if (productIndex !== -1) {
-            if (newQuantity > 0) {
+            if (requestedQuantity > 0) {
                 Cart.items[productIndex].quantity = newQuantity;
             } else {
                 Cart.items.splice(productIndex, 1);
             }
-        } else if (newQuantity > 0) {
-            Cart.items.push({ quantity: newQuantity, product_id: productId });
+        } else if (requestedQuantity > 0) {
+            Cart.items.push({ product_id: productId, quantity: requestedQuantity });
         }
 
         await Cart.save();

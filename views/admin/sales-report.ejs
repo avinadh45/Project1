@@ -14,52 +14,54 @@
 
    
     <style>
-        .table {
-    width: 100%;
-    margin-bottom: 1rem;
-    color: #212529;
-}
+    .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+        }
 
-.table th,
-.table td {
-    vertical-align: middle;
-    text-align: center; /* This ensures that text is centered within the table cells */
-}
+        .table th,
+        .table td {
+            vertical-align: middle;
+            text-align: center; /* Center text within table cells */
+        }
 
-.table .form-check {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.table .btn-xs {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    border-radius: 0.2rem;
-}
-
-.table-light {
-    background-color: #f8f9fa;
-}
-
-.text-center {
-    text-align: center;
-}
-#customDateRange {
+        .table .form-check {
             display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .table .btn-xs {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            border-radius: 0.2rem;
+        }
+
+        .table-light {
+            background-color: #f8f9fa;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        #customDateRange {
+            display: flex; /* Flex container */
             justify-content: space-between;
             align-items: center;
             gap: 10px;
+            margin-top: 10px; /* Add margin to push it down */
         }
 
         #customDateRange .col-auto {
             flex: 1;
         }
-        .custom-date-form .col-auto {
-            margin-bottom: 15px; /* Increase the margin between elements */
-        }
 
+        .custom-date-form .col-auto {
+            margin-bottom: 15px; /* Margin between elements */
+        }
     </style>
       <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
@@ -101,8 +103,7 @@
                     </a>
                     <div class="submenu">
                         <a href="order">Order</a>
-                        <!-- <a href="page-orders-2.html">Order list 2</a>
-                        <a href="page-orders-detail.html">Order detail</a> -->
+                        
                     </div>
 
                     <li class="menu-item has-submenu">
@@ -120,8 +121,7 @@
                     </a>
                     <div class="submenu">
                         <a href="coupon">Add coupon</a>
-                        <!-- <a href="page-sellers-list.html">Sellers list</a>
-                        <a href="page-seller-detail.html">Seller profile</a> -->
+                       
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
@@ -130,29 +130,10 @@
                     </a>
                     <div class="submenu">
                         <a href="products">Add product 1</a>
-                        <!-- <a href="page-form-product-2.html">Add product 2</a>
-                        <a href="page-form-product-3.html">Add product 3</a>
-                        <a href="page-form-product-4.html">Add product 4</a> -->
+                        
                     </div>
                 </li>
-                <!-- <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-transactions-1.html"> <i class="icon material-icons md-monetization_on"></i>
-                        <span class="text">Transactions</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-transactions-1.html">Transaction 1</a>
-                        <a href="page-transactions-2.html">Transaction 2</a>
-                    </div>
-                </li>
-                <li class="menu-item has-submenu"> -->
-                    <!-- <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
-                        <span class="text">Account</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-account-login.html">User login</a>
-                        <a href="page-account-register.html">User registration</a>
-                        <a href="page-error-404.html">Error 404</a>
-                    </div> -->
+                
                 </li>
                 <li class="menu-item">
                     <a class="menu-link" href="user-details"> <i class="icon material-icons md-account_circle"></i>
@@ -169,25 +150,7 @@
     </aside>
     <main class="main-wrap">
         <header class="main-header navbar">
-            <div class="col-search">
-                <!-- <form class="searchform">
-                    <div class="input-group">
-                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
-                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
-                    </div>
-                </form> -->
-            </div>
-            <!-- <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link btn-icon" href="#">
-                            <i class="material-icons md-notifications animation-shake"></i>
-                            <span class="badge rounded-pill">3</span>
-                        </a>
-                    </li>
-                </ul>
-            </div> -->
+           
         </header>
         <div class="container">
             <div class="row align-items-center mb-4">
@@ -223,14 +186,12 @@
                     </form>
                 </div>
                 
-                
                 <div class="col-md-2 col-6">
                     <button id="fetchDataButton" class="btn btn-primary">Fetch Data</button>
                 </div>
                 <div class="col-md-2 col-6">
                     <button class="btn btn-success" onclick="downloadPDF()">Download PDF</button>
-                    <br>
-                    <br>
+                    <br><br>
                     <button class="btn btn-info" onclick="downloadExcel()">Download Excel</button>
                 </div>
             <div class="card-body">
@@ -294,6 +255,40 @@
     
         <!-- Include Flatpickr -->
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script>
+           document.addEventListener('DOMContentLoaded', function() {
+    const timeRangeFilter = document.getElementById('timeRangeFilter');
+    const customDateRange = document.getElementById('customDateRange');
+
+    // Test if the customDateRange element is found and manipulated
+    console.log('Custom Date Range Element:', customDateRange);
+
+    timeRangeFilter.addEventListener('change', function() {
+        console.log('Dropdown value changed:', this.value);
+        if (this.value === 'custom') {
+            customDateRange.style.display = 'flex';
+            console.log('Custom date range shown');
+        } else {
+            customDateRange.style.display = 'none';
+            console.log('Custom date range hidden');
+        }
+    });
+
+   
+    customDateRange.style.display = 'flex';
+
+   
+    console.log('Initial time range value:', timeRangeFilter.value);
+
+    if (timeRangeFilter.value === 'custom') {
+        customDateRange.style.display = 'flex';
+        console.log('Initial state: Custom date range shown');
+    } else {
+        customDateRange.style.display = 'none';
+        console.log('Initial state: Custom date range hidden');
+    }
+});
+            </script>
 
         <script>
            function downloadPDF() {
@@ -438,6 +433,8 @@ function downloadExcel() {
             console.error('Error fetching orders:', error);
         }
     }
+
+    
             document.getElementById('fetchDataButton').addEventListener('click', () => {
                 const timeRange = document.getElementById('timeRangeFilter').value;
                 let url;
@@ -454,6 +451,15 @@ function downloadExcel() {
                     case 'yearly':
                         url = '/admin/sales-yearly';
                         break;
+                        case 'custom':
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                if (!startDate || !endDate) {
+                    alert('Please select both start and end dates.');
+                    return;
+                }
+                url = `/admin/salesreportsearch?start=${startDate}&end=${endDate}`;
+                break;
                     default:
                         url = '/admin/sales-all';
                         break;
@@ -466,14 +472,9 @@ function downloadExcel() {
                 fetchOrders('/admin/sales-all');
             };
     
-        //     document.querySelectorAll('.pagination .page-link').forEach(link => {
-        //     link.addEventListener('click', (e) => {
-        //         e.preventDefault();
-        //         const pageUrl = e.target.getAttribute('href');
-        //         fetchOrders(pageUrl);
-        //     });
-        // });
+        
         </script>
+      
 
     </main>
     <script src="/admin-assets/js/vendors/jquery-3.6.0.min.js"></script>

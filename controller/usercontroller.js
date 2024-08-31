@@ -74,7 +74,7 @@ const resendpassword = async (name, email, token) => {
         }
       });
     } catch (error) {
-      console.error("Error in sending email:", error);
+      console.error("Error in sending email:", error);jwt
     }
   };
   
@@ -117,7 +117,7 @@ req.session.email=email
        console.log(email);
                const otp = await OTP.generateAndSaveOTP(email);
        console.log("hlo it is otp page here");
-               // Send OTP to user's email
+         
                const mailOptions = {
                    from: process.env.email,
                    to: email,
@@ -381,7 +381,6 @@ const productdet = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
-
 const displayAllProducts = async (req, res) => {
     try {
         const loggedin = req.session.user;
@@ -440,6 +439,7 @@ const displayAllProducts = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
 
 const forgotpassword = async (req, res) => {
     console.log("hi from forgetpassword");

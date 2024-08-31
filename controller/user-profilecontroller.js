@@ -221,31 +221,44 @@ const orderhistory = async (req, res) => {
 
 const loadchangepassword = async(req,res)=>{
     try {
-        res.render('changepassword')
+        res.render('changepassword',)
     } catch (error) {
         console.log(error.message);
     }
 }
-
 const changePassword = async (req, res) => {
+    console.log("is it here");
     try {
         const userId = req.session.user._id;
-        const { 'new-password': newPassword, 'confirm-password': confirmPassword } = req.body;
+        console.log(req.body, "t");
+        const { 'Current-password': currentPassword, 'new-password': newPassword, 'confirm-password': confirmPassword } = req.body;
+        console.log(currentPassword, "this is current");
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const match = await bcrypt.compare(currentPassword, user.password);
+        if (!match) {
+            console.log("Error: Current password is incorrect");
+            return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+        }
 
         if (newPassword !== confirmPassword) {
-            return res.status(400).send({ success: false, message: 'Passwords do not match' });
+            return res.status(400).json({ success: false, message: 'Passwords do not match' });
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-
         await User.updateOne({ _id: userId }, { $set: { password: hashedPassword } });
 
-        res.redirect('/home'); 
+        res.json({ success: true, message: 'Password updated successfully' });
     } catch (error) {
         console.error(error);
-        res.status(500).send({ success: false, message: 'Internal Server Error' });
+        // res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 };
+
 
 const orderdetails = async (req, res) => {
     try {

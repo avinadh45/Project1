@@ -165,6 +165,7 @@ const order = async (req, res) => {
       const totalPages = Math.ceil(orderCount / limit);
 
       const orderData = await Order.find({ Order_verified: true })
+          .sort({placed:-1})
           .limit(limit)
           .skip((page - 1) * limit)
           .exec();
@@ -423,6 +424,7 @@ const salesreport = async (req, res) => {
 
 
 const weeklysales = async (req, res) => {
+  console.log("this is weekly");
   try {
       const startOfWeek = moment().startOf('week').toDate();
       const endOfWeek = moment().endOf('week').toDate();
@@ -435,7 +437,7 @@ const weeklysales = async (req, res) => {
           status: "Delivered"
       }).sort({ placed: -1 });
 
-      // console.log("From the backend - Weekly Orders:", weeklyOrders);
+   
 
       res.json(weeklyOrders);
   } catch (error) {
@@ -536,7 +538,7 @@ const customsales = async (req, res) => {
           status: "Delivered"
       }).sort({ placed: -1 });
 
-      // console.log("From the backend - Custom Orders:", customOrders);
+     
 
       res.json(customOrders);
   } catch (error) {
@@ -546,6 +548,7 @@ const customsales = async (req, res) => {
 };
 
 const getCustomSales = async (req, res) => {
+  console.log("hi from the sales");
   try {
     console.log("this is from the custom");
     const { start, end } = req.body;
@@ -885,51 +888,33 @@ const saleschart = async (req, res) => {
   try {
     const timeRange = req.query.timeRange || 'monthly';
 
-    // console.log(timeRange, "hi from the timerange");
-
-    let startDate;
+       console.log(timeRange,"this is from the saleschart");
+    let dateFormat;
     if (timeRange === 'weekly') {
-      startDate = moment().subtract(3, 'months').startOf('week').toDate();
+      dateFormat = { $dateToString: { format: "%Y-%U", date: "$placed" } };
     } else if (timeRange === 'yearly') {
-      startDate = moment().subtract(3, 'years').startOf('year').toDate();
+      dateFormat = { $dateToString: { format: "%Y", date: "$placed" } };
     } else {
-      startDate = moment().subtract(3, 'months').startOf('month').toDate();
+      dateFormat = { $dateToString: { format: "%Y-%m", date: "$placed" } };
     }
 
     const saleDate = await Order.aggregate([
       {
         $match: {
           Order_verified: true,
-          $or: [{ status: 'Delivered' }],
-          placed: { $gte: startDate }
+          status: 'Delivered'
         }
       },
       {
         $group: {
-          _id: {
-            $cond: [
-              { $eq: [timeRange, 'weekly'] },
-              { $isoWeek: "$placed" },
-              { $cond: [{ $eq: [timeRange, 'yearly'] }, { $year: "$placed" }, { $month: "$placed" }] }
-            ]
-          },
+          _id: dateFormat, // Group by the formatted date
           totalSales: { $sum: 1 }
         }
       },
-      { $sort: { "_id": 1 } }
+      { $sort: { "_id": 1 } } // Sort by date
     ]);
 
-    const labels = saleDate.map(item => {
-      if (timeRange === 'weekly') {
-        const startOfWeek = moment().week(item._id).startOf('isoWeek');
-        const endOfWeek = moment().week(item._id).endOf('isoWeek');
-        return `${startOfWeek.format('MMM D')} - ${endOfWeek.format('MMM D')}`;
-      } else if (timeRange === 'yearly') {
-        return item._id;
-      } else {
-        return moment().month(item._id - 1).format('MMMM');
-      }
-    });
+    const labels = saleDate.map(item => item._id);
 
     const datasets = [{
       label: 'Sales',
@@ -946,42 +931,28 @@ const saleschart = async (req, res) => {
 const revenueChart = async (req, res) => {
   try {
     const timeRange = req.query.timeRange || 'monthly';
-
-    // console.log("this is from the revenue");
-
-    let startDate;
+    console.log(timeRange,"this is from the saleschart");
+    
+    let dateFormat;
     if (timeRange === 'weekly') {
-      startDate = moment().subtract(3, 'months').startOf('week').toDate();
+      dateFormat = { $dateToString: { format: "%Y-%U", date: "$placed" } };
     } else if (timeRange === 'yearly') {
-      startDate = moment().subtract(3, 'years').startOf('year').toDate();
+      dateFormat = { $dateToString: { format: "%Y", date: "$placed" } };
     } else {
-      startDate = moment().subtract(3, 'months').startOf('month').toDate();
+      dateFormat = { $dateToString: { format: "%Y-%m", date: "$placed" } };
     }
 
     const revenueData = await Order.aggregate([
       {
         $match: {
           Order_verified: true,
-          $or: [
-            { status: 'Delivered' },
-            { paymentstatus: 'paid' }
-          ],
-          placed: { $gte: startDate }
+          status: 'Delivered',
+          paymentstatus: 'paid'
         }
       },
       {
         $group: {
-          _id: {
-            $cond: [
-              { $eq: [timeRange, 'weekly'] },
-              { $isoWeek: "$placed" },
-              { $cond: [
-                { $eq: [timeRange, 'yearly'] },
-                { $year: "$placed" },
-                { $month: "$placed" }
-              ]}
-            ]
-          },
+          _id: dateFormat,
           totalRevenue: { $sum: "$totalprice" },
           totalOrders: { $sum: 1 }
         }
@@ -989,17 +960,7 @@ const revenueChart = async (req, res) => {
       { $sort: { "_id": 1 } }
     ]);
 
-    const labels = revenueData.map(item => {
-      if (timeRange === 'weekly') {
-        const startOfWeek = moment().week(item._id).startOf('isoWeek');
-        const endOfWeek = moment().week(item._id).endOf('isoWeek');
-        return `${startOfWeek.format('MMM D')} - ${endOfWeek.format('MMM D')}`;
-      } else if (timeRange === 'yearly') {
-        return item._id;
-      } else {
-        return moment().month(item._id - 1).format('MMMM');
-      }
-    });
+    const labels = revenueData.map(item => item._id);
 
     const datasets = [
       {
@@ -1018,6 +979,7 @@ const revenueChart = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch revenue chart data' });
   }
 };
+
 
 const bestsellingproduct = async()=>{
   try {

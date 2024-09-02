@@ -546,59 +546,48 @@ const customsales = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 const getCustomSales = async (req, res) => {
   console.log("hi from the sales");
+
   try {
-    console.log("this is from the custom");
     const { start, end } = req.body;
-   console.log(req.body,"in the body");
- 
+    console.log(req.body, "in the body");
+
     if (!start || !end) {
-        return res.status(400).send('Start date and end date are required');
+      return res.status(400).json({ error: 'Start date and end date are required' });
     }
 
-   
     const startDate = new Date(start);
     const endDate = new Date(end);
     endDate.setHours(23, 59, 59, 999);
-   
+
     const page = req.query.page ? parseInt(req.query.page) : 1;
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    
     const orders = await Order.find({
-        placed: {
-            $gte: startDate,
-            $lte: endDate
-        }
+      placed: {
+        $gte: startDate,
+        $lte: endDate
+      }
     }).skip(skip).limit(limit);
 
-   
     const totalOrders = await Order.countDocuments({
-        placed: {
-            $gte: startDate,
-            $lte: endDate
-        }
+      placed: {
+        $gte: startDate,
+        $lte: endDate
+      }
     });
 
- 
     const totalpages = Math.ceil(totalOrders / limit);
 
-   
-    res.render('sales-report', {
-        orders,
-        page,
-        totalpages,
-        timeRange: 'custom',
-        status: 'all' 
-    });
+    res.json({ orders, page, totalpages });
   } catch (error) {
     console.error('Error fetching orders:', error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 const adminoffer = async(req,res)=>{
   try {
@@ -640,7 +629,7 @@ const addoffer = async(req,res)=>{
 }
 
 const removeoffer = async(req,res)=>{
-  console.log("i am here to remove the offer");
+  // console.log("i am here to remove the offer");
   try {
     const productId = req.body.productId
     const productData = await product.findOne({_id:productId})
@@ -657,7 +646,12 @@ const removeoffer = async(req,res)=>{
 const downloadpdf = async (req, res) => {
   try {
     const doc = new PDFDocument();
-    const timeRange = req.query.timeRange;
+    const { timeRange, startDate, endDate } = req.query || req.body;
+    console.log(`Start Date: ${startDate}, End Date: ${endDate}, Time Range: ${timeRange}`);
+
+    // console.log(timeRange,"this is the query of the custom");
+    // console.log(timeRange,"this is the query of the custom");
+    // console.log(timeRange,"this is the query of the custom");
 
     let filter = { status: "Delivered" };
     if (timeRange === 'daily') {
@@ -676,10 +670,11 @@ const downloadpdf = async (req, res) => {
       const startOfYear = moment().startOf('year');
       const endOfYear = moment().endOf('year');
       filter.placed = { $gte: startOfYear.toDate(), $lte: endOfYear.toDate() };
-    } else if (timeRange === 'custom') {
-      const { startDate, endDate } = req.query;
+    } else if (timeRange === 'custom' && startDate && endDate) {
+     
       filter.placed = { $gte: new Date(startDate), $lte: new Date(endDate) };
     }
+    console.log(`Start Date: ${startDate}, End Date: ${endDate}, Time Range: custom`);
 
     console.log('Filter:', filter);
     const orderdata = await Order.find(filter);

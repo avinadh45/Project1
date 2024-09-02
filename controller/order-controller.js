@@ -210,8 +210,6 @@ const order = async (req, res) => {
                         placed: new Date(),
                         coupon: couponCode ? couponData._id : null
                     });
-
-                    console.log("its jackpot baby");
                     await newOrder.save();
                     req.session.user.cart = Cart;
                     usercart.items = [];

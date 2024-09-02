@@ -225,7 +225,7 @@ const order = async (req, res) => {
                 console.log(`Total amount to be charged: ${totalAmountInPaise} paise`);
 
                 const razorpayOrder = await razorpayorder(totalAmountInPaise);
-
+                   console.log(razorpayOrder,"gggfhgfhgf juumbdtd");
                 const newOrder = new Order({
                     product: product,
                     totalprice: totalPrice,

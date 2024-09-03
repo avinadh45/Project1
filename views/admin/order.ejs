@@ -155,7 +155,7 @@
                     <div class="row gx-3">
                         <div class="col-lg-2 col-6 col-md-3">
                         <select id="orderFilter" onchange="filterOrders()">
-                            <option value="latest" <%= filter === 'latest' ? 'selected' : '' %>>Latest</option>
+                            <option value="latest" <%= filter == 'latest' ? 'selected' : '' %>>Latest</option>
                             <option value="oldest" <%= filter === 'oldest' ? 'selected' : '' %>>Oldest</option>
                             <option value="Pending" <%= filter === 'Pending' ? 'selected' : '' %>>Pending</option>
                             <option value="Delivered" <%= filter === 'Delivered' ? 'selected' : '' %>>Delivered</option>

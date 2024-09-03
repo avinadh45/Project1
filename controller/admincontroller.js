@@ -558,6 +558,7 @@ const customsales = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 const getCustomSales = async (req, res) => {
   console.log("hi from the sales");
 
@@ -577,7 +578,6 @@ const getCustomSales = async (req, res) => {
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    
     const orders = await Order.find({
       placed: {
         $gte: startDate,
@@ -585,6 +585,7 @@ const getCustomSales = async (req, res) => {
       },
       status: 'Delivered' 
     }).skip(skip).limit(limit);
+    console.log('Orders fetched:', orders);
 
     const totalOrders = await Order.countDocuments({
       placed: {

@@ -449,7 +449,7 @@ function renderOrders(orders) {
                     `;
                     tableBody.insertAdjacentHTML('beforeend', row);
                 });
-            } q
+            } 
             async function fetchOrders(url) {
         try {
             console.log("Fetching data from:", url); 
@@ -516,8 +516,9 @@ function renderOrders(orders) {
 
                 fetchFilteredOrders();
 
-                const modal = bootstrap.Modal.getInstance(document.getElementById('dateRangeModal'));
-                modal.hide();
+                document.querySelector('#dateRangeModal').classList.remove('show');
+    document.querySelector('#dateRangeModal').style.display = 'none';
+    document.querySelector('.modal-backdrop').remove();
             });
         });
 

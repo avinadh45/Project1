@@ -151,39 +151,51 @@ const admin404 = async(req,res)=>{
     // console.log(error.message);
   }
   }
- 
 
-const order = async (req, res) => {
-  try {
-      let page = 1;
-      if (req.query.page) {
-          page = parseInt(req.query.page, 10);
-      }
-      const limit = 5; 
+  const order = async (req, res) => {
+    try {
+        let page = 1;
+        if (req.query.page) {
+            page = parseInt(req.query.page, 10);
+        }
+        const limit = 5;
 
-      const orderCount = await Order.countDocuments({ Order_verified: true });
-      const totalPages = Math.ceil(orderCount / limit);
+        const filter = req.query.filter || 'latest';
+        let sortOrder = -1;
 
-      const orderData = await Order.find({ Order_verified: true })
-          .sort({placed:-1})
-          .limit(limit)
-          .skip((page - 1) * limit)
-          .exec();
-      
-      const userdata = await user.find({ isAdmin: 0 });
+     
+        let filterCondition = { Order_verified: true };
+        
+        
+        if (filter === 'oldest') {
+            sortOrder = 1; 
+        } else if (['Pending', 'Delivered', 'Cancelled', 'Confirmed'].includes(filter)) {
+            filterCondition.status = filter; 
+        }
 
-      res.render('order', {
-          orders: orderData,
-          users: userdata,
-          totalPages,
-          currentPage: page
-      });
-  } catch (error) {
-      console.error(error.message);
-      res.status(500).send('Internal Server Error');
-  }
+        const orderCount = await Order.countDocuments(filterCondition);
+        const totalPages = Math.ceil(orderCount / limit);
+
+        const orderData = await Order.find(filterCondition)
+            .sort({ placed: sortOrder })  
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec();
+
+        const userdata = await user.find({ isAdmin: 0 });
+
+        res.render('order', {
+            orders: orderData,
+            users: userdata,
+            totalPages,
+            currentPage: page,
+            filter  
+        });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Internal Server Error');
+    }
 };
-
 
 
 
@@ -565,18 +577,21 @@ const getCustomSales = async (req, res) => {
     const limit = 10;
     const skip = (page - 1) * limit;
 
+    
     const orders = await Order.find({
       placed: {
         $gte: startDate,
         $lte: endDate
-      }
+      },
+      status: 'Delivered' 
     }).skip(skip).limit(limit);
 
     const totalOrders = await Order.countDocuments({
       placed: {
         $gte: startDate,
         $lte: endDate
-      }
+      },
+      status: 'Delivered' 
     });
 
     const totalpages = Math.ceil(totalOrders / limit);
@@ -587,6 +602,7 @@ const getCustomSales = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 
 const adminoffer = async(req,res)=>{
@@ -643,15 +659,30 @@ const removeoffer = async(req,res)=>{
   }
 }
 
+// const createCustomDateRangeFilter = (startDate, endDate) => {
+//   if (startDate && endDate) {
+//     console.log('Applying Custom Date Range Filter');
+//     return {
+//       placed: {
+//         $gte: new Date(startDate),
+//         $lte: new Date(endDate)
+//       },
+//       status: "Delivered"
+//     };
+//   }
+//   return null;
+// };
+
 const downloadpdf = async (req, res) => {
   try {
     const doc = new PDFDocument();
     const { timeRange, startDate, endDate } = req.query || req.body;
     console.log(`Start Date: ${startDate}, End Date: ${endDate}, Time Range: ${timeRange}`);
 
-    // console.log(timeRange,"this is the query of the custom");
-    // console.log(timeRange,"this is the query of the custom");
-    // console.log(timeRange,"this is the query of the custom");
+    console.log('Received Parameters:');
+    console.log(`Time Range: ${timeRange}`);
+    console.log(`Start Date: ${startDate}`);
+    console.log(`End Date: ${endDate}`)
 
     let filter = { status: "Delivered" };
     if (timeRange === 'daily') {
@@ -671,7 +702,7 @@ const downloadpdf = async (req, res) => {
       const endOfYear = moment().endOf('year');
       filter.placed = { $gte: startOfYear.toDate(), $lte: endOfYear.toDate() };
     } else if (timeRange === 'custom' && startDate && endDate) {
-     
+      console.log('Applying Custom Date Range Filter');
       filter.placed = { $gte: new Date(startDate), $lte: new Date(endDate) };
     }
     console.log(`Start Date: ${startDate}, End Date: ${endDate}, Time Range: custom`);
@@ -902,11 +933,11 @@ const saleschart = async (req, res) => {
       },
       {
         $group: {
-          _id: dateFormat, // Group by the formatted date
+          _id: dateFormat, 
           totalSales: { $sum: 1 }
         }
       },
-      { $sort: { "_id": 1 } } // Sort by date
+      { $sort: { "_id": 1 } } 
     ]);
 
     const labels = saleDate.map(item => item._id);

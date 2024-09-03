@@ -39,7 +39,7 @@ const addcategory = async (req,res)=>{
 const getcategory = async(req,res)=>{
   try {
     const categorys = await Category.find()
-    console.log(categorys,"inget");
+    // console.log(categorys,"inget");
     res.status(200).json({ success: true, data: categorys });
   } catch (error) {
     console.error(error);

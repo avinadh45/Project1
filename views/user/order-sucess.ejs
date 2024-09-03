@@ -1,71 +1,143 @@
 <!-- views/premiumOrderSuccess.ejs -->
 
 <!DOCTYPE html>
-<html lang="en">
-    
+<html lang="zxx">
 <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Success</title>
-    <!-- <link rel="stylesheet" href="/path/to/your/styles.css"> -->
-    <style>
-        body {
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
-}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-.container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+    <title>Tempusgems</title>
 
-.success-message {
-    text-align: center;
-}
+    <!-- ::::::::::::::Favicon icon::::::::::::::-->
+    <!-- <link rel="shortcut icon" href="images/favicon.ico" type="image/png"> -->
 
-.success-message h1 {
-    color: #28a745;
-}
+    <!-- ::::::::::::::All CSS Files here :::::::::::::: -->
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
+    <link rel="stylesheet" href="css/vendor/ionicons.css">
+    <link rel="stylesheet" href="css/vendor/simple-line-icons.css">
+    <link rel="stylesheet" href="css/vendor/jquery-ui.min.css">
 
-.order-details {
-    margin-top: 30px;
-}
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="css/plugins/swiper-bundle.min.css">
+    <link rel="stylesheet" href="css/plugins/animate.min.css">
+    <link rel="stylesheet" href="css/plugins/nice-select.css">
+    <link rel="stylesheet" href="css/plugins/venobox.min.css">
+    <link rel="stylesheet" href="css/plugins/jquery.lineProgressbar.css">
+    <link rel="stylesheet" href="css/plugins/aos.min.css">
 
-.order-details ul {
-    list-style-type: none;
-    padding: 0;
-}
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
 
-.order-details ul li {
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-}
-
-.actions {
-    text-align: center;
-    margin-top: 30px;
-}
-
-.actions .btn {
-    text-decoration: none;
-    color: #fff;
-    background-color: #007bff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    margin: 0 10px;
-}
-
-.actions .btn-secondary {
-    background-color: #6c757d;
-}
-    </style>
+    <!-- Use the minified version files listed below for better performance and remove the files listed above -->
+    <!-- <link rel="stylesheet" href="css/vendor/vendor.min.css">
+    <link rel="stylesheet" href="css/plugins/plugins.min.css">
+    <link rel="stylesheet" href="css/style.min.css"> -->
+    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
 </head>
 <body>
+    <!-- Start Header Area -->
+    <header class="header-section d-none d-xl-block">
+        <div class="header-wrapper">
+            <div class="header-bottom header-bottom-color--black section-fluid sticky-header sticky-color--black">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 d-flex align-items-center justify-content-between">
+                            <!-- Start Header Logo -->
+                            <div class="header-logo">
+                                <div class="logo">
+                                    <a href="home"><img src="images/logo/logo_1.png" alt=""></a>
+                                </div>
+                            </div>
+                            <!-- End Header Logo -->
+
+                            <!-- Start Header Main Menu -->
+                            <div class="main-menu menu-color--white menu-hover-color--pink">
+                                <nav>
+                                    <ul>
+                                        <li class="has-dropdown">
+                                            <a class="active main-menu-link" href="/home">Home</a>
+                                            <!-- Sub Menu -->
+                                          
+                                        </li>
+                                        <li class="has-dropdown has-megaitem">
+                                            <a href="/shop">Shop 
+                                                   </a>
+                                        </li> 
+                                        <li>
+                                             <a href="/user-profile">Profile</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <!-- End Header Main Menu Start  -->
+
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header> <!-- Close the header tag -->
+
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .success-message {
+        text-align: center;
+    }
+
+    .success-message h1 {
+        color: #28a745;
+    }
+
+    .order-details {
+        margin-top: 30px;
+    }
+
+    .order-details ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .order-details ul li {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .actions {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .actions .btn {
+        text-decoration: none;
+        color: #fff;
+        background-color: #007bff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin: 0 10px;
+    }
+
+    .actions .btn-secondary {
+        background-color: #6c757d;
+    }
+    </style>
+
     <div class="container">
         <div class="success-message">
             <h1>Thank you for your order!</h1>

@@ -78,7 +78,7 @@ const verifyrazorpay = async (req, res) => {
         if (generated_signature === razorpay_signature) {
             console.log("this is ",generated_signature);
             console.log("this is from body ",razorpay_signature);
-            // Payment verified
+           
             console.log("Signatures match, proceeding with payment verification");
             const orderId =req.session.pendingOrderId
             console.log(`Order ID from session: ${orderId}`); 
@@ -166,7 +166,7 @@ const order = async (req, res) => {
                 console.log(`Total price after coupon discount: ${totalPrice}`);
             }
 
-            // Convert totalPrice to paise
+            
             const totalAmountInPaise = Math.round(totalPrice);
             console.log(`Total amount in paise: ${totalAmountInPaise}`);
 
@@ -415,7 +415,6 @@ const deletesingleproduct = async(req,res)=>{
                 break;
             }
         }
-
         if (removedProduct) {
             await order.save();
 

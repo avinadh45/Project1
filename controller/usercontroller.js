@@ -381,6 +381,7 @@ const productdet = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
 const displayAllProducts = async (req, res) => {
     try {
         const loggedin = req.session.user;
@@ -408,10 +409,14 @@ const displayAllProducts = async (req, res) => {
             sortCriteria.name = sortByName === 'name_asc' ? 1 : -1;
         }
 
-        const query = {
-            ...(categoryId && { category: categoryId }),
-            ...(search && { name: { $regex: ".*" + search + ".*", $options: 'i' } })
-        };
+        // Build the query object
+        const query = {};
+        if (categoryId) {
+            query.category = categoryId;
+        }
+        if (search) {
+            query.name = { $regex: ".*" + search + ".*", $options: 'i' };
+        }
 
         const productCount = await product.countDocuments(query);
         const totalPages = Math.ceil(productCount / limit);
@@ -439,6 +444,9 @@ const displayAllProducts = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
+
+
 
 
 const forgotpassword = async (req, res) => {

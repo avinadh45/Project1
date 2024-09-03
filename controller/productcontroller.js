@@ -114,7 +114,7 @@ const editpropage = async(req,res)=>{
 
 
 const updateProduct = async (req, res) => {
-    console.log('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj');
+    // console.log('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj');
     try {
         const productId = req.params.id;
 
@@ -152,7 +152,7 @@ const updateProduct = async (req, res) => {
         const categorys = await category.findOne({ _id: selectedCategory });
 
         if (!categorys) {
-            console.log("no cat");
+            // console.log("no cat");
             return res.render('editproduct',{error: 'Category not found' });
         }
 

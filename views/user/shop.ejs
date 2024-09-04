@@ -103,7 +103,7 @@
                                         <i class="icon-magnifier"></i>
                                     </a>
                                 </li> -->
-                                <form action="/search" method="get" id="searchForm">
+                                <form onsubmit="return handleSearch();" id="searchForm">
                                     <input type="text" name="search" placeholder="Search products" value="<%= typeof search !== 'undefined' ? search : '' %>">
                                     <button type="submit"><i class="icon-magnifier"></i></button>
                                 </form>
@@ -663,13 +663,12 @@
                                         <div class="tab-pane active show sort-layout-single" id="layout-3-grid">
                                             <div class="row">
                                                 <% if (products.length > 0) { %>
-                                                    <% let productFound = false; %> <!-- Flag to check if any product is displayed -->
+                                                    <% let productFound = false; %>
                                                     <% for(let i = 0; i < products.length; i++) { %>
                                                         <% const categoryitem = category.find(cat => cat._id.toString() === products[i].category.toString()); %>
                                                         <% if (categoryitem && !categoryitem.list && (!categoryId || products[i].category.toString() === categoryId)) { %>
                                                             <% if (!products[i].Listed) { %> 
                                                                 <div class="col-xl-4 col-sm-6 col-12">
-                                                                    <!-- Start Product Default Single Item -->
                                                                     <div class="product-default-single-item product-color--golden" data-aos="fade-up" data-aos-delay="200">
                                                                         <div class="image-box">
                                                                             <a href="/product-details/<%= products[i]._id %>" class="image-link">
@@ -692,9 +691,8 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <!-- End Product Default Single Item -->
                                                                 </div>
-                                                                <% productFound = true; %> <!-- Set the flag to true if a product is displayed -->
+                                                                <% productFound = true; %>
                                                             <% } %>
                                                         <% } %>
                                                     <% } %>
@@ -1090,26 +1088,11 @@
         </div>
     </div> <!-- End Modal Quickview cart -->
     <script>
-      function handleCategoryClick(categoryId) {
-    const urlParams = new URLSearchParams(window.location.search);
-
-   
-    const sortByPrice = urlParams.get('sortByPrice');
-    const sortByName = urlParams.get('sortByName');
-
-   
-    let newUrl = `/shop?categoryId=${categoryId}`;
-
-    if (sortByPrice) {
-        newUrl += `&sortByPrice=${sortByPrice}`;
+       function handleCategoryClick(categoryId) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('categoryId', categoryId);
+        window.location.search = urlParams.toString();
     }
-    if (sortByName) {
-        newUrl += `&sortByName=${sortByName}`;
-    }
-
-   
-    window.location.href = newUrl;
-}
 
     </script>
 <script>
@@ -1146,18 +1129,20 @@
     <script>
         function handleSearch() {
         const searchInput = document.querySelector('input[name="search"]').value;
-        const categoryId = "<%= typeof categoryId !== 'undefined' ? categoryId : '' %>";
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const categoryId = urlParams.get('categoryId');
+
         let url = '/shop?';
 
         if (categoryId) {
             url += `categoryId=${categoryId}&`;
         }
-        
+
         if (searchInput) {
             url += `search=${encodeURIComponent(searchInput)}`;
         }
 
-        
         window.location.href = url;
 
         return false;

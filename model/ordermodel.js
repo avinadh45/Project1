@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 const orderschema = mongoose.Schema({
 
-    orderId: {
-        type: String,
-        required: true,
-        unique: true
-},
+//     orderId: {
+//         type: String,
+//         required: true,
+//         unique: true
+// },
 product:{
     type :Array,
     required:true,

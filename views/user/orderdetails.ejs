@@ -285,44 +285,46 @@
                                         <span class="discount-info">(Discount: <%= (product.discountPercentage || 0).toFixed(2) %>%, -₹<%= (product.discountAmount || 0).toFixed(2) %>)</span>
                                     <% } %>
                                 </p>
-                                <button class="remove-product">Remove</button>
+                                <% if (products.length > 1) { %>
+                                    <button class="remove-product">Remove</button>
+                                <% } %>
                             </div>
                         </div>
                     </li>
                 <% }) %>
-            </ul>
-            <p><strong>Subtotal:</strong> ₹<span id="subtotal"><%= order.totalprice.toFixed(2) %></span></p>
-            <% if (couponDiscount > 0) { %>
-                <p><strong>Coupon Discount (<%= couponPercentage %>%) :</strong> -₹<%= couponDiscount.toFixed(2) %></p>
-            <% } %>
-            <p><strong>Total:</strong> ₹<span id="total"><%= order.totalprice.toFixed(2) %></span></p>
-        
-            <div class="order-actions">
-                <% if (order.payment !== 'COD' && order.paymentstatus === 'Pending') { %>
-                    <button id="payNowBtn" class="btn btn-pay-now" data-order-id="<%= order._id %>" data-address-id="<%= address.Address[0]._id %>" data-total-price="<%= order.totalprice %>">
-                        Pay Now
-                    </button>
+                </ul>
+                <p><strong>Subtotal:</strong> ₹<span id="subtotal"><%= order.totalprice.toFixed(2) %></span></p>
+                <% if (couponDiscount > 0) { %>
+                    <p><strong>Coupon Discount (<%= couponPercentage %>%) :</strong> -₹<%= couponDiscount.toFixed(2) %></p>
                 <% } %>
+                <p><strong>Total:</strong> ₹<span id="total"><%= order.totalprice.toFixed(2) %></span></p>
                 
-                <% if (order.status !== 'Cancelled' && order.status !== 'Return Requested' && order.status !== 'Returned') { %>
-                    <% if (order.status === 'Delivered') { %>
-                        <button id="returnOrderBtn" class="btn btn-return-order" data-order-id="<%= order._id %>">
-                            Return Product
-                        </button>
-                        <br>
-                        <button id="downloadInvoiceBtn" class="btn btn-download-invoice" data-order-id="<%= order._id %>">
-                            Download Invoice
-                        </button>
-                    <% } else { %>
-                        <button id="cancelOrderBtn" class="btn btn-cancel-order" data-order-id="<%= order._id %>">
-                            Cancel Order
+                <div class="order-actions">
+                    <% if (order.payment !== 'COD' && order.paymentstatus === 'Pending' && order.status !== 'Cancelled') { %>
+                        <button id="payNowBtn" class="btn btn-pay-now" data-order-id="<%= order._id %>" data-address-id="<%= address.Address[0]._id %>" data-total-price="<%= order.totalprice %>">
+                            Pay Now
                         </button>
                     <% } %>
-                <% } else if (order.status === 'Return') { %>
-                    <p><strong>Status:</strong> This order has been returned.</p>
-                <% } else { %>
-                    <p><strong>Status:</strong> This order has been cancelled.</p>
-                <% } %>
+                
+                    <% if (order.status !== 'Cancelled' && order.status !== 'Return Requested' && order.status !== 'Returned') { %>
+                        <% if (order.status === 'Delivered') { %>
+                            <button id="returnOrderBtn" class="btn btn-return-order" data-order-id="<%= order._id %>">
+                                Return Product
+                            </button>
+                            <br>
+                            <button id="downloadInvoiceBtn" class="btn btn-download-invoice" data-order-id="<%= order._id %>">
+                                Download Invoice
+                            </button>
+                        <% } else { %>
+                            <button id="cancelOrderBtn" class="btn btn-cancel-order" data-order-id="<%= order._id %>">
+                                Cancel Order
+                            </button>
+                        <% } %>
+                    <% } else if (order.status === 'Return') { %>
+                        <p><strong>Status:</strong> This order has been returned.</p>
+                    <% } else { %>
+                        <p><strong>Status:</strong> This order has been cancelled.</p>
+                    <% } %>
             </div>    
               
         </div>

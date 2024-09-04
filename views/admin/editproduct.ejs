@@ -454,7 +454,7 @@ console.log("deteting");
             
             let croppers = [];
 let imageContainers = [];
-let removedIndices = []; // Array to track removed files
+let removedIndices = []; 
 
 function previewFiles() {
     const previewContainer = document.getElementById('imagePreviews');
@@ -465,7 +465,7 @@ function previewFiles() {
     imagesError.textContent = '';
 
     for (let i = 0; i < files.length; i++) {
-        if (removedIndices.includes(i)) continue; // Skip removed files
+        if (removedIndices.includes(i)) continue; 
 
         const reader = new FileReader();
 
@@ -487,7 +487,7 @@ function previewFiles() {
                     imgContainer.remove();
                     croppers[index].destroy();
                     
-                    removedIndices.push(index); // Track the removed file index
+                    removedIndices.push(index); 
 
                     imageContainers.splice(index, 1);
                     croppers.splice(index, 1);

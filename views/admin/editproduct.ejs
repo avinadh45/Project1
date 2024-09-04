@@ -452,62 +452,79 @@ console.log("deteting");
             }
      
             
-            function previewFiles() {
+            let croppers = [];
+let imageContainers = [];
+let removedIndices = []; // Array to track removed files
+
+function previewFiles() {
     const previewContainer = document.getElementById('imagePreviews');
     const filesInput = document.getElementById('images');
     const files = filesInput.files;
-    const imagesError = document.getElementById('imagesError')
-    
+    const imagesError = document.getElementById('imagesError');
 
     imagesError.textContent = '';
 
-    for (const file of files) {
+    for (let i = 0; i < files.length; i++) {
+        if (removedIndices.includes(i)) continue; // Skip removed files
+
         const reader = new FileReader();
 
-      
         reader.onload = function(event) {
+            const imgContainer = document.createElement('div');
+            imgContainer.classList.add('img-container');
+
             const imgElement = document.createElement('img');
             imgElement.src = event.target.result;
             imgElement.classList.add('image-preview');
-            previewContainer.appendChild(imgElement);
+            imgContainer.appendChild(imgElement);
 
-        
             const removeButton = document.createElement('button');
             removeButton.textContent = 'Remove';
+            removeButton.classList.add('remove-button');
             removeButton.addEventListener('click', function() {
-           
-                imgElement.remove();
-                removeButton.remove();
-                cropper.destroy();
-            });
-            previewContainer.appendChild(removeButton);
+                const index = imageContainers.indexOf(imgContainer);
+                if (index !== -1) {
+                    imgContainer.remove();
+                    croppers[index].destroy();
+                    
+                    removedIndices.push(index); // Track the removed file index
 
-         
+                    imageContainers.splice(index, 1);
+                    croppers.splice(index, 1);
+                }
+            });
+            imgContainer.appendChild(removeButton);
+
+            previewContainer.appendChild(imgContainer);
+
             const cropper = new Cropper(imgElement, {
-                aspectRatio: 16 / 15, 
+                aspectRatio: 16 / 15,
                 viewMode: 1,
-                zoomable: true, 
-                
+                zoomable: true,
             });
 
-           
-            cropper.on('crop', function(event) {
-              
-                const croppedData = cropper.getCroppedCanvas().toDataURL('image/jpeg');
-
-             
-                const croppedImg = document.createElement('img');
-                croppedImg.src = croppedData;
-                // previewContainer.innerHTML = '';
-                previewContainer.appendChild(croppedImg);
-
-                
-            });
+            croppers.push(cropper);
+            imageContainers.push(imgContainer);
         };
 
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(files[i]);
     }
 }
+
+function updateFileInput() {
+    const filesInput = document.getElementById('images');
+    const dataTransfer = new DataTransfer();
+
+    Array.from(filesInput.files).forEach((file, index) => {
+        if (!removedIndices.includes(index)) {
+            dataTransfer.items.add(file);
+        }
+    });
+
+    filesInput.files = dataTransfer.files;
+}
+
+
 
                     </script>
         </footer>

@@ -106,6 +106,13 @@ const verifyrazorpay = async (req, res) => {
     }
 };
 
+function generateOrderId() {
+    const date = new Date().toISOString().slice(0, 10).replace(/-/g, ""); 
+    const randomString = Math.random().toString(36).substring(2, 7).toUpperCase(); 
+    return `ORD-${date}-${randomString}`;
+}
+
+
 const order = async (req, res) => {
     console.log("hello in the order");
     try {
@@ -171,8 +178,12 @@ const order = async (req, res) => {
             console.log(`Total amount in paise: ${totalAmountInPaise}`);
 
 
+            const orderId = generateOrderId();
+
+
             if (payments === 'COD') {
                 const newOrder = new Order({
+                    orderId: orderId,
                     product: product,
                     totalprice: totalPrice,
                     Address: selectedaddress.Address,
@@ -199,6 +210,7 @@ const order = async (req, res) => {
                     await wallet.save();
 
                     const newOrder = new Order({
+                        orderId: orderId,
                         product: product,
                         totalprice: totalPrice,
                         Address: selectedaddress.Address,
@@ -227,6 +239,7 @@ const order = async (req, res) => {
                 const razorpayOrder = await razorpayorder(totalAmountInPaise);
                    console.log(razorpayOrder,"gggfhgfhgf juumbdtd");
                 const newOrder = new Order({
+                    orderId: orderId,
                     product: product,
                     totalprice: totalPrice,
                     Address: selectedaddress.Address,

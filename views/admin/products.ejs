@@ -422,73 +422,65 @@ document.getElementById("productForm").addEventListener("submit", validate);
            
             <script>
 
-     function previewFiles() {
+let croppers = []; 
+let removedImages = [];  
+
+function previewFiles() {
     const previewContainer = document.getElementById('imagePreviews');
     const filesInput = document.getElementById('images');
     const files = filesInput.files;
     const imagesError = document.getElementById('imagesError');
 
- 
+   
     imagesError.textContent = '';
 
- 
-    const croppers = [];
-
+    // Loop through the selected files
     for (const file of files) {
         const reader = new FileReader();
 
-      
+        // Validate file type
         if (!file.type.startsWith('image/')) {
-          
             imagesError.textContent = 'Only image files are allowed.';
             continue;
         }
 
-     
         reader.onload = function(event) {
+            // Create a container for the image and the remove button
+            const imgContainer = document.createElement('div');
+            imgContainer.classList.add('img-container');
+
+            // Create image element and set its source
             const imgElement = document.createElement('img');
             imgElement.src = event.target.result;
             imgElement.classList.add('image-preview');
-            previewContainer.appendChild(imgElement);
+            imgContainer.appendChild(imgElement);
 
-          
+            // Create remove button
             const removeButton = document.createElement('button');
             removeButton.textContent = 'Remove';
             removeButton.addEventListener('click', function() {
-               
-                const index = Array.from(previewContainer.children).indexOf(imgElement);
+                const index = Array.from(previewContainer.children).indexOf(imgContainer);
                 if (index !== -1) {
-                    imgElement.remove();
-                    removeButton.remove();
-                    croppers[index].destroy(); 
-                    croppers.splice(index, 1); 
+                    imgContainer.remove();
+                    removedImages.push(croppers[index].getCroppedCanvas().toDataURL('image/jpeg')); // Track removed image
+                    croppers[index].destroy();
+                    croppers.splice(index, 1);
                 }
             });
-            previewContainer.appendChild(removeButton);
+            imgContainer.appendChild(removeButton);
 
-           
+            // Add the container to the preview container
+            previewContainer.appendChild(imgContainer);
+
+            // Initialize cropper
             const cropper = new Cropper(imgElement, {
-                aspectRatio: 16 / 15, 
+                aspectRatio: 16 / 15,
                 viewMode: 1,
-                zoomable: true, 
-               
+                zoomable: true,
             });
 
-      
+            // Store the cropper instance
             croppers.push(cropper);
-
-       
-            cropper.on('crop', function(event) {
-             
-                const croppedData = cropper.getCroppedCanvas().toDataURL('image/jpeg');
-
-               
-                const croppedImg = document.createElement('img');
-                croppedImg.src = croppedData;
-                previewContainer.appendChild(croppedImg);
-
-               
-            });
         };
 
         reader.readAsDataURL(file);
@@ -496,43 +488,48 @@ document.getElementById("productForm").addEventListener("submit", validate);
 }
 
 
-          document.getElementById('productForm').addEventListener('submit', async (event) => {
-                    event.preventDefault(); 
-            
-                    const categorySelect = document.getElementById('categorySelect');
-                    const selectedCategory = categorySelect.value;
-                    console.log(selectedCategory, "selected category");
-            // console.log(formData)
-                    const formData = new FormData(document.getElementById('productForm'));
-            // console.log(formData)
 
-                    validate()
-                    formData.append('category', selectedCategory); 
-            console.log('formData',formData)
-                    try {
-                        const response = await fetch('/admin/addProduct', {
-                            method: 'POST',
-                            body: formData 
-                        });
-            
-                        if (response.ok) {
-                        
-                            Swal.fire({
-                    title: 'Success',
-                    text: 'The product has been added successfully',
-                    icon: 'success'
-                }).then(() => {
-          
-            window.location.href = '/admin/productlist';
+
+          document.getElementById('productForm').addEventListener('submit', async (event) => {
+    event.preventDefault(); 
+    
+    const categorySelect = document.getElementById('categorySelect');
+    const selectedCategory = categorySelect.value;
+    
+    const formData = new FormData(document.getElementById('productForm'));
+    formData.append('category', selectedCategory); 
+
+    // Remove cropped images that were removed by the user
+    removedImages.forEach((removedImage) => {
+        for (let pair of formData.entries()) {
+            if (pair[1] === removedImage) {
+                formData.delete(pair[0]);  // Remove the deleted image from the form data
+            }
+        }
+    });
+
+    try {
+        const response = await fetch('/admin/addProduct', {
+            method: 'POST',
+            body: formData 
         });
-                        } else {
-                            throw new Error('Failed to add product');
-                        }
-                    } catch (error) {
-                        console.error('Error:', error.message);
-                        
-                    }
-                });
+
+        if (response.ok) {
+            Swal.fire({
+                title: 'Success',
+                text: 'The product has been added successfully',
+                icon: 'success'
+            }).then(() => {
+                window.location.href = '/admin/productlist';
+            });
+        } else {
+            throw new Error('Failed to add product');
+        }
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+});
+
             </script>
             <script>
                

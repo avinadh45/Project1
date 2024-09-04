@@ -1090,31 +1090,57 @@
         </div>
     </div> <!-- End Modal Quickview cart -->
     <script>
-        function handleCategoryClick(categoryId){
-          window.location.href=`/shop?categoryId=${categoryId}`;
+      function handleCategoryClick(categoryId) {
+    const urlParams = new URLSearchParams(window.location.search);
 
-        }
+   
+    const sortByPrice = urlParams.get('sortByPrice');
+    const sortByName = urlParams.get('sortByName');
+
+   
+    let newUrl = `/shop?categoryId=${categoryId}`;
+
+    if (sortByPrice) {
+        newUrl += `&sortByPrice=${sortByPrice}`;
+    }
+    if (sortByName) {
+        newUrl += `&sortByName=${sortByName}`;
+    }
+
+   
+    window.location.href = newUrl;
+}
+
     </script>
 <script>
-    function applySorting() {
-        const sortByPrice = document.getElementById('sortByPrice').value;
-        const sortByName = document.getElementById('sortByName').value;
-        const urlParams = new URLSearchParams(window.location.search);
-    
-        if (sortByPrice) {
-            urlParams.set('sortByPrice', sortByPrice);
-        } else {
-            urlParams.delete('sortByPrice');
-        }
-    
-        if (sortByName) {
-            urlParams.set('sortByName', sortByName);
-        } else {
-            urlParams.delete('sortByName');
-        }
-    
-        window.location.search = urlParams.toString();
+   function applySorting() {
+    const sortByPrice = document.getElementById('sortByPrice').value;
+    const sortByName = document.getElementById('sortByName').value;
+    const urlParams = new URLSearchParams(window.location.search);
+
+
+    const categoryId = urlParams.get('categoryId');
+
+    if (sortByPrice) {
+        urlParams.set('sortByPrice', sortByPrice);
+    } else {
+        urlParams.delete('sortByPrice');
     }
+
+    if (sortByName) {
+        urlParams.set('sortByName', sortByName);
+    } else {
+        urlParams.delete('sortByName');
+    }
+
+    
+    if (categoryId) {
+        urlParams.set('categoryId', categoryId);
+    }
+
+    window.location.search = urlParams.toString();
+}
+
     </script>
     
     <script>

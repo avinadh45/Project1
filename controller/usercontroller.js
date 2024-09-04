@@ -399,6 +399,15 @@ const displayAllProducts = async (req, res) => {
         const category = await Category.find();
 
         const { categoryId, sortByPrice, sortByName, search } = req.query;
+
+        const query = {};
+        
+        if (categoryId) {
+            query.category = categoryId;
+        }
+        if (search) {
+            query.name = { $regex: ".*" + search + ".*", $options: 'i' };
+        }
         let sortCriteria = {};
 
         if (sortByPrice) {
@@ -409,14 +418,6 @@ const displayAllProducts = async (req, res) => {
             sortCriteria.name = sortByName === 'name_asc' ? 1 : -1;
         }
 
-        // Build the query object
-        const query = {};
-        if (categoryId) {
-            query.category = categoryId;
-        }
-        if (search) {
-            query.name = { $regex: ".*" + search + ".*", $options: 'i' };
-        }
 
         const productCount = await product.countDocuments(query);
         const totalPages = Math.ceil(productCount / limit);

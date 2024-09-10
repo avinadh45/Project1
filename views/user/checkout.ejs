@@ -670,7 +670,6 @@
                             
                             <h3>Billing Details</h3>
                             <div class="address-container">
-                                <p>No addresses found. <a href="/user-address">Add Address</a></p>
                                 <% if (addresses && addresses.Address && addresses.Address.length > 0) { %>
                                     <% addresses.Address.forEach(function(address, index) { %>
                                         <div class="address-box">
@@ -683,8 +682,9 @@
                                                 </div>
                                             </label>
                                         </div>
-                                        <!-- <p>No addresses found. <a href="/user-address">Add Address</a></p> -->
                                     <% }) %>
+                                <% } else { %>
+                                    <p>No addresses found. <a href="/user-address">Add Address</a></p>
                                 <% } %>
                             </div>
                             
@@ -697,14 +697,14 @@
 
                             <!-- </div> -->
                             <h4>Available Coupons</h4>
-<div id="couponsDiv">
-    <% coupons.forEach(coupon => { %>
-        <div class="coupon">
-            <p><strong>Coupon Code:</strong> <%= coupon.couponCode %></p>
-            <p><strong>Offer:</strong> <%= coupon.offer %>% off</p>
-        </div>
-    <% }) %>
-</div>
+                        <div id="couponsDiv">
+                        <% coupons.forEach(coupon => { %>
+                         <div class="coupon">
+                            <p><strong>Coupon Code:</strong> <%= coupon.couponCode %></p>
+                             <p><strong>Offer:</strong> <%= coupon.offer %>% off</p>
+                             </div>
+                        <% }) %>
+                         </div>
 
                           
                             
@@ -1205,6 +1205,17 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
+    <% if (error) { %>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                icon: 'warning',
+                title: 'Stock Adjustment',
+                text: '<%= error %>',
+                confirmButtonText: 'Okay'
+            });
+        </script>
+    <% } %>
    
 <script>
   document.addEventListener('DOMContentLoaded', function() {

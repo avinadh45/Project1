@@ -114,7 +114,7 @@ const editpropage = async(req,res)=>{
 
 
 const updateProduct = async (req, res) => {
-    // console.log('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj');
+   
     try {
         const productId = req.params.id;
 

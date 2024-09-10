@@ -168,6 +168,18 @@
                            
                         </select>
                     </div>
+                    <div class="custom_select">
+                        <select id="categoryFilter" class="form-select select-nice">
+                            <option value="" disabled selected hidden>Select Category</option>
+                           
+                            <% categories.forEach((category) => { %>
+                                <option value="<%= category._id %>"><%= category.category %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    
+                    
                     <br>
                     <div class="col-md-2 col-3">
                         <button id="customDateRangeButton" class="btn btn-primary" style="font-size: 12px; padding: 4px 8px;">Custom Date</button>
@@ -236,7 +248,6 @@
         </div>
 
        
-
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
                 <% if (page > 1) { %>
@@ -258,6 +269,10 @@
                 <% } %>
             </ul>
         </nav>
+          
+          
+          
+        
         
 
         <!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
@@ -280,32 +295,48 @@
             return `${baseUrl}?timeRange=custom&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`;
         }
         function downloadPDF() {
-            const timeRange = document.getElementById('timeRangeFilter').value;
+    const timeRange = document.getElementById('timeRangeFilter').value;
+    const category = document.getElementById('categoryFilter').value || 'all';
+    let url = `/admin/download-pdf?timeRange=${encodeURIComponent(timeRange)}&category=${encodeURIComponent(category)}`;
 
-            if (timeRange === 'custom') {
-                const url = getCustomDateRangeUrl('/admin/download-pdf');
-                if (url) {
-                    window.location.href = url;
-                }
-            } else {
-                const url = `/admin/download-pdf?timeRange=${encodeURIComponent(timeRange)}`;
-                window.location.href = url;
-            }
+    if (timeRange === 'custom') {
+        const customUrl = getCustomDateRangeUrl(url);
+        if (customUrl) {
+            url = customUrl;
         }
+    }
 
-        function downloadExcel() {
-            const timeRange = document.getElementById('timeRangeFilter').value;
+    window.location.href = url;
+}
 
-            if (timeRange === 'custom') {
-                const url = getCustomDateRangeUrl('/admin/download-excel');
-                if (url) {
-                    window.location.href = url;
-                }
-            } else {
-                const url = `/admin/download-excel?timeRange=${encodeURIComponent(timeRange)}`;
-                window.location.href = url;
-            }
+function downloadExcel() {
+    const timeRange = document.getElementById('timeRangeFilter').value;
+    const category = document.getElementById('categoryFilter').value || 'all';
+    let url = `/admin/download-excel?timeRange=${encodeURIComponent(timeRange)}&category=${encodeURIComponent(category)}`;
+
+    if (timeRange === 'custom') {
+        const customUrl = getCustomDateRangeUrl(url);
+        if (customUrl) {
+            url = customUrl;
         }
+    }
+
+    window.location.href = url;
+}
+
+
+
+function getCustomDateRangeUrl(baseUrl) {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    if (startDate && endDate) {
+        return `${baseUrl}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`;
+    } else {
+        alert('Please select both start and end dates.');
+        return null;
+    }
+}
 
                 document.getElementById('fetchDataButton').addEventListener('click', function(event) {
                 event.preventDefault();
@@ -450,42 +481,45 @@ function renderOrders(orders) {
                     tableBody.insertAdjacentHTML('beforeend', row);
                 });
             } 
-            async function fetchOrders(url) {
-        try {
-            console.log("Fetching data from:", url); 
-            const response = await fetch(url);
-            const data = await response.json();
-            console.log('Fetched Data:', data); 
-            updateTable(data);
-        } catch (error) {
-            console.error('Error fetching orders:', error);
-        }
+     async function fetchOrders(url) {
+    try {
+        console.log("Fetching data from:", url); 
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log('Fetched Data:', data); 
+        updateTable(data);
+    } catch (error) {
+        console.error('Error fetching orders:', error);
     }
+}
+
 
     
-    document.getElementById('fetchDataButton').addEventListener('click', () => {
-        const timeRange = document.getElementById('timeRangeFilter').value;
-        let url;
-        switch (timeRange) {
-            case 'daily':
-                url = '/admin/sales-daily';
-                break;
-            case 'weekly':
-                url = '/admin/sales-weekly';
-                break;
-            case 'monthly':
-                url = '/admin/sales-monthly';
-                break;
-            case 'yearly':
-                url = '/admin/sales-yearly';
-                break;
-            //
-            default:
-                url = '/admin/sales-all';
-                break;
-        }   
-        fetchOrders(url);
-    });
+document.getElementById('fetchDataButton').addEventListener('click', () => {
+    const timeRange = document.getElementById('timeRangeFilter').value;
+    const category = document.getElementById('categoryFilter').value;
+    let url;
+
+    switch (timeRange) {
+        case 'daily':
+            url = `/admin/sales-daily?category=${encodeURIComponent(category)}`;
+            break;
+        case 'weekly':
+            url = `/admin/sales-weekly?category=${encodeURIComponent(category)}`;
+            break;
+        case 'monthly':
+            url = `/admin/sales-monthly?category=${encodeURIComponent(category)}`;
+            break;
+        case 'yearly':
+            url = `/admin/sales-yearly?category=${encodeURIComponent(category)}`;
+            break;
+        default:
+            url = `/admin/sales-all?category=${encodeURIComponent(category)}`;
+            break;
+    }   
+    fetchOrders(url);
+});
+
 
     
     window.onload = () => {

@@ -196,8 +196,9 @@ const order = async (req, res) => {
                     coupon: couponCode ? couponData._id : null
                 });
 
-                console.log("its jackpot baby");
                 await newOrder.save();
+
+                
                 req.session.user.cart = Cart;
                 usercart.items = [];
                 await usercart.save();
@@ -392,13 +393,13 @@ const retryPayment = async (req, res) => {
         }
 
         if (order.paymentstatus === "Pending") {
-            // Convert the total price to the smallest currency unit (e.g., paise) and ensure it's an integer
+            
             const amountInSmallestUnit = Math.round(order.totalprice * 100);
 
             console.log("Amount in smallest unit:", amountInSmallestUnit);
 
-            // Check if amount exceeds a reasonable limit (example limit: 10000000 paise = ₹100000)
-            const maxAllowedAmount = 10000000; // Example limit in paise
+           
+            const maxAllowedAmount = 10000000; 
             if (amountInSmallestUnit > maxAllowedAmount) {
                 console.error("Amount exceeds maximum allowed limit.");
                 return res.status(400).json({ success: false, message: 'Amount exceeds maximum amount allowed.' });

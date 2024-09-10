@@ -200,7 +200,7 @@ const admin404 = async(req,res)=>{
 
 
 const orderdetails = async(req,res)=>{
-  console.log("controller is here");
+  // console.log("controller is here");
   try {
     {
       const orderid=req.query.id
@@ -211,6 +211,7 @@ const orderdetails = async(req,res)=>{
       const userdata=await user.findById(orderData.userId)
      
       const address = await Address.find({userId:orderData.userId})
+      // console.log(address,"this is the addresss for the user");
  
       const productIds = orderData.product.map(product => product.product);
 
@@ -392,138 +393,206 @@ const updatecoupon = async(req,res)=>{
 
 const salesreport = async (req, res) => {
   try {
-      const page = parseInt(req.query.page) || 1;
-      const pagelimit = 6;
-      const { startDate, endDate, timeRange = 'yearly', status = 'All' } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const pagelimit = 6;
+    const { startDate, endDate, timeRange = 'yearly', status = 'All', category = 'all' } = req.query;
 
-      const filter = {
-          Order_verified: true,
-          status: 'Delivered',
-          ...(startDate && endDate ? { placed: { $gte: new Date(startDate), $lte: new Date(endDate) } } : {})
-      };
+    // Define the filter
+    const filter = {
+      Order_verified: true,
+      ...(status !== 'All' ? { status: status } : {}),
+      ...(startDate && endDate ? { placed: { $gte: new Date(startDate), $lte: new Date(endDate) } } : {}),
+      ...(category !== 'all' ? { 'product.category': new mongoose.Types.ObjectId(category) } : {})
+    };
 
-      const numberoforders = await Order.countDocuments(filter);
-      const totalpages = Math.ceil(numberoforders / pagelimit);
+    console.log("Filter:", filter); // Log the filter
 
-      const validpage = Math.min(Math.max(page, 1), totalpages);
-      const skip = (validpage - 1) * pagelimit;
+    // Count the total number of orders matching the filter
+    const numberoforders = await Order.countDocuments(filter);
+    console.log("Total Orders Count:", numberoforders); // Log the count
 
-      const orders = await Order.find(filter)
-          .sort({ placed: -1 })
-          .skip(skip)
-          .limit(pagelimit);
+    const totalpages = Math.ceil(numberoforders / pagelimit);
+    console.log("Total Pages:", totalpages); // Log total pages
 
-      const userData = await user.findOne({ _id: req.session.user_id });
-      const productdata = await product.findOne({ Verified: true });
-      const category = await Category.find();
+    // Calculate the valid page number and skip value
+    const validpage = Math.min(Math.max(page, 1), totalpages);
+    console.log("Valid Page:", validpage); // Log the valid page number
 
-      res.render('sales-report', {
-          username: userData.name,
-          totalpages,
-          page: validpage,
-          product: productdata,
-          timeRange,
-          status,
-          orders,
-          categorys: category
-      });
+    const skip = (validpage - 1) * pagelimit;
+    console.log("Skip Value:", skip); // Log the skip value
+
+    // Fetch the orders with the applied filter
+    const orders = await Order.find(filter)
+      .sort({ placed: -1 })
+      .skip(skip)
+      .limit(pagelimit);
+
+    console.log("Orders Retrieved:", orders); // Log the retrieved orders
+
+    // Fetch user data and categories
+    const userData = await user.findOne({ _id: req.session.user_id });
+    const categories = await Category.find();
+
+    // Render the sales report page
+    res.render('sales-report', {
+      username: userData ? userData.name : 'Guest',
+      totalpages,
+      page: validpage,
+      timeRange,
+      status,
+      orders,
+      categories,
+      category,
+      startDate,
+      endDate,
+    });
 
   } catch (error) {
-      console.log(error.message);
-      res.status(500).send('Server Error');
+    console.log(error.message);
+    res.status(500).send('Server Error');
   }
 };
 
 
 const weeklysales = async (req, res) => {
-  console.log("this is weekly");
+  console.log("hi hello");
   try {
-      const startOfWeek = moment().startOf('week').toDate();
-      const endOfWeek = moment().endOf('week').toDate();
+    const startOfWeek = moment().startOf('week').toDate();
+    const endOfWeek = moment().endOf('week').toDate();
+    
+    const category = req.query.category || 'all';
+    
+    console.log("Category from query:", category);
+    console.log("Start of week:", startOfWeek);
+    console.log("End of week:", endOfWeek);
+    
+    let productIds = [];
+    if (category !== 'all') {
+      const products = await product.find({ category: new mongoose.Types.ObjectId(category) });
+      productIds = products.map(product => product._id);
+    }
 
-      console.log("From the backend - Week start:", startOfWeek);
-      console.log("From the backend - Week end:", endOfWeek);
+    const filter = {
+      placed: { $gte: startOfWeek, $lte: endOfWeek },
+      status: "Delivered",
+    };
+    
+    if (productIds.length > 0) {
+      filter['product.product'] = { $in: productIds };
+    }
 
-      const weeklyOrders = await Order.find({
-          placed: { $gte: startOfWeek, $lte: endOfWeek },
-          status: "Delivered"
-      }).sort({ placed: -1 });
+    const weeklyOrders = await Order.find(filter).sort({ placed: -1 });
 
-   
+    console.log("Orders retrieved:", weeklyOrders);
 
-      res.json(weeklyOrders);
+    if (weeklyOrders.length === 0) {
+      console.log("No orders found matching the criteria.");
+    }
+
+    res.json(weeklyOrders);
   } catch (error) {
-      console.log(error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error retrieving weekly sales:", error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 const dailySales = async (req, res) => {
   try {
-      const startOfDay = moment().startOf('day').toDate();
-      const endOfDay = moment().endOf('day').toDate();
+    const startOfDay = moment().startOf('day').toDate();
+    const endOfDay = moment().endOf('day').toDate();
+    
+    const category = req.query.category || 'all';
+    let productIds = [];
+    
+    if (category !== 'all') {
+      const products = await product.find({ category: new mongoose.Types.ObjectId(category) });
+      productIds = products.map(product => product._id);
+    }
 
-      console.log("From the backend - Day start:", startOfDay);
-      console.log("From the backend - Day end:", endOfDay);
+    const filter = {
+      placed: { $gte: startOfDay, $lte: endOfDay },
+      status: "Delivered",
+    };
+    
+    if (productIds.length > 0) {
+      filter['product.product'] = { $in: productIds };
+    }
 
-      const dailyOrders = await Order.find({
-          placed: { $gte: startOfDay, $lte: endOfDay },
-          status: "Delivered"
-      }).sort({ placed: -1 });
+    const dailyOrders = await Order.find(filter).sort({ placed: -1 });
 
-      res.json(dailyOrders);
+    res.json(dailyOrders);
   } catch (error) {
-      console.log(error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.log(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+
 
 const monthlysales = async (req, res) => {
   try {
-      const startOfMonth = moment().startOf('month').toDate();
-      const endOfMonth = moment().endOf('month').toDate();
+    const startOfMonth = moment().startOf('month').toDate();
+    const endOfMonth = moment().endOf('month').toDate();
+    
+    const category = req.query.category || 'all';
+    let productIds = [];
+    
+    if (category !== 'all') {
+      const products = await product.find({ category: new mongoose.Types.ObjectId(category) });
+      productIds = products.map(product => product._id);
+    }
 
-      console.log("From the backend - Month start:", startOfMonth);
-      console.log("From the backend - Month end:", endOfMonth);
+    const filter = {
+      placed: { $gte: startOfMonth, $lte: endOfMonth },
+      status: "Delivered",
+    };
+    
+    if (productIds.length > 0) {
+      filter['product.product'] = { $in: productIds };
+    }
 
-      const monthOrders = await Order.find({
-          placed: { $gte: startOfMonth, $lte: endOfMonth },
-          status: "Delivered"
-      }).sort({ placed: -1 });
+    const monthOrders = await Order.find(filter).sort({ placed: -1 });
 
-      // console.log("From the backend - Monthly Orders:", monthOrders);
-
-      res.json(monthOrders);
+    res.json(monthOrders);
   } catch (error) {
-      console.log(error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.log(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 const yearlysales = async (req, res) => {
   try {
+    const startOfYear = moment().startOf('year').toDate();
+    const endOfYear = moment().endOf('year').toDate();
+    
+    const category = req.query.category || 'all';
+    let productIds = [];
+    
+    if (category !== 'all') {
+      const products = await product.find({ category: new mongoose.Types.ObjectId(category) });
+      productIds = products.map(product => product._id);
+    }
 
-    console.log("hi from the yearly");
+    const filter = {
+      placed: { $gte: startOfYear, $lte: endOfYear },
+      status: "Delivered",
+    };
+    
+    if (productIds.length > 0) {
+      filter['product.product'] = { $in: productIds };
+    }
 
-      const startOfYear = moment().startOf('year').toDate();
-      const endOfYear = moment().endOf('year').toDate();
+    const yearlyOrders = await Order.find(filter).sort({ placed: -1 });
 
-      console.log("From the backend - Year start:", startOfYear);
-      console.log("From the backend - Year end:", endOfYear);
-
-      const yearlyOrders = await Order.find({
-          placed: { $gte: startOfYear, $lte: endOfYear },
-          status: "Delivered"
-      }).sort({ placed: -1 });
-
-      // console.log("From the backend - Yearly Orders:", yearlyOrders);
-
-      res.json(yearlyOrders);
+    res.json(yearlyOrders);
   } catch (error) {
-      console.log(error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.log(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 const getAllDeliveredOrders = async (req, res) => {
   try {
@@ -677,45 +746,48 @@ const removeoffer = async(req,res)=>{
 const downloadpdf = async (req, res) => {
   try {
     const doc = new PDFDocument();
-    const { timeRange, startDate, endDate } = req.query || req.body;
-    console.log(`Start Date: ${startDate}, End Date: ${endDate}, Time Range: ${timeRange}`);
+    const { timeRange, startDate, endDate, category = 'all' } = req.query || req.body;
 
-    console.log('Received Parameters:');
-    console.log(`Time Range: ${timeRange}`);
-    console.log(`Start Date: ${startDate}`);
-    console.log(`End Date: ${endDate}`)
+    console.log(`Start Date: ${startDate}, End Date: ${endDate}, Time Range: ${timeRange}, Category: ${category}`);
 
+    // Define the filter based on time range
     let filter = { status: "Delivered" };
+    const startOfWeek = moment().startOf('week').toDate();
+    const endOfWeek = moment().endOf('week').toDate();
+
     if (timeRange === 'daily') {
-      const startOfDay = moment().startOf('day');
-      const endOfDay = moment().endOf('day');
-      filter.placed = { $gte: startOfDay.toDate(), $lte: endOfDay.toDate() };
+      filter.placed = { $gte: moment().startOf('day').toDate(), $lte: moment().endOf('day').toDate() };
     } else if (timeRange === 'weekly') {
-      const startOfWeek = moment().startOf('week');
-      const endOfWeek = moment().endOf('week');
-      filter.placed = { $gte: startOfWeek.toDate(), $lte: endOfWeek.toDate() };
+      filter.placed = { $gte: startOfWeek, $lte: endOfWeek };
     } else if (timeRange === 'monthly') {
-      const startOfMonth = moment().startOf('month');
-      const endOfMonth = moment().endOf('month');
-      filter.placed = { $gte: startOfMonth.toDate(), $lte: endOfMonth.toDate() };
+      filter.placed = { $gte: moment().startOf('month').toDate(), $lte: moment().endOf('month').toDate() };
     } else if (timeRange === 'yearly') {
-      const startOfYear = moment().startOf('year');
-      const endOfYear = moment().endOf('year');
-      filter.placed = { $gte: startOfYear.toDate(), $lte: endOfYear.toDate() };
+      filter.placed = { $gte: moment().startOf('year').toDate(), $lte: moment().endOf('year').toDate() };
     } else if (timeRange === 'custom' && startDate && endDate) {
-      console.log('Applying Custom Date Range Filter');
       filter.placed = { $gte: new Date(startDate), $lte: new Date(endDate) };
     }
-    console.log(`Start Date: ${startDate}, End Date: ${endDate}, Time Range: custom`);
 
-    console.log('Filter:', filter);
-    const orderdata = await Order.find(filter);
+    // Handle category filtering
+    let productIds = [];
+    if (category !== 'all') {
+      const products = await product.find({ category: new mongoose.Types.ObjectId(category) });
+      productIds = products.map(product => product._id);
+    }
 
+    if (productIds.length > 0) {
+      filter['product.product'] = { $in: productIds };
+    }
+
+    // Fetch orders based on the combined filter
+    let orderdata = await Order.find(filter).sort({ placed: -1 });
+
+    // Calculate overall stats
     const overallSalesCount = orderdata.length;
     let overallOrderAmount = 0;
     let totalDiscount = 0;
     let totalCouponDeduction = 0;
 
+    // Process each order for discounts and coupon deductions
     const detailedOrders = await Promise.all(orderdata.map(async order => {
       let orderDiscount = 0;
       let orderCouponDeduction = 0;
@@ -748,6 +820,7 @@ const downloadpdf = async (req, res) => {
       };
     }));
 
+    // Generate the PDF
     const currentdate = new Date();
     const time = currentdate.getTime();
     res.setHeader('Content-Disposition', `attachment; filename="sales_report-${time}.pdf"`);
@@ -759,8 +832,6 @@ const downloadpdf = async (req, res) => {
 
     doc.fontSize(10).text(`Overall Sales Count: ${overallSalesCount}`).moveDown();
     doc.fontSize(10).text(`Overall Order Amount: ₹${overallOrderAmount.toFixed(2)}`).moveDown();
-    // doc.fontSize(10).text(`Total Discount: ₹${totalDiscount.toFixed(2)}`).moveDown();
-    // doc.fontSize(10).text(`Total Coupon Deduction: ₹${totalCouponDeduction.toFixed(2)}`).moveDown().moveDown();
 
     const table = {
       headers: ['Order ID', 'Billing Name', 'Date', 'Total',  'Payment Status', 'Payment Method', 'Order Status'],
@@ -769,8 +840,6 @@ const downloadpdf = async (req, res) => {
         order.Address[0].name,
         order.date,
         `₹${order.totalprice.toFixed(2)}`,
-        // `₹${order.orderDiscount.toFixed(2)}`,
-        // `₹${order.orderCouponDeduction.toFixed(2)}`,
         order.paymentstatus,
         order.payment,
         order.status
@@ -780,7 +849,7 @@ const downloadpdf = async (req, res) => {
     doc.table(table, {
       columnSpacing: 10,
       padding: 10,
-      columnsSize: [160, 80, 80, 80, 80, 80, 80, 80, 80],
+      columnsSize: [160, 80, 80, 80, 80, 80, 80],
       align: "center",
       prepareHeader: () => doc.font('Helvetica-Bold'),
       prepareRow: (row, i) => doc.font('Helvetica').fontSize(10),
@@ -798,34 +867,39 @@ const downloadexcel = async (req, res) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Sales Report');
 
-    const timeRange = req.query.timeRange;
+    const { timeRange, startDate, endDate, category = 'all' } = req.query;
 
-    
+    // Define the filter based on time range
     let filter = { status: "Delivered" };
+
+    const startOfWeek = moment().startOf('week').toDate();
+    const endOfWeek = moment().endOf('week').toDate();
+
     if (timeRange === 'daily') {
-      const startOfDay = moment().startOf('day');
-      const endOfDay = moment().endOf('day');
-      filter.placed = { $gte: startOfDay.toDate(), $lte: endOfDay.toDate() };
+      filter.placed = { $gte: moment().startOf('day').toDate(), $lte: moment().endOf('day').toDate() };
     } else if (timeRange === 'weekly') {
-      const startOfWeek = moment().startOf('week');
-      const endOfWeek = moment().endOf('week');
-      filter.placed = { $gte: startOfWeek.toDate(), $lte: endOfWeek.toDate() };
+      filter.placed = { $gte: startOfWeek, $lte: endOfWeek };
     } else if (timeRange === 'monthly') {
-      const startOfMonth = moment().startOf('month');
-      const endOfMonth = moment().endOf('month');
-      filter.placed = { $gte: startOfMonth.toDate(), $lte: endOfMonth.toDate() };
+      filter.placed = { $gte: moment().startOf('month').toDate(), $lte: moment().endOf('month').toDate() };
     } else if (timeRange === 'yearly') {
-      const startOfYear = moment().startOf('year');
-      const endOfYear = moment().endOf('year');
-      filter.placed = { $gte: startOfYear.toDate(), $lte: endOfYear.toDate() };
-    } else if (timeRange === 'custom') {
-      const { startDate, endDate } = req.query;
+      filter.placed = { $gte: moment().startOf('year').toDate(), $lte: moment().endOf('year').toDate() };
+    } else if (timeRange === 'custom' && startDate && endDate) {
       filter.placed = { $gte: new Date(startDate), $lte: new Date(endDate) };
     }
 
-    console.log('Filter:', filter);
+    // Handle category filtering
+    let productIds = [];
+    if (category !== 'all') {
+      const products = await product.find({ category: new mongoose.Types.ObjectId(category) });
+      productIds = products.map(product => product._id);
+    }
 
-    const orderdata = await Order.find(filter);
+    if (productIds.length > 0) {
+      filter['product.product'] = { $in: productIds };
+    }
+
+    // Fetch orders based on the combined filter
+    const orderdata = await Order.find(filter).sort({ placed: -1 });
 
     const overallSalesCount = orderdata.length;
     let overallOrderAmount = 0;
@@ -836,7 +910,6 @@ const downloadexcel = async (req, res) => {
       let orderDiscount = 0;
       let orderCouponDeduction = 0;
 
-   
       const products = await product.find({ _id: { $in: order.product.map(p => p.productId) } });
       products.forEach(product => {
         if (product.offer > 0) {
@@ -847,7 +920,6 @@ const downloadexcel = async (req, res) => {
         }
       });
 
-      
       if (order.couponCode) {
         const coupon = await Coupon.findOne({ couponCode: order.couponCode });
         if (coupon) {
@@ -871,34 +943,28 @@ const downloadexcel = async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="sales_report-${time}.xlsx"`);
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
-    
     worksheet.addRow(['Sales Report', currentdate.toLocaleDateString()]);
     worksheet.addRow([]);
     worksheet.addRow(['Overall Sales Count', overallSalesCount]);
-    worksheet.addRow(['Overall Order Amount', `₹${overallOrderAmount}`]);
-    // worksheet.addRow(['Total Discount', `₹${totalDiscount}`]);
-    // worksheet.addRow(['Total Coupon Deduction', `₹${totalCouponDeduction}`]);
+    worksheet.addRow(['Overall Order Amount', `₹${overallOrderAmount.toFixed(2)}`]);
+    // worksheet.addRow(['Total Discount', `₹${totalDiscount.toFixed(2)}`]);
+    // worksheet.addRow(['Total Coupon Deduction', `₹${totalCouponDeduction.toFixed(2)}`]);
     worksheet.addRow([]);
 
-   
-    worksheet.addRow(['Order ID', 'Billing Name', 'Date', 'Total',  'Payment Status', 'Payment Method', 'Order Status']);
+    worksheet.addRow(['Order ID', 'Billing Name', 'Date', 'Total', 'Payment Status', 'Payment Method', 'Order Status']);
 
-   
     detailedOrders.forEach(order => {
       worksheet.addRow([
         order._id,
         order.Address[0].name,
         order.date,
-        `₹${order.totalprice}`,
-        // `₹${order.orderDiscount}`,
-        // `₹${order.orderCouponDeduction}`,
+        `₹${order.totalprice.toFixed(2)}`,
         order.paymentstatus,
         order.payment,
         order.status
       ]);
     });
 
-    
     worksheet.columns.forEach(column => {
       column.width = 20;
     });
@@ -910,6 +976,7 @@ const downloadexcel = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
 
 const saleschart = async (req, res) => {
   try {

@@ -450,6 +450,8 @@ const returnorder = async (req, res) => {
        
         res.json({ order });
 
+        console.log(order,"tggggggggghn");
+
     } catch (error) {
         console.log(error);
         res.status(500).send("server error");
@@ -489,6 +491,8 @@ const verifyPaymentAndAddToWallet = async (req, res) => {
             }
 
             await wallet.save();
+
+            console.log(wallet,"his is jwh");
             res.status(200).json({ success: true, message: 'Wallet balance updated successfully' });
         } else {
             res.status(400).json({ success: false, message: 'Payment verification failed' });

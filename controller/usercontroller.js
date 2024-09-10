@@ -606,17 +606,27 @@ const getWishlist = async (req, res) => {
     try {
         const user = req.session.user;
 
-       
-        const wishlist = await Wish.findOne({ userId: user }).populate('product.productId');
-        const wishlists = await Wish.findOne({ userId:user})
-        const wishcount = wishlist? wishlist.product.length : 0;
+        let wishlist = await Wish.findOne({ userId: user }).populate('product.productId');
+        if (wishlist) {
+           
+            const validProducts = wishlist.product.filter(item => item.productId !== null);
+            if (validProducts.length !== wishlist.product.length) {
+                wishlist.product = validProducts;
+                await wishlist.save(); 
+            }
+        }
 
-        res.render('wishlist', { wishlist , wishcount});
+        const wishcount = wishlist ? wishlist.product.length : 0;
+
+        res.render('wishlist', { wishlist, wishcount });
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Internal Server Error');
     }
 };
+
+
+    
 const deletewishlist = async (req, res) => {
     try {
         // console.log("controller is here for the delete");

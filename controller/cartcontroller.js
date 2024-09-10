@@ -5,9 +5,6 @@ const Address = require('../model/addressmodel')
 const Coupon = require("../model/couponmodel")
 const mongoose=require('mongoose')
 
-
-
-
 const getcart = async (req, res) => {
   
     try {
@@ -15,6 +12,8 @@ const getcart = async (req, res) => {
      console.log("hi");
       
         const userCart = await cart.findOne({ user_id: userId }).populate('items.product_id');
+
+        console.log(userCart,"this is cart");
        
         if (userCart && userCart.items.length > 0) {
        
@@ -83,13 +82,13 @@ const addtocart = async (req, res) => {
         return res.status(500).send({ message: "Internal Server Error" });
     }
 };
+
 const updatecart = async (req, res) => {
     try {
         const { productId, quantity } = req.body;
         const user = req.session.user;
 
         let Cart = await cart.findOne({ user_id: user });
-
         if (!Cart) {
             return res.status(404).json({ error: 'Cart not found' });
         }
@@ -109,10 +108,20 @@ const updatecart = async (req, res) => {
         const requestedQuantity = parseInt(quantity);
         const newQuantity = currentQuantityInCart + requestedQuantity;
 
+        if (currentQuantityInCart > Product.countInstock) {
+            Cart.items[productIndex].quantity = Product.countInstock; 
+            await Cart.save();
+            return res.status(400).json({
+                message: `Product stock has been reduced by the admin. Your cart quantity is adjusted to the available stock of ${Product.countInstock}.`
+            });
+        }
+
+     
         if (newQuantity > Product.countInstock) {
             return res.status(400).json({ error: 'Requested quantity exceeds available stock' });
         }
 
+      
         if (productIndex !== -1) {
             if (requestedQuantity > 0) {
                 Cart.items[productIndex].quantity = newQuantity;
@@ -130,6 +139,7 @@ const updatecart = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 
 const cartdelete = async (req, res) => {
     console.log("controller for the delete");
@@ -192,12 +202,39 @@ const checkout = async (req, res) => {
         ]);
 
         if (!cartaggregation || cartaggregation.length === 0) {
-            return res.status(404).render('checkout', { username: userdata.name });
+            return res.status(404).render('checkout', { username: userdata.name, error: null });
         }
 
         const cartdata = cartaggregation[0];
         const products = cartdata.products;
         const items = cartdata.items;
+
+        
+        let stockUpdated = false;
+        items.forEach((item, index) => {
+            const product = products[index];
+            if (item.quantity > product.countInstock) {
+                items[index].quantity = product.countInstock; 
+                stockUpdated = true;
+            }
+        });
+
+        if (stockUpdated) {
+            await cart.updateOne({ _id: cartdata._id }, { $set: { items } });
+            return res.status(400).render('checkout', {
+                products,
+                cart: { ...cartdata, items },
+                cartitem: items,
+                addresses: await Address.findOne({ userId }),
+                username: userdata.name,
+                subtotal: items.reduce((acc, item) => acc + (item.price * item.quantity), 0),
+                discountAmount: 0,
+                discountTotal: items.reduce((acc, item) => acc + (item.price * item.quantity), 0),
+                coupons: await Coupon.find().sort({ created: -1 }),
+                error: 'Some items in your cart were adjusted due to stock changes.'  
+            });
+        }
+
         const addresses = await Address.findOne({ userId: userId });
 
         let subtotal = 0;
@@ -221,6 +258,7 @@ const checkout = async (req, res) => {
         const coupons = await Coupon.find().sort({ created: -1 });
         const availableCoupons = coupons.filter(coupon => coupon.couponCode !== usedCouponCode);
 
+      
         res.render('checkout', {
             products,
             cart: cartdata,
@@ -230,7 +268,8 @@ const checkout = async (req, res) => {
             subtotal,
             discountAmount,
             discountTotal,
-            coupons: availableCoupons 
+            coupons: availableCoupons,
+            error: null 
         });
 
     } catch (error) {
@@ -238,6 +277,9 @@ const checkout = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 };
+
+
+
 
 
 

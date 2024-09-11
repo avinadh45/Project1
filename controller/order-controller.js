@@ -385,31 +385,19 @@ const removecoupon = async (req, res) => {
 const retryPayment = async (req, res) => {
     const { id } = req.query;
     console.log("hi from the retry");
+
     try {
         const order = await Order.findById(id);
         if (!order) {
-            console.error("Order not found with id:", id);
             return res.status(404).json({ success: false, message: 'Order not found' });
         }
 
         if (order.paymentstatus === "Pending") {
+            const razorpayOrder = await razorpayorder(order.totalprice);
+
             
-            const amountInSmallestUnit = Math.round(order.totalprice * 100);
-
-            console.log("Amount in smallest unit:", amountInSmallestUnit);
-
-           
-            const maxAllowedAmount = 10000000; 
-            if (amountInSmallestUnit > maxAllowedAmount) {
-                console.error("Amount exceeds maximum allowed limit.");
-                return res.status(400).json({ success: false, message: 'Amount exceeds maximum amount allowed.' });
-            }
-
-            const razorpayOrder = await razorpayorder(amountInSmallestUnit);
-
-            console.log("Razorpay order created:", razorpayOrder);
-
             req.session.pendingOrderId = order._id;
+            console.log(`Order ID stored in session: ${req.session.pendingOrderId}`);
 
             res.status(200).json({
                 success: true,
@@ -419,15 +407,13 @@ const retryPayment = async (req, res) => {
                 orderId: order._id
             });
         } else {
-            console.error("Order is not eligible for retry. Payment status:", order.paymentstatus);
             res.status(400).json({ success: false, message: 'Order already paid or not eligible for retry' });
         }
     } catch (error) {
-        console.error("Error in retry payment:", error);
+        console.log("Error in retry payment:", error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 };
-
 
 
 

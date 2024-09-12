@@ -88,11 +88,13 @@ const updatecart = async (req, res) => {
         const { productId, quantity } = req.body;
         const user = req.session.user;
 
+       
         let Cart = await cart.findOne({ user_id: user });
         if (!Cart) {
             return res.status(404).json({ error: 'Cart not found' });
         }
 
+     
         const Product = await product.findById(productId);
         if (!Product) {
             return res.status(404).json({ error: 'Product not found' });
@@ -105,9 +107,10 @@ const updatecart = async (req, res) => {
             currentQuantityInCart = Cart.items[productIndex].quantity;
         }
 
-        const requestedQuantity = parseInt(quantity);
-        const newQuantity = currentQuantityInCart + requestedQuantity;
+        const requestedQuantity = parseInt(quantity); 
+        const newQuantity = currentQuantityInCart + requestedQuantity; 
 
+      
         if (currentQuantityInCart > Product.countInstock) {
             Cart.items[productIndex].quantity = Product.countInstock; 
             await Cart.save();
@@ -116,27 +119,29 @@ const updatecart = async (req, res) => {
             });
         }
 
-     
+       
         if (newQuantity > Product.countInstock) {
-            return res.status(400).json({ error: 'Requested quantity exceeds available stock' });
+            return res.status(400).json({
+                error: `Requested quantity exceeds available stock. Only ${Product.countInstock} items in stock.`
+            });
         }
 
-      
+       
         if (productIndex !== -1) {
-            if (requestedQuantity > 0) {
+            if (newQuantity > 0) {
                 Cart.items[productIndex].quantity = newQuantity;
             } else {
-                Cart.items.splice(productIndex, 1);
+                Cart.items.splice(productIndex, 1); 
             }
         } else if (requestedQuantity > 0) {
             Cart.items.push({ product_id: productId, quantity: requestedQuantity });
         }
 
         await Cart.save();
-        res.status(200).json({ message: 'Cart updated successfully' });
+        return res.status(200).json({ message: 'Cart updated successfully' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 

@@ -397,7 +397,7 @@ const salesreport = async (req, res) => {
     const pagelimit = 6;
     const { startDate, endDate, timeRange = 'yearly', status = 'All', category = 'all' } = req.query;
 
-    // Define the filter
+    
     const filter = {
       Order_verified: true,
       ...(status !== 'All' ? { status: status } : {}),
@@ -405,35 +405,35 @@ const salesreport = async (req, res) => {
       ...(category !== 'all' ? { 'product.category': new mongoose.Types.ObjectId(category) } : {})
     };
 
-    console.log("Filter:", filter); // Log the filter
+    console.log("Filter:", filter);
 
-    // Count the total number of orders matching the filter
+   
     const numberoforders = await Order.countDocuments(filter);
-    console.log("Total Orders Count:", numberoforders); // Log the count
+    console.log("Total Orders Count:", numberoforders); 
 
     const totalpages = Math.ceil(numberoforders / pagelimit);
-    console.log("Total Pages:", totalpages); // Log total pages
+    console.log("Total Pages:", totalpages); 
 
-    // Calculate the valid page number and skip value
+    
     const validpage = Math.min(Math.max(page, 1), totalpages);
-    console.log("Valid Page:", validpage); // Log the valid page number
+    console.log("Valid Page:", validpage); 
 
     const skip = (validpage - 1) * pagelimit;
-    console.log("Skip Value:", skip); // Log the skip value
+    console.log("Skip Value:", skip); 
 
-    // Fetch the orders with the applied filter
+    
     const orders = await Order.find(filter)
       .sort({ placed: -1 })
       .skip(skip)
       .limit(pagelimit);
 
-    console.log("Orders Retrieved:", orders); // Log the retrieved orders
+    console.log("Orders Retrieved:", orders); 
 
-    // Fetch user data and categories
+    
     const userData = await user.findOne({ _id: req.session.user_id });
     const categories = await Category.find();
 
-    // Render the sales report page
+    
     res.render('sales-report', {
       username: userData ? userData.name : 'Guest',
       totalpages,
@@ -750,7 +750,7 @@ const downloadpdf = async (req, res) => {
 
     console.log(`Start Date: ${startDate}, End Date: ${endDate}, Time Range: ${timeRange}, Category: ${category}`);
 
-    // Define the filter based on time range
+   
     let filter = { status: "Delivered" };
     const startOfWeek = moment().startOf('week').toDate();
     const endOfWeek = moment().endOf('week').toDate();
@@ -767,7 +767,7 @@ const downloadpdf = async (req, res) => {
       filter.placed = { $gte: new Date(startDate), $lte: new Date(endDate) };
     }
 
-    // Handle category filtering
+    
     let productIds = [];
     if (category !== 'all') {
       const products = await product.find({ category: new mongoose.Types.ObjectId(category) });
@@ -778,16 +778,16 @@ const downloadpdf = async (req, res) => {
       filter['product.product'] = { $in: productIds };
     }
 
-    // Fetch orders based on the combined filter
+   
     let orderdata = await Order.find(filter).sort({ placed: -1 });
 
-    // Calculate overall stats
+    
     const overallSalesCount = orderdata.length;
     let overallOrderAmount = 0;
     let totalDiscount = 0;
     let totalCouponDeduction = 0;
 
-    // Process each order for discounts and coupon deductions
+    
     const detailedOrders = await Promise.all(orderdata.map(async order => {
       let orderDiscount = 0;
       let orderCouponDeduction = 0;
@@ -820,7 +820,7 @@ const downloadpdf = async (req, res) => {
       };
     }));
 
-    // Generate the PDF
+    
     const currentdate = new Date();
     const time = currentdate.getTime();
     res.setHeader('Content-Disposition', `attachment; filename="sales_report-${time}.pdf"`);
@@ -869,7 +869,7 @@ const downloadexcel = async (req, res) => {
 
     const { timeRange, startDate, endDate, category = 'all' } = req.query;
 
-    // Define the filter based on time range
+    
     let filter = { status: "Delivered" };
 
     const startOfWeek = moment().startOf('week').toDate();
@@ -887,7 +887,7 @@ const downloadexcel = async (req, res) => {
       filter.placed = { $gte: new Date(startDate), $lte: new Date(endDate) };
     }
 
-    // Handle category filtering
+    
     let productIds = [];
     if (category !== 'all') {
       const products = await product.find({ category: new mongoose.Types.ObjectId(category) });
@@ -898,7 +898,7 @@ const downloadexcel = async (req, res) => {
       filter['product.product'] = { $in: productIds };
     }
 
-    // Fetch orders based on the combined filter
+    
     const orderdata = await Order.find(filter).sort({ placed: -1 });
 
     const overallSalesCount = orderdata.length;

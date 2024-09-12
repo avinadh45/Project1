@@ -1191,24 +1191,25 @@
         }
         
         function increase(productId) {
-            const quantityInput = document.getElementById(`quantity_${productId}`);
-            let currentQuantity = parseInt(quantityInput.value, 10);
-        
-            updateCartItem(productId, 1)
-                .then(() => {
-                    currentQuantity++;
-                    quantityInput.value = currentQuantity;
-                    updateTotal(productId, currentQuantity);
-                    updateSubtotal();
-                })
-                .catch(error => {
-                    Swal.fire({
-                        icon: 'error',
-                            title: 'Oops...',
-                            text: error.message,
-                        });
-                    });
-        }
+    const quantityInput = document.getElementById(`quantity_${productId}`);
+    let currentQuantity = parseInt(quantityInput.value, 10);
+
+    updateCartItem(productId, 1)
+        .then(response => {
+            currentQuantity++;
+            quantityInput.value = currentQuantity;
+            updateTotal(productId, currentQuantity);
+            updateSubtotal();
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: error.message || 'Requested quantity exceeds available stock.',
+            });
+        });
+}
+
         
         function updateTotal(productId, quantity) {
             const priceElement = document.getElementById(`price_${productId}`);

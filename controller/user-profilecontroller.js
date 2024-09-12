@@ -433,75 +433,80 @@ const returnorder = async (req, res) => {
     }
   };
   
- const Addwallet = async (req, res) => {
-    try {
-        const amount = parseFloat(req.body.amount);
-        const userId = req.session.user._id;
-        console.log(userId, "to add the wallet");
-        console.log(amount, "amount to be added to the wallet");
-
-        
-        const order = await instance.orders.create({
-            amount: amount * 100,
-            currency: "INR",
-            receipt: userId.toString()
-        });
-
-       
-        res.json({ order });
-
-        console.log(order,"tggggggggghn");
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("server error");
-    }
-};
-
-const verifyPaymentAndAddToWallet = async (req, res) => {
-    try {
-        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-        const amount = parseFloat(req.body.amount);
-        const userId = req.session.user._id;
-
-        const hmac = crypto.createHmac('sha256', instance.key_secret);
-        hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
-        const generated_signature = hmac.digest('hex');
-
-        if (generated_signature === razorpay_signature) {
+ 
+    const Addwallet = async (req, res) => {
+        try {
+            const amount = parseFloat(req.body.amount);  
+            const userId = req.session.user._id;
+            console.log(userId, "to add the wallet");
+            console.log(amount, "amount to be added to the wallet");
+    
            
-            let wallet = await Wallet.findOne({ userId });
-            if (!wallet) {
-                wallet = new Wallet({
-                    userId,
-                    balance: amount,
-                    history: [{
-                        amount: amount,
+            const order = await instance.orders.create({
+                amount: amount * 100, 
+                currency: "INR",
+                receipt: userId.toString()
+            });
+    
+            res.json({ order });
+            console.log(order, "Order created for Razorpay");
+        } catch (error) {
+            console.log(error);
+            res.status(500).send("server error");
+        }
+    };
+
+    const verifyPaymentAndAddToWallet = async (req, res) => {
+        try {
+            const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+            let amount = parseFloat(req.body.amount); 
+    
+            const userId = req.session.user._id;
+    
+        
+            const hmac = crypto.createHmac('sha256', instance.key_secret);
+            hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+            const generated_signature = hmac.digest('hex');
+    
+            if (generated_signature === razorpay_signature) {
+             
+                amount = amount / 100;
+    
+               
+                let wallet = await Wallet.findOne({ userId });
+                if (!wallet) {
+                    wallet = new Wallet({
+                        userId,
+                        balance: amount, 
+                        history: [{
+                            amount: amount,
+                            type: 'credit',
+                            createdAt: Date.now()
+                        }]
+                    });
+                } else {
+                    wallet.balance += amount; 
+                    wallet.history.push({
+                        amount: amount, 
                         type: 'credit',
                         createdAt: Date.now()
-                    }]
-                });
+                    });
+                }
+    
+                await wallet.save();
+    
+                console.log(wallet, "Wallet updated");
+                res.status(200).json({ success: true, message: 'Wallet balance updated successfully' });
             } else {
-                wallet.balance += amount;
-                wallet.history.push({
-                    amount: amount,
-                    type: 'credit',
-                    createdAt: Date.now()
-                });
+                res.status(400).json({ success: false, message: 'Payment verification failed' });
             }
-
-            await wallet.save();
-
-            console.log(wallet,"his is jwh");
-            res.status(200).json({ success: true, message: 'Wallet balance updated successfully' });
-        } else {
-            res.status(400).json({ success: false, message: 'Payment verification failed' });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send("server error");
         }
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("server error");
-    }
-};
+    };
+    
+
 const invoicedownload = async (req, res) => {
     try {
         const orderid = req.params.orderid;

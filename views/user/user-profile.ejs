@@ -1287,9 +1287,11 @@
   <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> -->
 
   <script>
-    async function createOrder(event) {
+     async function createOrder(event) {
         event.preventDefault();
         const amount = document.getElementById('amountInput').value;
+        
+        // Create the order on the backend
         const response = await fetch('/addtowallet', {
             method: 'POST',
             headers: {
@@ -1297,7 +1299,11 @@
             },
             body: JSON.stringify({ amount })
         });
+        
+        // Retrieve the order details
         const { order } = await response.json();
+        
+        // Razorpay options
         const options = {
             key: "rzp_test_KBfeMuv9hM52Z0", 
             amount: order.amount,
@@ -1306,8 +1312,8 @@
             description: "Add Funds to Wallet",
             order_id: order.id,
             handler: function (response) {
-               
-                (response, amount);
+                // Trigger the verification process after successful payment
+                verifyPayment(response, order.amount);  // Call verifyPayment with response and order amount
             },
             prefill: {
                 name: "Avinadh and co",
@@ -1318,44 +1324,43 @@
                 color: "#3399cc"
             }
         };
+        
+        // Open Razorpay's payment modal
         const rzp1 = new Razorpay(options);
         rzp1.open();
     }
 
-   
-</script>
-<script>
     const notyf = new Notyf();
 
-async function verifyPayment(paymentData, amount) {
-    try {
-        const response = await fetch('/verify-payment', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                razorpay_order_id: paymentData.razorpay_order_id,
-                razorpay_payment_id: paymentData.razorpay_payment_id,
-                razorpay_signature: paymentData.razorpay_signature,
-                amount: amount
-            })
-        });
+    // Function to verify the payment with the backend
+    async function verifyPayment(paymentData, amount) {
+        try {
+            const response = await fetch('/verify-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    razorpay_order_id: paymentData.razorpay_order_id,
+                    razorpay_payment_id: paymentData.razorpay_payment_id,
+                    razorpay_signature: paymentData.razorpay_signature,
+                    amount: amount
+                })
+            });
 
-        if (response.ok) {
-            notyf.success('Payment successful and wallet updated');
-            location.reload(); 
-        } else {
-            const errorText = await response.text();
-            console.error('Payment verification failed:', errorText);
-            notyf.error('Payment verification failed: ' + errorText);
+            if (response.ok) {
+                notyf.success('Payment successful and wallet updated');
+                location.reload();  // Reload the page to show updated wallet balance
+            } else {
+                const errorText = await response.text();
+                console.error('Payment verification failed:', errorText);
+                notyf.error('Payment verification failed: ' + errorText);
+            }
+        } catch (error) {
+            console.error('Error in payment verification:', error);
+            notyf.error('Payment verification failed: ' + error.message);
         }
-    } catch (error) {
-        console.error('Error in payment verification:', error);
-        notyf.error('Payment verification failed: ' + error.message);
     }
-}
-
 </script>
 
   <script>

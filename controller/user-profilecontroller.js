@@ -507,104 +507,120 @@ const returnorder = async (req, res) => {
     };
     
 
-const invoicedownload = async (req, res) => {
-    try {
-        const orderid = req.params.orderid;
-        console.log(orderid, "order id is here");
-
-        const order = await Order.findById(orderid).populate('product.product').populate('coupon');
-        console.log(order, "this is the coupon");
-        if (!order) {
-            return res.status(404).send('Order not found');
+    const invoicedownload = async (req, res) => {
+        try {
+            const orderid = req.params.orderid;
+            console.log(orderid, "order id is here");
+    
+           
+            const order = await Order.findById(orderid)
+                .populate('product.product')
+                .populate('coupon');
+            console.log(order, "this is the coupon");
+            
+            if (!order) {
+                return res.status(404).send('Order not found');
+            }
+    
+            const products = [];
+            let totalAmount = 0;
+            let totalDiscount = 0;
+    
+         
+            for (let i = 0; i < order.product.length; i++) {
+                const p = order.product[i];
+                const productDetails = await product.findById(p.product);
+                if (!productDetails) continue;
+    
+               
+                const originalPrice = productDetails.orginalprice || productDetails.price || 0;
+                const offerDiscount = originalPrice * (productDetails.offer / 100 || 0);
+                const discountedPrice = originalPrice - offerDiscount;
+    
+              
+                const couponDiscount = order.coupon ? (discountedPrice * (order.coupon.offer / 100 || 0)) : 0;
+                const finalPrice = discountedPrice - couponDiscount;
+                const totalPrice = finalPrice * p.quantity;
+    
+               
+                products.push({
+                    quantity: p.quantity,
+                    description: productDetails.name,
+                    originalPrice: originalPrice.toFixed(2),  
+                    price: finalPrice.toFixed(2),            
+                    offerDiscount: offerDiscount.toFixed(2),  
+                    couponDiscount: couponDiscount.toFixed(2), 
+                    totalPrice: totalPrice.toFixed(2)          
+                });
+    
+              
+                totalAmount += totalPrice;
+                totalDiscount += offerDiscount + couponDiscount;
+            }
+            console.log(products, "this is the products");
+    
+       
+            const data = {
+                apiKey: "free",
+                mode: "development",
+                images: {},
+                sender: {
+                    company: "Avinadh",
+                    address: "Avinadh kp kochi",
+                    zip: "1234 AB",
+                    city: "kochi",
+                    country: "india"
+                },
+                client: {
+                    company: order.Address[0].name,
+                    address: order.Address[0].address,
+                    zip: order.Address[0].pincode,
+                    city: order.Address[0].town,
+                    country: order.Address[0].state
+                },
+                information: {
+                    number: order._id,
+                    date: order.date,
+                    dueDate: new Date(order.placed.getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()
+                },
+              
+                products: products.map(p => ({
+                    quantity: p.quantity,
+                    description: p.description,
+                    originalPrice: p.originalPrice,  
+                    price: p.price,  
+                    offerDiscount: p.offerDiscount,  
+                    couponDiscount: p.couponDiscount,  
+                    total: p.totalPrice
+                })),
+                bottomNotice: "Kindly pay your invoice",
+                settings: {
+                    currency: "INR"
+                },
+          
+                totals: {
+                    totalPrice: totalAmount.toFixed(2),
+                    totalDiscount: totalDiscount.toFixed(2)
+                },
+       
+                discounts: order.coupon ? [{
+                    description: `Coupon Discount (${order.coupon.couponCode})`,
+                    amount: totalDiscount.toFixed(2)
+                }] : []
+            };
+    
+      
+            const result = await easyinvoice.createInvoice(data);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=invoice_${order._id}.pdf`);
+            res.send(Buffer.from(result.pdf, 'base64'));
+    
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send('Internal Server Error');
         }
-
-        const products = [];
-        let totalAmount = 0;
-        let totalDiscount = 0;
-
-        for (let i = 0; i < order.product.length; i++) {
-            const p = order.product[i];
-            const productDetails = await product.findById(p.product);
-            if (!productDetails) continue;
-
-            const originalPrice = productDetails.orginalprice || productDetails.price || 0;
-            const offerDiscount = originalPrice * (productDetails.offer / 100 || 0);
-            const discountedPrice = originalPrice - offerDiscount;
-            const couponDiscount = order.coupon ? (discountedPrice * (order.coupon.offer / 100 || 0)) : 0;
-            const finalPrice = discountedPrice - couponDiscount;
-            const totalPrice = finalPrice * p.quantity;
-
-            products.push({
-                quantity: p.quantity,
-                description: productDetails.name,
-                originalPrice: originalPrice.toFixed(2),
-                price: finalPrice.toFixed(2),
-                offerDiscount: offerDiscount.toFixed(2),
-                couponDiscount: couponDiscount.toFixed(2),
-                totalPrice: totalPrice.toFixed(2)
-            });
-
-            totalAmount += totalPrice;
-            totalDiscount += offerDiscount + couponDiscount;
-        }
-        console.log(products, "this is the products");
-
-        const data = {
-            apiKey: "free",
-            mode: "development",
-            images: {},
-            sender: {
-                company: "Avinadh",
-                address: "Avinadh kp kochi",
-                zip: "1234 AB",
-                city: "kochi",
-                country: "india"
-            },
-            client: {
-                company: order.Address[0].name,
-                address: order.Address[0].address,
-                zip: order.Address[0].pincode,
-                city: order.Address[0].town,
-                country: order.Address[0].state
-            },
-            information: {
-                number: order._id,
-                date: order.date,
-                dueDate: new Date(order.placed.getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()
-            },
-            products: products.map(p => ({
-                quantity: p.quantity,
-                description: p.description,
-                originalPrice: p.originalPrice,  
-                price: p.price,  
-                offerDiscount: p.offerDiscount,  
-                couponDiscount: p.couponDiscount,  
-                total: p.totalPrice
-            })),
-            bottomNotice: "Kindly pay your invoice",
-            settings: {
-                currency: "INR"
-            },
-            totals: {
-                totalPrice: totalAmount.toFixed(2),
-                totalDiscount: totalDiscount.toFixed(2)
-            },
-            discounts: order.coupon ? [{
-                description: `Coupon Discount (${order.coupon.couponCode})`,
-                amount: totalDiscount.toFixed(2)
-            }] : []
-        };
-
-        const result = await easyinvoice.createInvoice(data);
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=invoice_${order._id}.pdf`);
-        res.send(Buffer.from(result.pdf, 'base64'));
-
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).send('Internal Server Error');
-    }
-};
+    };
+    
 
 const updateprofile = async (req, res) => {
     try {

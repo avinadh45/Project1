@@ -393,9 +393,12 @@ const updatecoupon = async(req,res)=>{
 
 const salesreport = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
+    
+    const page = parseInt(req.query.page, 10) || 1;
     const pagelimit = 6;
-    const { startDate, endDate, timeRange = 'yearly', status = 'All', category = 'all' } = req.query;
+
+   
+    const { startDate, endDate, status = 'All', category = 'all' } = req.query;
 
     
     const filter = {
@@ -405,53 +408,42 @@ const salesreport = async (req, res) => {
       ...(category !== 'all' ? { 'product.category': new mongoose.Types.ObjectId(category) } : {})
     };
 
-    console.log("Filter:", filter);
+    
+    const numberOfOrders = await Order.countDocuments(filter);
+    const totalPages = Math.ceil(numberOfOrders / pagelimit);
 
    
-    const numberoforders = await Order.countDocuments(filter);
-    console.log("Total Orders Count:", numberoforders); 
-
-    const totalpages = Math.ceil(numberoforders / pagelimit);
-    console.log("Total Pages:", totalpages); 
-
-    
-    const validpage = Math.min(Math.max(page, 1), totalpages);
-    console.log("Valid Page:", validpage); 
-
-    const skip = (validpage - 1) * pagelimit;
-    console.log("Skip Value:", skip); 
+    const validPage = Math.min(Math.max(page, 1), totalPages);
+    const skip = (validPage - 1) * pagelimit;
 
     
     const orders = await Order.find(filter)
-      .sort({ placed: -1 })
+      .sort({ placed: -1 })  
       .skip(skip)
       .limit(pagelimit);
 
-    console.log("Orders Retrieved:", orders); 
-
-    
+   
     const userData = await user.findOne({ _id: req.session.user_id });
     const categories = await Category.find();
 
-    
+  
     res.render('sales-report', {
       username: userData ? userData.name : 'Guest',
-      totalpages,
-      page: validpage,
-      timeRange,
-      status,
       orders,
+      totalPages,
+      page: validPage,
+      status,
       categories,
       category,
       startDate,
-      endDate,
+      endDate
     });
-
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
     res.status(500).send('Server Error');
   }
 };
+
 
 
 const weeklysales = async (req, res) => {
@@ -462,9 +454,9 @@ const weeklysales = async (req, res) => {
     
     const category = req.query.category || 'all';
     
-    console.log("Category from query:", category);
-    console.log("Start of week:", startOfWeek);
-    console.log("End of week:", endOfWeek);
+    // console.log("Category from query:", category);
+    // console.log("Start of week:", startOfWeek);
+    // console.log("End of week:", endOfWeek);
     
     let productIds = [];
     if (category !== 'all') {

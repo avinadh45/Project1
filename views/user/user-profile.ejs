@@ -820,14 +820,18 @@
                                         </thead>
                                         <tbody>
                                             <% wallet.history.reverse().forEach(transaction => { %>
-                                                <tr>
-                                                    <td>#<%= Math.random().toString(36).substr(2, 8).toUpperCase() %></td>
-                                                    <td><%= new Date(transaction.createdAt).toLocaleString() %></td>
-                                                    <td>₹<%= transaction.amount.toFixed(2) %></td>
-                                                    <td><%= transaction.type %></td>
-                                                </tr>
+                                              <tr>
+                                                <td>#<%= Math.random().toString(36).substr(2, 8).toUpperCase() %></td>
+                                                <td>
+                                                  <%= new Date(transaction.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %>
+                                                  <%= new Date(transaction.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) %>
+                                                </td>
+                                                <td>₹<%= transaction.amount.toFixed(2) %></td>
+                                                <td><%= transaction.type %></td>
+                                              </tr>
                                             <% }); %>
-                                        </tbody>
+                                          </tbody>
+                                          
                                     </table>
                                 </div>
                             <% } else { %>
@@ -1291,7 +1295,7 @@
         event.preventDefault();
         const amount = document.getElementById('amountInput').value;
         
-        // Create the order on the backend
+       
         const response = await fetch('/addtowallet', {
             method: 'POST',
             headers: {
@@ -1300,10 +1304,10 @@
             body: JSON.stringify({ amount })
         });
         
-        // Retrieve the order details
+        
         const { order } = await response.json();
         
-        // Razorpay options
+      
         const options = {
             key: "rzp_test_KBfeMuv9hM52Z0", 
             amount: order.amount,
@@ -1312,8 +1316,8 @@
             description: "Add Funds to Wallet",
             order_id: order.id,
             handler: function (response) {
-                // Trigger the verification process after successful payment
-                verifyPayment(response, order.amount);  // Call verifyPayment with response and order amount
+               
+                verifyPayment(response, order.amount);  
             },
             prefill: {
                 name: "Avinadh and co",
@@ -1325,14 +1329,14 @@
             }
         };
         
-        // Open Razorpay's payment modal
+        
         const rzp1 = new Razorpay(options);
         rzp1.open();
     }
 
     const notyf = new Notyf();
 
-    // Function to verify the payment with the backend
+    
     async function verifyPayment(paymentData, amount) {
         try {
             const response = await fetch('/verify-payment', {
@@ -1350,7 +1354,7 @@
 
             if (response.ok) {
                 notyf.success('Payment successful and wallet updated');
-                location.reload();  // Reload the page to show updated wallet balance
+                location.reload();  
             } else {
                 const errorText = await response.text();
                 console.error('Payment verification failed:', errorText);

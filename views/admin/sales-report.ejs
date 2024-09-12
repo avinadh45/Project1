@@ -250,30 +250,30 @@
        
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
-                <% if (page > 1) { %>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=<%= page - 1 %>&timeRange=<%= timeRange %>&status=<%= status %>">Previous</a>
-                    </li>
-                <% } %>
-        
-                <% for (let i = 1; i <= totalpages; i++) { %>
-                    <li class="page-item <%= i === page ? 'active' : '' %>">
-                        <a class="page-link" href="?page=<%= i %>&timeRange=<%= timeRange %>&status=<%= status %>"><%= i %></a>
-                    </li>
-                <% } %>
-        
-                <% if (page < totalpages) { %>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=<%= page + 1 %>&timeRange=<%= timeRange %>&status=<%= status %>">Next</a>
-                    </li>
-                <% } %>
+              <% if (page > 1) { %>
+                <li class="page-item">
+                  <a class="page-link" href="?page=<%= page - 1 %>&status=<%= status %>&category=<%= category %>&startDate=<%= startDate %>&endDate=<%= endDate %>">Previous</a>
+                </li>
+              <% } %>
+            
+              <% for (let i = 1; i <= totalPages; i++) { %>
+                <li class="page-item <%= i === page ? 'active' : '' %>">
+                  <a class="page-link" href="?page=<%= i %>&status=<%= status %>&category=<%= category %>&startDate=<%= startDate %>&endDate=<%= endDate %>"><%= i %></a>
+                </li>
+              <% } %>
+            
+              <% if (page < totalPages) { %>
+                <li class="page-item">
+                  <a class="page-link" href="?page=<%= page + 1 %>&status=<%= status %>&category=<%= category %>&startDate=<%= startDate %>&endDate=<%= endDate %>">Next</a>
+                </li>
+              <% } %>
             </ul>
-        </nav>
+          </nav>
           
           
           
-        
-        
+          
+          
 
         <!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
     

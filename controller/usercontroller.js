@@ -369,13 +369,14 @@ const productdet = async (req, res) => {
         console.log(productdata.category, typeof productdata.category, "Category Data for the Product");
         const relatedProducts = await product.find({ category: productdata.category._id,_id: { $ne: productid }}).limit(4);
         console.log(relatedProducts,"related products is here");
+        const isOutOfStock =  productdata.countInstock === 0; ; 
         const cart = await Cart.findOne({ user_id: user });
         const cartCount = cart ? cart.items.length : 0;
         const wishlist = await Wish.findOne({ userId: user });
         const wishcount = wishlist ? wishlist.product.length : 0;
         const categorydata = productdata.category ? productdata.category : {};
         const productURL = `https://tempusgems.online/product-details/${productid}`
-        res.render('product-details', { products: productdata, category: categorydata, cartCount, wishcount,relatedProducts,productURL });
+        res.render('product-details', { products: productdata, category: categorydata, cartCount, wishcount,relatedProducts,productURL,isOutOfStock });
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Internal Server Error');

@@ -178,12 +178,12 @@ const order = async (req, res) => {
             console.log(`Total amount in paise: ${totalAmountInPaise}`);
 
 
-            // const orderId = generateOrderId();
+            const orderId = generateOrderId();
 
 
             if (payments === 'COD') {
                 const newOrder = new Order({
-                    // orderId: orderId,
+                    orderId: orderId,
                     product: product,
                     totalprice: totalPrice,
                     Address: selectedaddress.Address,
@@ -211,7 +211,7 @@ const order = async (req, res) => {
                     await wallet.save();
 
                     const newOrder = new Order({
-                        // orderId: orderId,
+                        orderId: orderId,
                         product: product,
                         totalprice: totalPrice,
                         Address: selectedaddress.Address,
@@ -240,7 +240,7 @@ const order = async (req, res) => {
                 const razorpayOrder = await razorpayorder(totalAmountInPaise);
                    console.log(razorpayOrder,"gggfhgfhgf juumbdtd");
                 const newOrder = new Order({
-                    // orderId: orderId,
+                    orderId: orderId,
                     product: product,
                     totalprice: totalPrice,
                     Address: selectedaddress.Address,

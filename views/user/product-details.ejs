@@ -685,9 +685,15 @@
                                     </div>
                                 </div> -->
 
-                                <div class="product-add-to-cart-btn">
-                                    <a href="#" data-bs-toggle="modal" id="addtocart" data-bs-target="#modalAddcart">+ Add To Cart</a>
-                                </div>
+                                <% if (!isOutOfStock) { %>
+        <div class="product-add-to-cart-btn">
+            <a href="#" data-bs-toggle="modal" id="addtocart" data-bs-target="#modalAddcart">+ Add To Cart</a>
+        </div>
+    <% } else { %>
+        <div class="out-of-stock">
+            <p class="text-danger">This product is currently out of stock.</p>
+        </div>
+    <% } %>
                             </div>
                             <!-- Start  Product Details Meta Area-->
                             <div class="product-details-meta mb-20">
@@ -1003,9 +1009,16 @@
                                                 <img src="/productimage/<%= product.image[0] %>" alt="<%= product.name %>">
                                             </a>
                                             <div class="action-link">
-                                                <div class="action-link-left">
-                                                    <a href="#" id="addToCartButton" data-bs-toggle="modal" data-bs-target="#modalAddcart">Add to Cart</a>
-                                                </div>
+                                                
+                                <% if (!isOutOfStock) { %>
+        <div class="product-add-to-cart-btn">
+            <a href="#" data-bs-toggle="modal" id="addtocart" data-bs-target="#modalAddcart">+ Add To Cart</a>
+        </div>
+    <% } else { %>
+        <div class="out-of-stock">
+            <p class="text-danger">This product is currently out of stock.</p>
+        </div>
+    <% } %>
                                                 <div class="action-link-right">
                                                     <a href="#" data-bs-toggle="modal" data-bs-target="#modalQuickview"><i class="icon-magnifier"></i></a>
                                                     <a href="wishlist.html"><i class="icon-heart"></i></a>
@@ -1364,10 +1377,16 @@
                                                 </div>
                                             </div>
 
-                                            <div class="product-add-to-cart-btn">
-                                                <a href="#" data-bs-toggle="modal" data-bs-target="#modalAddcart">Add To
-                                                    Cart</a>
-                                            </div>
+                                            
+                                <% if (!isOutOfStock) { %>
+        <div class="product-add-to-cart-btn">
+            <a href="#" data-bs-toggle="modal" id="addtocart" data-bs-target="#modalAddcart">+ Add To Cart</a>
+        </div>
+    <% } else { %>
+        <div class="out-of-stock">
+            <p class="text-danger">This product is currently out of stock.</p>
+        </div>
+    <% } %>
                                         </div>
                                     </div> <!-- End Product Variable Area -->
                                     <div class="modal-product-about-text">

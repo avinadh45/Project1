@@ -144,6 +144,7 @@ const logout = async (req, res) => {
     console.log(error.message);
   }
 };
+
 const admin404 = async(req,res)=>{
   try {
     res.render('404admin')
@@ -393,70 +394,93 @@ const updatecoupon = async(req,res)=>{
 
 const salesreport = async (req, res) => {
   try {
-    
-    const page = parseInt(req.query.page, 10) || 1;
-    const pagelimit = 6;
-
-   
-    const { startDate, endDate, status = 'All', category = 'all' } = req.query;
-
-    
-    const filter = {
-      Order_verified: true,
-      ...(status !== 'All' ? { status: status } : {}),
-      ...(startDate && endDate ? { placed: { $gte: new Date(startDate), $lte: new Date(endDate) } } : {}),
-      ...(category !== 'all' ? { 'product.category': new mongoose.Types.ObjectId(category) } : {})
-    };
+      const page = parseInt(req.query.page, 10) || 1;
+      const pagelimit = 6;
+      
+      
+      const { category = 'all', timeRange = 'Yearly' } = req.query;
+      console.log(req.query,"this is the query");
 
     
-    const numberOfOrders = await Order.countDocuments(filter);
-    const totalPages = Math.ceil(numberOfOrders / pagelimit);
+      let startDate, endDate = new Date();
 
-   
-    const validPage = Math.min(Math.max(page, 1), totalPages);
-    const skip = (validPage - 1) * pagelimit;
+      if (timeRange === 'Weekly') {
+          startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000); 
+      } else if (timeRange === 'Monthly') {
+          startDate = new Date();
+          startDate.setMonth(endDate.getMonth() - 1); 
+      } else if (timeRange === 'Yearly') {
+          startDate = new Date();
+          startDate.setFullYear(endDate.getFullYear() - 1); 
+      } else if (timeRange === 'custom') {
+          startDate = new Date(req.query.startDate); 
+          endDate = new Date(req.query.endDate); 
+      } else {
+          startDate = new Date(0); 
+      }
 
-    
-    const orders = await Order.find(filter)
-      .sort({ placed: -1 })  
-      .skip(skip)
-      .limit(pagelimit);
+      const filter = {
+          status: "Delivered",
+          paymentstatus: "paid",
+          placed: { $gte: startDate, $lte: endDate },
+          ...(category && mongoose.Types.ObjectId.isValid(category) && category !== 'all'
+              ? { 'product.category': new mongoose.Types.ObjectId(category) }
+              : {})
+      };
 
-   
-    const userData = await user.findOne({ _id: req.session.user_id });
-    const categories = await Category.find();
+      const numberOfOrders = await Order.countDocuments(filter);
+      const totalPages = Math.ceil(numberOfOrders / pagelimit);
+      const validPage = Math.min(Math.max(page, 1), totalPages);
+      const skip = (validPage - 1) * pagelimit;
 
-  
-    res.render('sales-report', {
-      username: userData ? userData.name : 'Guest',
-      orders,
-      totalPages,
-      page: validPage,
-      status,
-      categories,
-      category,
-      startDate,
-      endDate
-    });
+      const orders = await Order.find(filter)
+          .sort({ placed: -1 }) 
+          .skip(skip)
+          .limit(pagelimit)
+          .lean();
+
+      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+          return res.json({
+              orders,
+              totalPages,
+              currentPage: validPage,
+          });
+      }
+
+      const userData = await user.findOne({ _id: req.session.user_id });
+      const categories = await Category.find();
+
+      
+      res.render('sales-report', {
+          username: userData ? userData.name : 'Guest',
+          orders,
+          totalPages,
+          currentPage: validPage,
+          categories,
+          category,
+          totalOrders: numberOfOrders,
+          timeRange, 
+      });
+
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send('Server Error');
+      console.error('Error in salesreport function:', error.message);
+      res.status(500).send('Server Error: ' + error.message);
   }
 };
 
 
 
+
+
 const weeklysales = async (req, res) => {
-  console.log("hi hello");
   try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const pagelimit = 6;
+    
     const startOfWeek = moment().startOf('week').toDate();
     const endOfWeek = moment().endOf('week').toDate();
     
     const category = req.query.category || 'all';
-    
-    // console.log("Category from query:", category);
-    // console.log("Start of week:", startOfWeek);
-    // console.log("End of week:", endOfWeek);
     
     let productIds = [];
     if (category !== 'all') {
@@ -467,36 +491,48 @@ const weeklysales = async (req, res) => {
     const filter = {
       placed: { $gte: startOfWeek, $lte: endOfWeek },
       status: "Delivered",
+      paymentstatus:"paid",
     };
     
     if (productIds.length > 0) {
       filter['product.product'] = { $in: productIds };
     }
 
-    const weeklyOrders = await Order.find(filter).sort({ placed: -1 });
+   
+    const numberOfOrders = await Order.countDocuments(filter);
+    const totalPages = Math.ceil(numberOfOrders / pagelimit);
+    const validPage = Math.min(Math.max(page, 1), totalPages);
 
-    console.log("Orders retrieved:", weeklyOrders);
+    const skip = (validPage - 1) * pagelimit;
 
-    if (weeklyOrders.length === 0) {
-      console.log("No orders found matching the criteria.");
-    }
+    
+    const weeklyOrders = await Order.find(filter)
+      .sort({ placed: -1 })
+      .skip(skip)
+      .limit(pagelimit);
 
-    res.json(weeklyOrders);
+    res.json({
+      orders: weeklyOrders,
+      totalPages,
+      currentPage: validPage,
+    });
   } catch (error) {
     console.error("Error retrieving weekly sales:", error.message);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
-
 const dailySales = async (req, res) => {
   try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const pagelimit = 6;
+
     const startOfDay = moment().startOf('day').toDate();
     const endOfDay = moment().endOf('day').toDate();
-    
+
     const category = req.query.category || 'all';
     let productIds = [];
-    
+
     if (category !== 'all') {
       const products = await product.find({ category: new mongoose.Types.ObjectId(category) });
       productIds = products.map(product => product._id);
@@ -505,15 +541,30 @@ const dailySales = async (req, res) => {
     const filter = {
       placed: { $gte: startOfDay, $lte: endOfDay },
       status: "Delivered",
+      paymentstatus: "paid",
     };
-    
+
     if (productIds.length > 0) {
       filter['product.product'] = { $in: productIds };
     }
 
-    const dailyOrders = await Order.find(filter).sort({ placed: -1 });
+  
+    const numberOfOrders = await Order.countDocuments(filter);
+    const totalPages = Math.ceil(numberOfOrders / pagelimit);
+    const validPage = Math.min(Math.max(page, 1), totalPages);
 
-    res.json(dailyOrders);
+    const skip = (validPage - 1) * pagelimit;
+
+    const dailyOrders = await Order.find(filter)
+      .sort({ placed: -1 })
+      .skip(skip)
+      .limit(pagelimit);
+
+    res.json({
+      orders: dailyOrders,
+      totalPages,
+      currentPage: validPage,
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -521,9 +572,11 @@ const dailySales = async (req, res) => {
 };
 
 
-
 const monthlysales = async (req, res) => {
   try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const pagelimit = 6;
+
     const startOfMonth = moment().startOf('month').toDate();
     const endOfMonth = moment().endOf('month').toDate();
     
@@ -538,15 +591,30 @@ const monthlysales = async (req, res) => {
     const filter = {
       placed: { $gte: startOfMonth, $lte: endOfMonth },
       status: "Delivered",
+      paymentstatus:"paid",
     };
     
     if (productIds.length > 0) {
       filter['product.product'] = { $in: productIds };
     }
 
-    const monthOrders = await Order.find(filter).sort({ placed: -1 });
+    
+    const numberOfOrders = await Order.countDocuments(filter);
+    const totalPages = Math.ceil(numberOfOrders / pagelimit);
+    const validPage = Math.min(Math.max(page, 1), totalPages);
 
-    res.json(monthOrders);
+    const skip = (validPage - 1) * pagelimit;
+
+    const monthOrders = await Order.find(filter)
+      .sort({ placed: -1 })
+      .skip(skip)
+      .limit(pagelimit);
+
+    res.json({
+      orders: monthOrders,
+      totalPages,
+      currentPage: validPage,
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -556,12 +624,15 @@ const monthlysales = async (req, res) => {
 
 const yearlysales = async (req, res) => {
   try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const pagelimit = 6;
+
     const startOfYear = moment().startOf('year').toDate();
     const endOfYear = moment().endOf('year').toDate();
-    
+
     const category = req.query.category || 'all';
     let productIds = [];
-    
+
     if (category !== 'all') {
       const products = await product.find({ category: new mongoose.Types.ObjectId(category) });
       productIds = products.map(product => product._id);
@@ -570,15 +641,30 @@ const yearlysales = async (req, res) => {
     const filter = {
       placed: { $gte: startOfYear, $lte: endOfYear },
       status: "Delivered",
+      paymentstatus: "paid",
     };
-    
+
     if (productIds.length > 0) {
       filter['product.product'] = { $in: productIds };
     }
 
-    const yearlyOrders = await Order.find(filter).sort({ placed: -1 });
+  
+    const numberOfOrders = await Order.countDocuments(filter);
+    const totalPages = Math.ceil(numberOfOrders / pagelimit);
+    const validPage = Math.min(Math.max(page, 1), totalPages);
 
-    res.json(yearlyOrders);
+    const skip = (validPage - 1) * pagelimit;
+
+    const yearlyOrders = await Order.find(filter)
+      .sort({ placed: -1 })
+      .skip(skip)
+      .limit(pagelimit);
+
+    res.json({
+      orders: yearlyOrders,
+      totalPages,
+      currentPage: validPage,
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -586,10 +672,12 @@ const yearlysales = async (req, res) => {
 };
 
 
+
 const getAllDeliveredOrders = async (req, res) => {
   try {
       const allDeliveredOrders = await Order.find({
-          status: "Delivered"
+          status: "Delivered",
+          paymentstatus:"paid",
       }).sort({ placed: -1 });
 
       // console.log("From the backend - All Delivered Orders:", allDeliveredOrders);
@@ -608,11 +696,9 @@ const customsales = async (req, res) => {
 
       const customOrders = await Order.find({
           placed: { $gte: new Date(startDate), $lte: new Date(endDate) },
-          status: "Delivered"
+          status: "Delivered",
+          paymentstatus:"paid",
       }).sort({ placed: -1 });
-
-     
-
       res.json(customOrders);
   } catch (error) {
       console.log(error.message);
@@ -620,12 +706,12 @@ const customsales = async (req, res) => {
   }
 };
 
-const getCustomSales = async (req, res) => {
-  console.log("hi from the sales");
 
+
+const getCustomSales = async (req, res) => {
   try {
-    const { start, end } = req.body;
-    console.log(req.body, "in the body");
+    const { start, end } = req.query;  
+    console.log(req.query, "Received query parameters");
 
     if (!start || !end) {
       return res.status(400).json({ error: 'Start date and end date are required' });
@@ -633,37 +719,51 @@ const getCustomSales = async (req, res) => {
 
     const startDate = new Date(start);
     const endDate = new Date(end);
+
+
+    if (isNaN(startDate) || isNaN(endDate)) {
+      return res.status(400).json({ error: 'Invalid date format' });
+    }
+
+   
     endDate.setHours(23, 59, 59, 999);
 
-    const page = req.query.page ? parseInt(req.query.page) : 1;
+ 
+    const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const skip = (page - 1) * limit;
 
+    
     const orders = await Order.find({
       placed: {
         $gte: startDate,
         $lte: endDate
       },
-      status: 'Delivered' 
+      status: 'Delivered',
+      paymentstatus: "paid"
     }).skip(skip).limit(limit);
-    console.log('Orders fetched:', orders);
 
+    // console.log('Orders fetched:', orders);
+
+    // Count total orders for pagination
     const totalOrders = await Order.countDocuments({
       placed: {
         $gte: startDate,
         $lte: endDate
       },
-      status: 'Delivered' 
+      status: 'Delivered'
     });
 
-    const totalpages = Math.ceil(totalOrders / limit);
+    const totalPages = Math.ceil(totalOrders / limit);
 
-    res.json({ orders, page, totalpages });
+    // Send the response
+    res.json({ orders, currentPage: page, totalPages });
   } catch (error) {
     console.error('Error fetching orders:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 
 
@@ -738,27 +838,32 @@ const removeoffer = async(req,res)=>{
 const downloadpdf = async (req, res) => {
   try {
     const doc = new PDFDocument();
-    const { timeRange, startDate, endDate, category = 'all' } = req.query || req.body;
+    const { timeRange, startDate, endDate, category = 'all' } = req.query;
 
+    console.log('Received query params:', req.query);
     console.log(`Start Date: ${startDate}, End Date: ${endDate}, Time Range: ${timeRange}, Category: ${category}`);
 
-   
     let filter = { status: "Delivered" };
-    const startOfWeek = moment().startOf('week').toDate();
-    const endOfWeek = moment().endOf('week').toDate();
 
     if (timeRange === 'daily') {
       filter.placed = { $gte: moment().startOf('day').toDate(), $lte: moment().endOf('day').toDate() };
     } else if (timeRange === 'weekly') {
-      filter.placed = { $gte: startOfWeek, $lte: endOfWeek };
+      filter.placed = { $gte: moment().startOf('week').toDate(), $lte: moment().endOf('week').toDate() };
     } else if (timeRange === 'monthly') {
       filter.placed = { $gte: moment().startOf('month').toDate(), $lte: moment().endOf('month').toDate() };
     } else if (timeRange === 'yearly') {
       filter.placed = { $gte: moment().startOf('year').toDate(), $lte: moment().endOf('year').toDate() };
     } else if (timeRange === 'custom' && startDate && endDate) {
-      filter.placed = { $gte: new Date(startDate), $lte: new Date(endDate) };
+      filter.placed = { 
+        $gte: new Date(startDate), 
+        $lte: moment(endDate).endOf('day').toDate() 
+      };
     }
 
+    console.log('Applied filter:', JSON.stringify(filter, null, 2));
+
+    let orderdata = await Order.find(filter).sort({ placed: -1 });
+    console.log(`Number of orders found: ${orderdata.length}`);
     
     let productIds = [];
     if (category !== 'all') {
@@ -771,7 +876,7 @@ const downloadpdf = async (req, res) => {
     }
 
    
-    let orderdata = await Order.find(filter).sort({ placed: -1 });
+    // let orderdata = await Order.find(filter).sort({ placed: -1 });
 
     
     const overallSalesCount = orderdata.length;
@@ -861,23 +966,30 @@ const downloadexcel = async (req, res) => {
 
     const { timeRange, startDate, endDate, category = 'all' } = req.query;
 
-    
-    let filter = { status: "Delivered" };
+    console.log('Received query params:', req.query);
+    console.log(`Start Date: ${startDate}, End Date: ${endDate}, Time Range: ${timeRange}, Category: ${category}`);
 
-    const startOfWeek = moment().startOf('week').toDate();
-    const endOfWeek = moment().endOf('week').toDate();
+    let filter = { status: "Delivered" };
 
     if (timeRange === 'daily') {
       filter.placed = { $gte: moment().startOf('day').toDate(), $lte: moment().endOf('day').toDate() };
     } else if (timeRange === 'weekly') {
-      filter.placed = { $gte: startOfWeek, $lte: endOfWeek };
+      filter.placed = { $gte: moment().startOf('week').toDate(), $lte: moment().endOf('week').toDate() };
     } else if (timeRange === 'monthly') {
       filter.placed = { $gte: moment().startOf('month').toDate(), $lte: moment().endOf('month').toDate() };
     } else if (timeRange === 'yearly') {
       filter.placed = { $gte: moment().startOf('year').toDate(), $lte: moment().endOf('year').toDate() };
     } else if (timeRange === 'custom' && startDate && endDate) {
-      filter.placed = { $gte: new Date(startDate), $lte: new Date(endDate) };
+      filter.placed = { 
+        $gte: new Date(startDate), 
+        $lte: moment(endDate).endOf('day').toDate() 
+      };
     }
+
+    console.log('Applied filter:', JSON.stringify(filter, null, 2));
+
+    const orderdata = await Order.find(filter).sort({ placed: -1 });
+    console.log(`Number of orders found: ${orderdata.length}`);
 
     
     let productIds = [];
@@ -891,7 +1003,7 @@ const downloadexcel = async (req, res) => {
     }
 
     
-    const orderdata = await Order.find(filter).sort({ placed: -1 });
+    // const orderdata = await Order.find(filter).sort({ placed: -1 });
 
     const overallSalesCount = orderdata.length;
     let overallOrderAmount = 0;

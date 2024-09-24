@@ -55,11 +55,9 @@ app.use('/admin', (req, res, next) => {
 
 app.use((req, res, next) => {
   if (req.url.startsWith('/admin')) {
-     
-      res.status(404).render('404admin');
+    res.status(404).render('404admin');
   } else {
-      
-      res.status(404).render('404');
+    res.status(404).render('404');
   }
 });
 console.log("hi git");

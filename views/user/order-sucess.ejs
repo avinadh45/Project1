@@ -1,85 +1,49 @@
-<!-- views/premiumOrderSuccess.ejs -->
-
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="en">
 <head>
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>Tempusgems</title>
-
-    <!-- ::::::::::::::Favicon icon::::::::::::::-->
-    <!-- <link rel="shortcut icon" href="images/favicon.ico" type="image/png"> -->
-
-    <!-- ::::::::::::::All CSS Files here :::::::::::::: -->
-    <!-- Vendor CSS -->
-    <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
-    <link rel="stylesheet" href="css/vendor/ionicons.css">
-    <link rel="stylesheet" href="css/vendor/simple-line-icons.css">
-    <link rel="stylesheet" href="css/vendor/jquery-ui.min.css">
-
-    <!-- Plugin CSS -->
-    <link rel="stylesheet" href="css/plugins/swiper-bundle.min.css">
-    <link rel="stylesheet" href="css/plugins/animate.min.css">
-    <link rel="stylesheet" href="css/plugins/nice-select.css">
-    <link rel="stylesheet" href="css/plugins/venobox.min.css">
-    <link rel="stylesheet" href="css/plugins/jquery.lineProgressbar.css">
-    <link rel="stylesheet" href="css/plugins/aos.min.css">
-
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="css/style.css">
-
-    <!-- Use the minified version files listed below for better performance and remove the files listed above -->
-    <!-- <link rel="stylesheet" href="css/vendor/vendor.min.css">
-    <link rel="stylesheet" href="css/plugins/plugins.min.css">
-    <link rel="stylesheet" href="css/style.min.css"> -->
-    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+  
 </head>
 <body>
     <!-- Start Header Area -->
-    <header class="header-section d-none d-xl-block">
+    <header class="header-section">
         <div class="header-wrapper">
-            <div class="header-bottom header-bottom-color--black section-fluid sticky-header sticky-color--black">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12 d-flex align-items-center justify-content-between">
-                            <!-- Start Header Logo -->
-                            <div class="header-logo">
-                                <div class="logo">
-                                    <a href="home"><img src="images/logo/logo_1.png" alt=""></a>
-                                </div>
-                            </div>
-                            <!-- End Header Logo -->
-
-                            <!-- Start Header Main Menu -->
-                            <div class="main-menu menu-color--white menu-hover-color--pink">
-                                <nav>
-                                    <ul>
-                                        <li class="has-dropdown">
-                                            <a class="active main-menu-link" href="/home">Home</a>
-                                            <!-- Sub Menu -->
-                                          
-                                        </li>
-                                        <li class="has-dropdown has-megaitem">
-                                            <a href="/shop">Shop 
-                                                   </a>
-                                        </li> 
-                                        <li>
-                                             <a href="/user-profile">Profile</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            <!-- End Header Main Menu Start  -->
-
-                            
-                        </div>
+            <div class="header-bottom section-fluid">
+                <div class="container">
+                    <div class="row align-items-center justify-content-between">
+                        <!-- Start Header Logo -->
+                        <!-- <div class="header-logo">
+                            <a href="/home">
+                                <img src="images/logo/logo_1.png" alt="Logo" style="max-height: 50px;">
+                            </a>
+                        </div> -->
+                        <!-- End Header Logo -->
+    
+                        <!-- Start Header Main Menu -->
+                        <nav class="main-menu">
+                            <!-- <ul style="list-style: none; display: flex; gap: 20px; margin: 0; padding: 0;">
+                                <li>
+                                    <a href="/home" class="main-menu-link">Home</a>
+                                </li>
+                                <li>
+                                    <a href="/shop" class="main-menu-link">Shop</a>
+                                </li>
+                                <li>
+                                    <a href="/user-profile" class="main-menu-link">Profile</a>
+                                </li>
+                            </ul>
+                        </nav> -->
+                        <!-- End Header Main Menu -->
                     </div>
                 </div>
             </div>
         </div>
-    </header> <!-- Close the header tag -->
+    </header>
 
     <style>
     body {
@@ -141,7 +105,7 @@
     <div class="container">
         <div class="success-message">
             <h1>Thank you for your order!</h1>
-            <p>Your order ID is <strong><%= order._id %></strong>.</p>
+            <p>Your order ID is <strong><%= order.orderId %></strong>.</p>
             <p>Total Amount: <strong>₹<%= order.totalprice %></strong></p>
             <p>Payment Status: <strong><%= order.paymentstatus %></strong></p>
             <p>Order Status: <strong><%= order.status %></strong></p>
@@ -150,9 +114,9 @@
         <div class="order-details">
             <h2>Order Details</h2>
             <ul>
-                <% order.product.forEach(item => { %>
+                <% productDetails.forEach(item => { %>
                     <li>
-                        <p>Product: <%= item.product %></p>
+                        <p>Product: <%= item.name %></p> 
                         <p>Quantity: <%= item.quantity %></p>
                         <p>Price: ₹<%= item.price %></p>
                     </li>

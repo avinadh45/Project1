@@ -83,15 +83,38 @@ const adminhome = async (req, res) => {
   }
 };
 
+
 const userdetails = async (req, res) => {
+  console.log("hiihihi");
   try {
-    const userData = await user.find({ isAdmin: 0 });
+    let page = parseInt(req.query.page) || 1; 
+    const limit = 5; 
+    const searchTerm = req.query.search ? req.query.search.trim() : ''; 
+
+    console.log(searchTerm,"i am here");
+
     
-    res.render("user-details", { user: userData });
+    const query = searchTerm ? { name: { $regex: new RegExp(searchTerm, 'i') } } : {}; 
+
+    const userData = await user.find(query)
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await user.countDocuments(query); 
+    const totalpages = Math.ceil(count / limit);
+
+    res.render("user-details", {
+      users: userData,
+      totalpages: totalpages,
+      currentpage: page,
+      search: searchTerm 
+    });
   } catch (error) {
     console.log(error.message);
   }
 };
+
 
 const blockuser = async (req, res) => {
   try {
@@ -396,14 +419,14 @@ const salesreport = async (req, res) => {
   try {
       const page = parseInt(req.query.page, 10) || 1;
       const pagelimit = 6;
-      
-      
-      const { category = 'all', timeRange = 'Yearly' } = req.query;
-      console.log(req.query,"this is the query");
 
-    
+     
+      const { category = 'all', timeRange = 'Monthly' } = req.query;
+      console.log(req.query, "this is the query");
+
       let startDate, endDate = new Date();
 
+   
       if (timeRange === 'Weekly') {
           startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000); 
       } else if (timeRange === 'Monthly') {
@@ -413,7 +436,7 @@ const salesreport = async (req, res) => {
           startDate = new Date();
           startDate.setFullYear(endDate.getFullYear() - 1); 
       } else if (timeRange === 'custom') {
-          startDate = new Date(req.query.startDate); 
+          startDate = new Date(req.query.startDate);
           endDate = new Date(req.query.endDate); 
       } else {
           startDate = new Date(0); 
@@ -450,7 +473,6 @@ const salesreport = async (req, res) => {
       const userData = await user.findOne({ _id: req.session.user_id });
       const categories = await Category.find();
 
-      
       res.render('sales-report', {
           username: userData ? userData.name : 'Guest',
           orders,
@@ -467,8 +489,6 @@ const salesreport = async (req, res) => {
       res.status(500).send('Server Error: ' + error.message);
   }
 };
-
-
 
 
 
@@ -521,6 +541,7 @@ const weeklysales = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 const dailySales = async (req, res) => {
   try {
@@ -707,10 +728,9 @@ const customsales = async (req, res) => {
 };
 
 
-
 const getCustomSales = async (req, res) => {
   try {
-    const { start, end } = req.query;  
+    const { start, end } = req.query;
     console.log(req.query, "Received query parameters");
 
     if (!start || !end) {
@@ -720,32 +740,31 @@ const getCustomSales = async (req, res) => {
     const startDate = new Date(start);
     const endDate = new Date(end);
 
-
     if (isNaN(startDate) || isNaN(endDate)) {
       return res.status(400).json({ error: 'Invalid date format' });
     }
 
-   
+    
+    if (startDate > endDate) {
+      return res.status(400).json({ error: 'End date must be greater than start date' });
+    }
+
     endDate.setHours(23, 59, 59, 999);
 
- 
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    
     const orders = await Order.find({
       placed: {
         $gte: startDate,
         $lte: endDate
       },
       status: 'Delivered',
-      paymentstatus: "paid"
+      paymentstatus: 'paid'
     }).skip(skip).limit(limit);
 
-    // console.log('Orders fetched:', orders);
-
-    // Count total orders for pagination
+    
     const totalOrders = await Order.countDocuments({
       placed: {
         $gte: startDate,
@@ -756,13 +775,14 @@ const getCustomSales = async (req, res) => {
 
     const totalPages = Math.ceil(totalOrders / limit);
 
-    // Send the response
+    
     res.json({ orders, currentPage: page, totalPages });
   } catch (error) {
     console.error('Error fetching orders:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 
 

@@ -62,36 +62,39 @@ console.log(croppedImageData,"hel")
         }
     };
    
-   
+    const productlist = async (req, res) => {
+        console.log("Reached productlist function hahaha"); 
+        try {
+            let page = parseInt(req.query.page) || 1; 
+            const limit = 4;
+            const searchTerm = req.query.search ? req.query.search.trim() : ''; 
 
-
-const productlist = async(req,res)=>{
-    try {
-        var page = 1
-        if(req.query.page){
-            page = req.query.page
+            console.log(searchTerm,"what is here boi");
+    
+          
+            const query = searchTerm ? { name: { $regex: new RegExp(searchTerm, 'i') } } : {}; 
+    
+            const productdata = await product.find(query)
+                .limit(limit)
+                .skip((page - 1) * limit)
+                .exec();
+    
+            const count = await product.countDocuments(query);
+            const totalpages = Math.ceil(count / limit);
+    
+            res.render('productlist', {
+                products: productdata,
+                totalpages: totalpages,
+                currentpage: page,
+                search: searchTerm 
+            });
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).send('Internal Server Error'); 
         }
-        const limit = 4
-        const productdata = await product.find({})
-           
-        .limit(limit * 1)
-        .skip((page -1) *limit)
-        .exec()
-        const count = await product.find({}).countDocuments();
-      
-        const totalpages = Math.ceil(count / limit);
-          console.log(productdata,"price");
-        res.render('productlist',{products:productdata,
-       
-         totalpages:totalpages,
-         currentpage:page
-        })
-       
-    } catch (error) {
-      console.log(error.message);  
-    }
-}
-
+    };
+    
+    
 
 
 const editpropage = async(req,res)=>{

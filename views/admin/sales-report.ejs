@@ -70,6 +70,8 @@
     }
     </style>
       <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="screen-overlay"></div>
@@ -165,7 +167,7 @@
                             <option value="all" >All</option>
                             <option value="daily">Daily</option>
                             <option value="weekly">Weekly</option>
-                            <option value="monthly" >Monthly</option>
+                            <option value="monthly">Monthly</option>
                             <option value="yearly">Yearly</option>
                            
                         </select>
@@ -196,14 +198,14 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form id="customDateForm" >
+                                <form id="customDateForm">
                                     <div class="mb-3">
                                         <label for="startDate" class="form-label">Starting:</label>
-                                        <input type="text" class="form-control" id="startDate" name="start" placeholder="Select start date">
+                                        <input type="date" class="form-control" id="startDate" name="start" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="endDate" class="form-label">Ending:</label>
-                                        <input type="text" class="form-control" id="endDate" name="end" placeholder="Select end date">
+                                        <input type="date" class="form-control" id="endDate" name="end" required>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
@@ -211,6 +213,7 @@
                         </div>
                     </div>
                 </div>
+                
                 
                 <div class="col-md-2 col-6">
                     <button id="fetchDataButton" class="btn btn-primary">Fetch Data</button>
@@ -393,7 +396,7 @@ function downloadPDF() {
         if (customUrl) {
             url = customUrl;
         } else {
-            return; // Exit if custom date range is not set
+            return; 
         }
     }
 
@@ -520,6 +523,27 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+document.getElementById('customDateForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent default form submission behavior
+
+    // Get the selected start and end dates
+    const selectedStartDate = document.getElementById('startDate').value;
+    const selectedEndDate = document.getElementById('endDate').value;
+
+    // Validate dates before calling fetchOrders
+    if (new Date(selectedStartDate) > new Date(selectedEndDate)) {
+        const errorDiv = document.getElementById("dateError");
+        errorDiv.textContent = 'End date must be greater than start date.';
+        errorDiv.style.display = "block";
+        return;
+    }
+
+    // Clear any previous errors
+    document.getElementById("dateError").style.display = "none";
+
+    // Call the fetchOrders function to get the orders
+    fetchOrders(`/admin/salesreportsearch?start=${encodeURIComponent(selectedStartDate)}&end=${encodeURIComponent(selectedEndDate)}`, true);
+});
 
 async function fetchOrders(url, useCustomDate = false) {
     try {
@@ -534,15 +558,25 @@ async function fetchOrders(url, useCustomDate = false) {
         }
 
         response = await fetch(url);
-
         const data = await response.json();
+
         console.log(data, "after response in frontend log");
+
+        if (!response.ok) {
+            // If the backend returns an error, display it using SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.error || 'Failed to load orders.',
+            });
+            return; // Exit early if there's an error
+        }
 
         if (Array.isArray(data.orders)) {
             renderOrders(data.orders);
             updatePagination(
-                data.currentPage, 
-                data.totalPages, 
+                data.currentPage,
+                data.totalPages,
                 document.getElementById('timeRangeFilter').value,
                 document.getElementById('categoryFilter').value || 'all',
                 useCustomDate,
@@ -550,10 +584,21 @@ async function fetchOrders(url, useCustomDate = false) {
                 selectedEndDate
             );
         } else {
-            alert('Failed to load orders.');
+            // In case there's no orders array or data is malformed
+            console.error('Unexpected data format:', data);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Warning',
+                text: 'No orders found for the selected date range.',
+            });
         }
     } catch (error) {
         console.error('Error fetching orders:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An unexpected error occurred.',
+        });
     }
 }
 
@@ -614,7 +659,19 @@ function updateTable(orders) {
     });
 }
 
-
+// document.getElementById("customDateForm").addEventListener("submit", function(e) {
+//     e.preventDefault();
+    
+//     const startDate = new Date(document.getElementById("startDate").value);
+//     const endDate = new Date(document.getElementById("endDate").value);
+    
+//     if (startDate > endDate) {
+//         document.getElementById("dateError").style.display = "block";
+//     } else {
+//         document.getElementById("dateError").style.display = "none";
+//         this.submit();
+//     }
+// })
      
    
 

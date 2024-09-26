@@ -278,16 +278,28 @@ const order = async (req, res) => {
 const OrderSuccess = async (req, res) => {
     try {
         const orderId = req.params.orderId;
-        console.log(orderId,"id fo the sucess");
+        console.log(orderId, "id for the success");
+
+      
         const order = await Order.findById(orderId);
-        console.log( order,"finded the order data");
+        console.log(order, "found the order data");
 
         if (!order) {
             return res.status(404).send('Order not found');
         }
 
-        res.render('order-sucess', { order });
-        console.log();
+        
+        const productDetails = await Promise.all(order.product.map(async (item) => {
+            const productData = await Product.findById(item.product); 
+            return {
+                name: productData.name, 
+                quantity: item.quantity,
+                price: item.price
+            };
+        }));
+
+       
+        res.render('order-sucess', { order, productDetails });
     } catch (error) {
         console.log(error);
         res.status(500).send('Server error');

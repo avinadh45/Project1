@@ -169,20 +169,15 @@
     </aside>
     <main class="main-wrap">
         <header class="main-header navbar">
-            <!-- <div class="col-search">
-                <form class="searchform">
+            <div class="col-search">
+                <form class="searchform" id="searchForm" action="/admin/productlist" method="get"> <!-- Adjust action as needed -->
                     <div class="input-group">
-                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
-                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term" name="search" id="searchInput" value="<%= search %>">
+                        <button class="btn btn-light bg" type="submit"> <i class="material-icons md-search"></i></button>
                     </div>
-                    <datalist id="search_terms">
-                        <option value="Products">
-                        <option value="New orders">
-                        <option value="Apple iphone">
-                        <option value="Ahmed Hassan">
-                    </datalist>
                 </form>
-            </div> -->
+            </div>
+            
             <div class="col-nav">
                 <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
                 <ul class="nav">
@@ -237,11 +232,11 @@
             <div class="card mb-4">
                 <header class="card-header">
                     <div class="row align-items-center">
-                        <div class="col col-check flex-grow-0">
+                        <!-- <div class="col col-check flex-grow-0">
                             <div class="form-check ms-2">
-                                <input class="form-check-input" type="checkbox" value="">
+                                <input class="form-check-input" value="">
                             </div>
-                        </div>
+                        </div> -->
                         <!-- <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
                             <select class="form-select">
                                 <option selected>All category</option>
@@ -271,9 +266,9 @@
                             <thead>
                                 <tr>
                                     <th class="text-center align-middle"> <!-- Add align-middle class to vertically align content -->
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" />
-                                        </div>
+                                        <!-- <div class="form-check">
+                                            <input class="form-check-input" value="" />
+                                        </div> -->
                                     </th>
                                     <th class="align-middle">Name</th> <!-- Add align-middle class to vertically align content -->
                                     <th class="align-middle">Price</th> <!-- Add align-middle class to vertically align content -->
@@ -287,9 +282,9 @@
     <% for (let i = 0; i < products.length; i++) { %>
         <tr>
             <td class="text-center align-middle">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox">
-                </div>
+                <!-- <div class="form-check">
+                    <input class="form-check-input" >
+                </div> -->
             </td>
             <td class="align-middle"><%= products[i].name %></td>
             <td class="align-middle">₹<%= products[i].price %></td>
@@ -366,7 +361,9 @@
                         <%  for(let i = 1 ; i<= totalpages;i++){  %>
                           <% console.log(totalpages) %>
                       
-                        <li class="page-item active"><a class="page-link" href="?page=<%= i%>"><%= i %></a></li>
+                          <li class="page-item <%= i === currentpage ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>&search=<%= encodeURIComponent(search) %>"><%= i %></a>
+                        </li>
                         <!-- <li class="page-item"><a class="page-link" href="#">02</a></li>
                         <li class="page-item"><a class="page-link" href="#">03</a></li>
                         <li class="page-item"><a class="page-link dot" href="#">...</a></li>

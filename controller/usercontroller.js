@@ -383,6 +383,7 @@ const productdet = async (req, res) => {
     }
 };
 
+
 const displayAllProducts = async (req, res) => {
     try {
         const loggedin = req.session.user;
@@ -419,16 +420,17 @@ const displayAllProducts = async (req, res) => {
             sortCriteria.name = sortByName === 'name_asc' ? 1 : -1;
         }
 
-
+ console.log(query,"this is thequerty");
         const productCount = await product.countDocuments(query);
         const totalPages = Math.ceil(productCount / limit);
 
         const products = await product.find(query)
+        
             .sort(sortCriteria)
             .limit(limit)
             .skip((page - 1) * limit)
             .exec();
-
+            console.log(products,"this is the product");
         res.render('shop', { 
             products, 
             category, 
@@ -446,8 +448,6 @@ const displayAllProducts = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
-
-
 
 
 
@@ -518,6 +518,8 @@ const resetPassword = async (req, res) => {
 
 const searchProduct = async (req, res) => {
     try {
+
+        console.log("hihihihihi");
         const user = req.session.user;
         const search = req.body.search || req.query.search;
         const { sortByPrice, sortByName, categoryId } = req.query;

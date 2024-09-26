@@ -149,20 +149,14 @@
     </aside> 
       <main class="main-wrap">
         <header class="main-header navbar">
-              <!-- <div class="col-search">  -->
-                <!-- <form class="searchform"> -->
-                    <!-- <div class="input-group">
-                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
-                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
-                    </div>  -->
-                 <!-- <datalist id="search_terms">
-                        <option value="Products">
-                        <option value="New orders">
-                        <option value="Apple iphone">
-                        <option value="Ahmed Hassan">
-                    </datalist> -->
-                <!-- </form> 
-            </div>  -->
+               <div class="col-search">  
+                <form class="searchform" action="/admin/user-details" method="get"> <!-- Update action to your route -->
+                    <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term" name="search" value="<%= search %>">
+                        <button class="btn btn-light bg" type="submit"> <i class="material-icons md-search"></i></button>
+                    </div>  
+                </form> 
+            </div> 
              <div class="col-nav">
                 <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
                 <ul class="nav">
@@ -265,27 +259,28 @@
                             
                               
                                 <tbody>
-                                    <% if(user && user.length > 0){ %>
-                                        <% for(let i = 0; i < user.length; i++){ %>
+                                    <tbody>
+                                        <% if (users && users.length > 0) { %> <!-- Update 'user' to 'users' -->
+                                            <% for (let i = 0; i < users.length; i++) { %> <!-- Update 'user' to 'users' -->
+                                                <tr>
+                                                    <td><%= users[i].name %></td>  <!-- Update 'user' to 'users' -->
+                                                    <td><%= users[i].email %></td>
+                                                    <td><%= users[i].phone %></td>
+                                                    <td>
+                                                        <% console.log("users[i].blocked:", users[i].Block); %>
+                                                        <button class="btn btn-sm <%= users[i].Block ? 'btn-warning unblock-btn' : 'btn-danger block-btn' %>" data-user-id="<%= users[i]._id %>">
+                                                            <%= users[i].Block ? 'Unblock' : 'Block' %>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                        <% } else { %>
                                             <tr>
-                                                <td><%= user[i].name %></td> 
-                                                <td><%= user[i].email %></td>
-                                                <td><%= user[i].phone %></td>
-                                                <td>
-                                                    <% console.log("user[i].blocked:", user[i].Block); %>
-                                                    <button class="btn btn-sm <%= user[i].Block ? 'btn-warning unblock-btn' : 'btn-danger block-btn' %>" data-user-id="<%= user[i]._id %>">
-                                                        <%= user[i].Block ? 'Unblock' : 'Block' %>
-                                                    </button>
-                                                    
-                                                    
-                                                </td> 
+                                                <td colspan="4" class="text-center">No users found</td>
                                             </tr>
                                         <% } %>
-                                    <% } else { %>
-                                        <tr>
-                                            <td colspan="4" class="text-center">No users found</td>
-                                        </tr>
-                                    <% } %>
+                                    </tbody>
+                                    
                                 </tbody>
                                 <script src="bower_components/sweetalert2/dist/sweetalert2.min.js"></script>     
 
@@ -823,12 +818,11 @@
             <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+                        <% for (let i = 1; i <= totalpages; i++) { %>
+                            <li class="page-item <%= i === currentpage ? 'active' : '' %>">
+                              <a class="page-link" href="?page=<%= i %>&search=<%= encodeURIComponent(search) %>"><%= i %></a>
+                            </li>
+                          <% } %>
                     </ul>
                 </nav>
             </div>

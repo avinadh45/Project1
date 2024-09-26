@@ -8,34 +8,37 @@ const adcategory=async(req,res)=>{
     console.log(error.message);        
     }
 }
-const addcategory = async (req,res)=>{
-  console.log(req.body,"cat data");
-    try {
-      const categoryLowercase = req.body.category.toLowerCase();
-      const existingCategory = await Category.findOne({ category: req.body.category });
-        if (existingCategory) {
-            return res.status(400).json({ success: false, error: 'Category already exists' });
-          
-        }
-        const existingCategoryWithSameName = await Category.findOne({ category: { $regex: new RegExp('^' + categoryLowercase + '$', 'i') } });
-        if (existingCategoryWithSameName) {
-          return res.status(400).json({ success: false, error: 'Category with similar name already exists' });
-      }
 
-      
-    const category = new Category({
-          category:req.body.category,
-          description:req.body.description
-                })
-                console.log(category,"ygfhgfyt");
-         await category.save()
-        res.status(200).send({success:true,data:category})
-        console.log(Category);
-      
-    } catch (error) {
-      console.log(error.message);    
+const addcategory = async (req, res) => {
+  console.log(req.body, "cat data");
+  try {
+    const categoryLowercase = req.body.category.toLowerCase(); // Convert to lowercase for case-insensitive comparison
+    
+    // First, check if a category with the same name exists, case-insensitively
+    const existingCategoryWithSameName = await Category.findOne({ category: { $regex: new RegExp('^' + categoryLowercase + '$', 'i') } });
+    
+    if (existingCategoryWithSameName) {
+      // If a category with the same name (ignoring case) exists, show an error
+      return res.status(400).json({ success: false, error: 'Category with similar name already exists' });
     }
-} 
+
+    // If no existing category with the same name, create a new one
+    const category = new Category({
+      category: req.body.category,
+      description: req.body.description
+    });
+
+    console.log(category, "Category created");
+
+    await category.save();
+    res.status(200).send({ success: true, data: category });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+};
+
+
 const getcategory = async(req,res)=>{
   try {
     const categorys = await Category.find()

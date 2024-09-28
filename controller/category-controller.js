@@ -9,23 +9,26 @@ const adcategory=async(req,res)=>{
     }
 }
 
+
 const addcategory = async (req, res) => {
   console.log(req.body, "cat data");
   try {
-    const categoryLowercase = req.body.category.toLowerCase(); // Convert to lowercase for case-insensitive comparison
+   
+    const categoryLowercase = req.body.category.trim().toLowerCase(); 
     
-    // First, check if a category with the same name exists, case-insensitively
-    const existingCategoryWithSameName = await Category.findOne({ category: { $regex: new RegExp('^' + categoryLowercase + '$', 'i') } });
-    
+  
+    const existingCategoryWithSameName = await Category.findOne({
+      category: { $regex: new RegExp('^' + categoryLowercase + '$', 'i') }
+    });
+
     if (existingCategoryWithSameName) {
-      // If a category with the same name (ignoring case) exists, show an error
       return res.status(400).json({ success: false, error: 'Category with similar name already exists' });
     }
 
-    // If no existing category with the same name, create a new one
+ 
     const category = new Category({
-      category: req.body.category,
-      description: req.body.description
+      category: req.body.category.trim(),
+      description: req.body.description.trim()
     });
 
     console.log(category, "Category created");

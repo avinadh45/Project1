@@ -558,48 +558,53 @@ async function renderCategories() {
             
             <script>
            renderCategories();
-            document.getElementById('categoryForm').addEventListener('submit', async function(event) {
-                event.preventDefault();
-                const categoryInput = document.querySelector('input[name="category"]');
-                const descriptionInput = document.querySelector('input[name="description"]');
-                const category = categoryInput.value.trim();
-                const description = descriptionInput.value.trim(); 
-                validate()
-                try {
-                    const response = await fetch('/admin/addcategory', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ category,description }) 
-                    });
-                    const data = await response.json();
-                    console.log(data,"hgfhgf");
-                     // Handle response from server
-        //              if (data.success) {
-        //     renderCategories();
-        // }
-    //     if (!response.ok) {
-    //     
-    //     throw new Error(data.error || 'Failed to add category'); 
-    // }
-    // console.log('Category added successfully');
-    //     renderCategories();
-    if (!response.ok) {
-            if (data.error=='Category already exists') {
+           document.getElementById('categoryForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    // Get and trim category and description input
+    const categoryInput = document.querySelector('input[name="category"]');
+    const descriptionInput = document.querySelector('input[name="description"]');
+    const category = categoryInput.value.trim();
+    const description = descriptionInput.value.trim(); 
+
+    // Check for empty category or description
+    if (!category || !description) {
+        document.getElementById('errorMessage').textContent = 'Category and description cannot be empty';
+        return;
+    }
+
+    try {
+        const response = await fetch('/admin/addcategory', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ category, description }) 
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            if (data.error === 'Category with similar name already exists') {
                 document.getElementById('errorMessage').textContent = data.error;
             } else {
-                document.getElementById('descriptionError').textContent = data.error;
+                document.getElementById('errorMessage').textContent = 'Failed to add category';
             }
-            //throw new Error(data.error || 'Failed to add category');
+        } else {
+            console.log('Category added successfully');
+            renderCategories();
+            // Clear the form and error message on successful category creation
+            categoryInput.value = '';
+            descriptionInput.value = '';
+            document.getElementById('errorMessage').textContent = '';
         }
 
-        console.log('Category added successfully');
-        renderCategories();
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            });
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('errorMessage').textContent = 'An error occurred while adding the category.';
+    }
+});
+
          </script>
          <script>
             
